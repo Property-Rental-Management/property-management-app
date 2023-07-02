@@ -70,26 +70,38 @@
                 </button>
                 </div>
             </div>
-            {% include "building/units/tables/add_tenant.html" %}
+            {% if not tenant %}
+                {% include "building/units/tables/add_tenant.html" %}
+            {% endif %}
             </div>
         </div>
         <div class="tab-pane fade" id="tenant">
-            {% include "building/units/tables/tenant_details.html" %}
+            {% if tenant %}
+                {% include "building/units/tables/tenant_details.html" %}
+            {% endif %}
         </div>
     </div>
 </div>
 
 <!-- Modals -->
-{% include "building/modals/add_tenant.html" %}
+{% if not tenant %}
+    {% include "building/modals/add_tenant.html" %}
+{% endif %}
+
 {% include "building/units/modals/add_bill_modal.html" %}
-{% include "building/units/modals/add_company.html" %}
+
+{% if not company %}
+    {% include "building/units/modals/add_company.html" %}
+{% endif %}
 
 {% if unit %}
 {% include "building/units/modals/edit_unit.html" %}
 {% endif %}
+
 {% if company %}
 {% include "building/units/modals/edit_company.html" %}
 {% endif %}
+
 {% if tenant %}
 {% include "building/units/modals/edit_tenant.html" %}
 {% endif %}
