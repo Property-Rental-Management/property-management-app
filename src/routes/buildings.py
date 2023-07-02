@@ -149,7 +149,7 @@ async def get_unit(user: User, building_id: str, unit_id: str):
         tenant_data: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=unit_data.tenant_id)
         context.update({'tenant': tenant_data.dict()})
         if tenant_data.company_id:
-            print(f"company data : {tenant_data.company_id}")
+
             company_data: Company = await company_controller.get_company_internal(company_id=tenant_data.company_id)
             if company_data:
                 context.update({'company': company_data.dict()})

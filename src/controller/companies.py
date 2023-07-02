@@ -1,5 +1,7 @@
 import uuid
 
+from pydantic import ValidationError
+
 from src.database.sql.invoices import ItemsORM, UserChargesORM
 from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge
 from src.database.sql.bank_account import BankAccountORM
@@ -69,8 +71,12 @@ class CompaniesController:
     async def get_company_internal(company_id: str) -> Company | None:
         with Session() as session:
             company_orm = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
+            try:
+                company_data: Company | None = Company(**company_orm.to_dict()) if company_orm else None
+            except ValidationError:
+                pass
 
-            return Company(**company_orm.to_dict()) if company_orm else None
+            return company_data
 
     @staticmethod
     @error_handler
