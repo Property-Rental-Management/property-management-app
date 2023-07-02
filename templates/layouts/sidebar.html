@@ -18,21 +18,21 @@
                         </ul>
                     </li>
 
-                    <li class="label">Data</li>
-                    <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i> Admin<span
-                                class="sidebar-collapse-icon ti-angle-down"></span></a>
-                        <ul>
-                            <li><a href="{{ url_for('buildings.get_buildings') }}"><i class="ti-layers"></i> Buildings</a></li>
-                            <li><a href="#"><i class="ti-briefcase"></i> Rentals</a></li>
-                            <li><a href="#"><i class="ti-briefcase"></i> Bookings</a></li>
-                            <li><a href="{{ url_for('maintenance.get_maintenance') }}"><i class="ti-settings"></i> Maintenance</a></li>
-                            <li><a href="{{ url_for('reports.get_reports') }}"><i class="ti-file"></i> Reports</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a href="{{ url_for('payments.get_payments') }}"><i class="ti-money colour-success"></i> Payments</a></li>
-                    <li><a href="{{ url_for('invoices.get_invoices') }}"><i class="ti-files"></i> Invoices</a></li>
-                    <li><a href="{{ url_for('statements.get_statements') }}"><i class="ti-clipboard"></i> Statements</a></li>
+{#                    <li class="label">Data</li>#}
+{#                    <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i> Admin<span#}
+{#                                class="sidebar-collapse-icon ti-angle-down"></span></a>#}
+{#                        <ul>#}
+{#                            <li><a href="{{ url_for('buildings.get_buildings') }}"><i class="ti-layers"></i> Buildings</a></li>#}
+{#                            <li><a href="#"><i class="ti-briefcase"></i> Rentals</a></li>#}
+{#                            <li><a href="#"><i class="ti-briefcase"></i> Bookings</a></li>#}
+{#                            <li><a href="{{ url_for('maintenance.get_maintenance') }}"><i class="ti-settings"></i> Maintenance</a></li>#}
+{#                            <li><a href="{{ url_for('reports.get_reports') }}"><i class="ti-file"></i> Reports</a></li>#}
+{#                        </ul>#}
+{#                    </li>#}
+{##}
+{#                    <li><a href="{{ url_for('payments.get_payments') }}"><i class="ti-money colour-success"></i> Payments</a></li>#}
+{#                    <li><a href="{{ url_for('invoices.get_invoices') }}"><i class="ti-files"></i> Invoices</a></li>#}
+{#                    <li><a href="{{ url_for('statements.get_statements') }}"><i class="ti-clipboard"></i> Statements</a></li>#}
                     {% if user %}
                         <li><a href="{{ url_for('auth.do_logout') }}"><i class="ti-power-off"></i> Logout</a></li>
                     {% else %}
