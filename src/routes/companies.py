@@ -24,7 +24,7 @@ companies_logger.setLevel(logging.INFO)
 @companies_route.get('/admin/companies')
 @login_required
 async def get_companies(user: User):
-    context: dict[str, str | list[dict[str, str]]] = user.dict() if user else {}
+    context: dict[str, str | list[dict[str, str]]] =  dict(user=user.dict())
 
     companies: list[Company] = await company_controller.get_user_companies(user_id=user.user_id)
     companies_dict = [company.dict() for company in companies if company] if isinstance(companies, list) else []

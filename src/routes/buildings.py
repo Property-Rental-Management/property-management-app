@@ -58,7 +58,8 @@ async def get_building(user: User, building_id: str):
     :param building_id:
     :return:
     """
-    context = await get_common_context(user=user,
+    user_data = user.dict()
+    context = await get_common_context(user=user_data,
                                        building_id=building_id)
 
     return render_template('building/building.html', **context)
@@ -83,14 +84,13 @@ async def add_building(user: User, company_id: str):
 @buildings_route.post('/admin/add-building/<string:company_id>')
 @login_required
 async def do_add_building(user: User, company_id: str):
-    _ = user.dict()
-
     company: Company = await company_controller.get_company(company_id=company_id, user_id=user.user_id)
     property_data: CreateProperty = CreateProperty(**request.form)
     property_data.company_id = company.company_id
     property_model: Property = await company_controller.add_property(user=user, _property=property_data)
 
     _message: str = f"Property : {property_model.name.title()} Successfully added to : {company.company_name.title()}"
+
     flash(message=_message, category="success")
     return redirect(url_for('companies.get_company', company_id=company.company_id), code=302)
 
@@ -144,7 +144,7 @@ async def get_unit(user: User, building_id: str, unit_id: str):
     :param unit_id:
     :return:
     """
-    context = {}
+    context = dict(user=user.dict())
     unit_data: Unit = await company_controller.get_unit(user=user, building_id=building_id, unit_id=unit_id)
     if unit_data and unit_data.tenant_id:
         tenant_data: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=unit_data.tenant_id)
