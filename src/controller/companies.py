@@ -87,7 +87,11 @@ class CompaniesController:
         with Session() as session:
             # TODO Check if payment is already made
             company_orm: CompanyORM = CompanyORM(**company.dict())
-            response = Company(**company_orm.to_dict())
+            try:
+                response: Company | None = Company(**company_orm.to_dict())
+            except ValidationError:
+                pass
+
             user_company_data = dict(id=str(uuid.uuid4()), company_id=company_orm.company_id, user_id=user.user_id)
             session.add(company_orm)
             session.add(UserCompanyORM(**user_company_data))
@@ -99,6 +103,7 @@ class CompaniesController:
     @error_handler
     async def create_company_internal(company: CreateTenantCompany) -> Company:
         """
+        **create_company_internal**
 
         :param company:
         :return:
@@ -114,7 +119,7 @@ class CompaniesController:
     @error_handler
     async def create_company_tenant_relation_internal(company_relation: TenantRelationCompany) -> TenantRelationCompany:
         """
-
+            **create_company_tenant_relation_internal**
         :return:
         """
         with Session() as session:
@@ -126,6 +131,7 @@ class CompaniesController:
     @error_handler
     async def update_company(self, user: User, company_data: UpdateCompany):
         """
+            **update_company**
 
         :param user:
         :param company_data:
@@ -155,7 +161,7 @@ class CompaniesController:
     @error_handler
     async def update_tenant_company(self, company_data: UpdateTenantCompany):
         """
-
+            **update_tenant_company**
         :return:
         """
         with Session() as session:
