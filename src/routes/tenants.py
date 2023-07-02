@@ -102,7 +102,7 @@ async def get_tenant(user: User, tenant_id: str):
     company_dict = company_data.dict() if isinstance(company_data, Company) else {}
 
     context.update({'tenant': tenant_data_dict,
-                    'tenant_address': tenant_address_dict,
+                    'address': tenant_address_dict,
                     'company': company_dict})
 
     return render_template("tenants/tenant_details.html", **context)
