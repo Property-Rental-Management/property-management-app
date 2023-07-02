@@ -45,7 +45,8 @@ class UserORM(Base):
             'email': self.email,
             'password_hash': self.password_hash,
             'full_name': self.full_name,
-            'contact_number': self.contact_number
+            'contact_number': self.contact_number,
+            'account_verified': self.account_verified
         }
 
 
