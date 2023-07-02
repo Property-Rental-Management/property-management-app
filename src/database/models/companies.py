@@ -19,8 +19,8 @@ class Company(BaseModel):
     """
 
     company_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    company_name: str | None
-    description: str | None
+    company_name: str
+    description: str
 
     address_line_1: str | None
     address_line_2: str | None
