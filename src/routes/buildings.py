@@ -58,9 +58,7 @@ async def get_building(user: User, building_id: str):
     :param building_id:
     :return:
     """
-    context = await get_common_context(user=user,
-                                       building_id=building_id)
-
+    context = await get_common_context(user=user, building_id=building_id)
     return render_template('building/building.html', **context)
 
 
@@ -74,8 +72,7 @@ async def add_building(user: User, company_id: str):
 
     notifications_dicts = [notice.dict() for notice in notifications.unread_notification] if notifications else []
 
-    context = dict(user=user_data,
-                   company=company.dict(), notifications_list=notifications_dicts)
+    context = dict(user=user_data, company=company.dict(), notifications_list=notifications_dicts)
 
     return render_template('building/add_building.html', **context)
 

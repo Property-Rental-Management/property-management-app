@@ -24,4 +24,4 @@ class NotificationsController:
             if notifications_:
                 notifications_list: NotificationsModel = NotificationsModel(**dict(notifications=notifications_))
                 return notifications_list
-            return  None
+            return None
