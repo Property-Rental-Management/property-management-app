@@ -69,6 +69,7 @@ class CompaniesController:
     async def get_company_internal(company_id: str) -> Company | None:
         with Session() as session:
             company_orm = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
+
             return Company(**company_orm.to_dict()) if company_orm else None
 
     @staticmethod
