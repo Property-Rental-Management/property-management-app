@@ -13,10 +13,10 @@ from src.config import config_instance
 from src.config import is_development
 
 
-DEFAULT_IPV4 = ['173.245.48.0/20', '103.21.244.0/22', '103.22.200.0/22', '103.31.4.0/22', '141.101.64.0/18',
-                '108.162.192.0/18', '190.93.240.0/20', '188.114.96.0/20', '197.234.240.0/22',
-                '198.41.128.0/17',
-                '162.158.0.0/15', '104.16.0.0/13', '104.24.0.0/14', '172.64.0.0/13', '131.0.72.0/22']
+DEFAULT_IPV4 = ['173.245.48.0/20', '103.21.244.0/22', '103.22.200.0/22', '103.31.4.0/22',
+                '141.101.64.0/18', '108.162.192.0/18', '190.93.240.0/20', '188.114.96.0/20',
+                '197.234.240.0/22', '198.41.128.0/17', '162.158.0.0/15', '104.16.0.0/13',
+                '104.24.0.0/14', '172.64.0.0/13', '131.0.72.0/22']
 
 # Define dictionary of malicious patterns
 malicious_patterns = {
@@ -116,6 +116,7 @@ class Firewall:
         header_host = request.headers.get('Host')
         self._logger.info(f'Host is : {header_host}')
         self._logger.info(f'allowed hosts : {self.allowed_hosts}')
+
         if header_host.casefold() != request.host.casefold():
             abort(401, 'Bad Host Header')
         if request.host not in self.allowed_hosts:
@@ -142,13 +143,10 @@ class Firewall:
 
         if 'Content-Length' in headers and int(headers['Content-Length']) > self._max_payload_size:
             # Request payload is too large,
-            self._logger.info("payload too long")
+            self._logger.info("Payload too long")
             abort(401, 'Payload is suspicious')
 
         if body:
-            # Set default regex pattern for string-like request bodies
-            #  StackOverflow attacks
-            # payload_regex = "^[A-Za-z0-9+/]{1024,}={0,2}$"
             _body = body.decode('utf-8')
             if contains_malicious_patterns(_input=_body):
                 self._logger.info("Payload regex failure")
@@ -175,7 +173,7 @@ class Firewall:
             abort(401, 'Request not Authenticated')
 
         if not hmac.compare_digest(client_secret_token, expected_secret_token):
-            abort(401, 'Request not Authenticated - token mismatch')
+            abort(401, 'Request Origin not Trusted - token mismatch')
 
     @staticmethod
     def get_client_ip() -> str:
@@ -211,7 +209,7 @@ class Firewall:
                     ipv4_cidrs = response_data.get('result', {}).get('ipv4_cidrs', DEFAULT_IPV4)
                     ipv6_cidrs = response_data.get('result', {}).get('ipv6_cidrs', [])
                     return ipv4_cidrs, ipv6_cidrs
-                except (ConnectionError, ReadTimeout) as e:
+                except (ConnectionError, ReadTimeout):
                     return [], []
 
         except CloudFlareAPIError:
@@ -231,14 +229,13 @@ class Firewall:
         session_cookies = [request.cookies.get('auth')]
         session_cookies = [cookie for cookie in session_cookies if cookie is not None]
         if session_cookies:
-            response.headers['Session-Vary'] = ','.join(session_cookies)
+            response.headers['Session-Vary'] = 'auth'
 
         # exempting redoc & blog from content security policies except frame and XSS
         if bypass_content_security_policy():
             return response
 
         response.headers['Content-Security-Policy'] = "default-src 'self' https://static.cloudflareinsights.com https://fonts.googleapis.com https://www.googletagmanager.com https://netdna.bootstrapcdn.com https://t.paypal.com https://www.paypal.com https://www.cloudflare.com https://www.google-analytics.com https://fonts.gstatic.com; img-src 'self' https://www.paypalobjects.com;"
-
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         return response

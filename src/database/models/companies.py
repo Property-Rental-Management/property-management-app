@@ -18,7 +18,7 @@ class Company(BaseModel):
     - website (str): The website URL of the company_id.
     """
 
-    company_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    company_id: str
     company_name: str
     description: str
 
@@ -67,8 +67,8 @@ class CreateCompany(BaseModel):
     """
 
     company_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    company_name: str | None
-    description: str | None
+    company_name: str
+    description: str
 
     address_line_1: str | None
     address_line_2: str | None
@@ -76,7 +76,7 @@ class CreateCompany(BaseModel):
     postal_code: str | None
     province: str | None
     country: str | None
-    contact_number: str | None
+    contact_number: str
     website: str | None
 
 

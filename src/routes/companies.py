@@ -4,10 +4,9 @@ from flask import Blueprint, render_template, request, url_for, redirect, flash,
 from pydantic import ValidationError
 
 from src.authentication import login_required
-
 from src.database.models.bank_accounts import BusinessBankAccount
-from src.database.models.companies import Company, UpdateCompany, CreateCompany, CreateTenantRelationCompany, \
-    TenantRelationCompany, CreateTenantCompany, UpdateTenantCompany
+from src.database.models.companies import Company, UpdateCompany, CreateTenantRelationCompany, \
+    TenantRelationCompany, CreateTenantCompany, UpdateTenantCompany, CreateCompany
 from src.database.models.notifications import NotificationsModel
 from src.database.models.properties import Property
 from src.database.models.users import User
@@ -81,12 +80,14 @@ async def get_create_company(user: User):
 @companies_route.post('/admin/create-company')
 @login_required
 async def do_create_company(user: User):
-    form_data = request.form
+    """
+        **do_create_company**
+    :param user:
+    :return:
+    """
     try:
-        company_data = Company(**form_data)
-
+        company_data = CreateCompany(**request.form)
         _company_data = await company_controller.create_company(company=company_data, user=user)
-
         _message = f"Company {_company_data.company_name} Added Successfully"
         flash(message=_message, category="success")
     except ValidationError as e:

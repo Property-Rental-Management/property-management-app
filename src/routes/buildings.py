@@ -249,6 +249,7 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
 @login_required
 async def update_tenant_to_building_unit(user: User, building_id: str, unit_id: str):
     """
+    **update_tenant_to_building_unit**
 
     :param unit_id:
     :param building_id:
@@ -282,7 +283,6 @@ async def billable_items(user: User):
     :return:
     """
     billable_item: CreateInvoicedItem = CreateInvoicedItem(**request.form)
-    print(f"BILLABLE ITEMS : {billable_item}")
     billable_item: CreateInvoicedItem = await company_controller.create_billable_item(billable_item=billable_item)
     flash(message="Billable Item Added to building", category="success")
     return redirect(url_for("buildings.get_building", building_id=billable_item.property_id), code=302)
