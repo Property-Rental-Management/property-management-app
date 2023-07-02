@@ -18,7 +18,7 @@
 
                     <form enctype="application/x-www-form-urlencoded"
                           class="form-horizontal"
-                          action="{{ url_for('tenants.send_email') }}"
+                          action="{{ url_for('tenants.send_email', tenant_id=tenant.tenant_id) }}"
                           method="POST"
                     >
                         <input type="hidden" class="form-control" id="email" name="email" value="{{ tenant.email }}" readonly>
@@ -30,11 +30,12 @@
                             <label for="message">Message:</label>
                             <textarea class="form-control" id="message" name="message" placeholder="Enter email message"></textarea>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Send</button>
+                        </div>
+
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Send</button>
                 </div>
             </div>
         </div>

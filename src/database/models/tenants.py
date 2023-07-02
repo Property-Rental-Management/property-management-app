@@ -70,3 +70,11 @@ class QuotationForm(BaseModel):
     @property
     def property_id(self) -> str:
         return self.company
+
+
+class TenantSendMail(BaseModel):
+    message_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    subject: str
+    message: str
+

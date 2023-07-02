@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
+from pydantic import ValidationError
 
 from src.database.models.properties import Property
 from src.database.models.companies import Company
-from src.database.models.tenants import QuotationForm, Tenant, CreateTenant
+from src.database.models.tenants import QuotationForm, Tenant, CreateTenant, TenantSendMail
 from src.main import tenant_controller, company_controller
 from src.authentication import login_required
 from src.database.models.users import User
@@ -87,3 +88,24 @@ async def get_tenant(user: User, tenant_id: str):
     tenant_data = await tenant_controller.get_tenant_by_id(tenant_id=tenant_id)
     context.update({'tenant': tenant_data.dict()})
     return render_template("tenants/tenant_details.html", **context)
+
+
+@tenants_route.post('/admin/tenant-email/<string:tenant_id>')
+@login_required
+async def send_email(user: User, tenant_id: str):
+    """
+        **send_email**
+            will send email message to Tenant
+    :param tenant_id:
+    :param user:
+    :return:
+    """
+    try:
+        send_email_data = TenantSendMail(**request.form)
+    except ValidationError as e:
+        flash(message="unable to send email please fill in all required fields", category="danger")
+        return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id))
+
+    print(send_email_data)
+    flash(message="Email sent successfully", category="success")
+    return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id))
