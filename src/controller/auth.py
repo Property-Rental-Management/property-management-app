@@ -187,14 +187,14 @@ class UserController:
         await send_mail.send_mail_resend(email=msg)
 
     @error_handler
-    async def verify_email(self, email: str, token: str):
+    async def verify_email(self, email: str, token: str) -> bool:
         """
 
         :param email:
         :param token:
         :return:
         """
-        if token in set(self._verification_tokens.keys()):
+        if token in self._verification_tokens:
 
             _data: dict[str, str | int] = self._verification_tokens[token]
 
