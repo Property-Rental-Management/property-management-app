@@ -22,10 +22,9 @@
                 <thead>
                     <tr>
                         <th>Tenant Name</th>
-                        <th>Company</th>
-                        <th>Building</th>
-                        <th>Booking Type</th>
-                        <th>Actions</th>
+                        <th>Email</th>
+                        <th>Cell</th>
+                        <th>Leasing</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,19 +33,15 @@
                     <tr>
                         <td>
                             <!-- Make tenant name clickable to allow for editing -->
-                            <a href="{{ url_for('tenants.tenant_rentals', tenant_id=tenant.id) }}">{{ tenant.name }}</a>
+                            <a href="{{ url_for('tenants.get_tenant', tenant_id=tenant.tenant_id) }}">
+                                <span class="font-weight-bold font-italic text-info">
+                                    {{ tenant.name }}
+                                </span>
+                            </a>
                         </td>
-                        <td>{{ tenant.company }}</td>
-                        <td>{{ tenant.building }}</td>
-                        <td>{{ tenant.booking_type }}</td>
-                        <td>
-                            <!-- Change color if tenant is checked out -->
-                            {% if tenant.checked_out %}
-                                <span style="color: red;">Checked Out</span>
-                            {% else %}
-                                <span style="color: green;">Checked In</span>
-                            {% endif %}
-                        </td>
+                        <td>{{ tenant.email }}</td>
+                        <td>{{ tenant.cell }}</td>
+                        <td>{{ tenant.is_renting }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

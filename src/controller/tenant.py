@@ -15,6 +15,29 @@ class TenantController:
         self._logger = init_logger(self.__class__.__name__)
 
     @error_handler
+    async def get_tenants_by_company_id(self, company_id: str) -> list[Tenant]:
+        """
+            **get_tenants_by_company_id**
+                this function takes company_id and then obtains Tenant Data of the tenants belonging
+                to the properties under the company
+
+        :param company_id:
+        :return:
+        """
+        with Session() as session:
+            print(f"obtaining tenants with company id : {company_id}")
+            tenants_list: list[TenantORM] = session.query(TenantORM).filter(TenantORM.company_id == company_id).all()
+            try:
+                _tenants_list = [Tenant(**tenant_orm.to_dict()) for tenant_orm
+                                 in tenants_list if isinstance(tenant_orm, TenantORM)] if tenants_list else []
+                print(f"Tenant Models : {_tenants_list}")
+            except ValidationError as e:
+                self._logger.error(str(e))
+                pass
+
+            return _tenants_list
+
+    @error_handler
     async def get_tenant_by_cell(self, user: User, cell: str) -> Tenant | None:
         """
 
@@ -118,3 +141,4 @@ class TenantController:
                 except ValidationError as e:
                     self._logger.error(str(e))
             return tenant_data
+

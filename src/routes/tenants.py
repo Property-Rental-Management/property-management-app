@@ -10,22 +10,33 @@ from src.database.models.users import User
 tenants_route = Blueprint('tenants', __name__)
 
 
-@tenants_route.get('/admin/tenants')
+@tenants_route.get('/admin/tenants-list')
 @login_required
 async def get_tenants(user: User):
     user_data = user.dict()
 
     companies: list[Company] = await company_controller.get_user_companies(user_id=user.user_id)
-    companies_dicts = [company.dict() for company in companies if company] if isinstance(companies, list) else []
-    context = dict(user=user_data, companies=companies_dicts)
 
+    all_tenants = []
+    for company in companies:
+        if isinstance(company, Company):
+            tenants_list = await tenant_controller.get_tenants_by_company_id(company_id=company.company_id)
+            print(f"Tenants List : {tenants_list}")
+        for tenant in tenants_list:
+            tenant_dict = tenant.dict() if isinstance(tenant, Tenant) else None
+            if tenant_dict:
+                print(tenant_dict)
+                all_tenants.append(tenant_dict)
+
+    companies_dicts = [company.dict() for company in companies if company] if isinstance(companies, list) else []
+
+    context = dict(user=user_data, companies=companies_dicts, tenants=all_tenants)
     return render_template('tenants/get_tenant.html', **context)
 
 
 @tenants_route.get('/admin/tenant/buildings/<string:company_id>')
 @login_required
 async def get_buildings(user: User, company_id: str):
-
     # Query the database or perform any necessary logic to fetch the buildings based on the company_id ID
 
     buildings: list[Property] = await company_controller.get_properties(user=user, company_id=company_id)
@@ -61,3 +72,18 @@ async def tenant_rentals(user: User):
 
     flash(message=message, category="success")
     return redirect(url_for('tenants.get_tenants'), code=302)
+
+
+@tenants_route.get('/admin/tenant/<string:tenant_id>')
+@login_required
+async def get_tenant(user: User, tenant_id: str):
+    """
+
+    :param user:
+    :param tenant_id:
+    :return:
+    """
+    context = dict(user=user.dict())
+    tenant_data = await tenant_controller.get_tenant_by_id(tenant_id=tenant_id)
+    context.update({'tenant': tenant_data.dict()})
+    return render_template("tenants/tenant_details.html", **context)

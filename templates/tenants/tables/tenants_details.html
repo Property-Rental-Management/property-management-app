@@ -1,0 +1,33 @@
+
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">Tenant Details</h3>
+        <div>
+            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#emailModal">
+                <span class="font-weight-bold">
+                <i class="ti-email"> </i>
+                Send Email
+                </span>
+            </button>
+            <button class="btn btn-sm btn-default">
+                <span class="font-weight-bold">
+                <i class="ti-printer"> </i>
+                Print
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="card-footer">
+        <ul class="list-group">
+            <li class="list-group-item">Name: {{ tenant.name }}</li>
+            <li class="list-group-item">ID Number: {{ tenant.id_number }}</li>
+            <li class="list-group-item">Email: {{ tenant.email }}</li>
+            <li class="list-group-item">Cell: {{ tenant.cell }}</li>
+            <li class="list-group-item">Is Renting: {{ tenant.is_renting }}</li>
+            <li class="list-group-item">Lease Start Date: {{ tenant.lease_start_date }}</li>
+            <li class="list-group-item">Lease End Date: {{ tenant.lease_end_date }}</li>
+        </ul>
+    </div>
+</div>
+

@@ -22,18 +22,19 @@ def error_handler(view_func):
         except (OperationalError, ProgrammingError, IntegrityError, AttributeError) as e:
             error_logger.error(str(e))
             flash(message="Error accessing database - please try again", category='danger')
-            return redirect(url_for('home.get_home'))
+            return None
         except UnauthorizedError as e:
             error_logger.error(str(e))
             flash(message="You are not authorized to access this resource", category='danger')
-            # return redirect(url_for('home.get_home'))
+            return redirect(url_for('home.get_home'), code=302)
         except ConnectionResetError as e:
             error_logger.error(str(e))
             flash(message="Ooh , took a nap, sorry lets do that again...", category='danger')
-            return redirect(url_for('home.get_home'))
+            return None
         except Exception as e:
-            error_logger.error(str(e))
+            _error = str(e)
+            error_logger.error(f" {view_func.__name__} : {_error}")
             flash(message="Ooh , some things broke, no worries, please continue...", category='danger')
-            return redirect(url_for('home.get_home'))
+            return None
 
     return wrapped_method
