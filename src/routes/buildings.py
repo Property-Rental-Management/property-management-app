@@ -58,8 +58,7 @@ async def get_building(user: User, building_id: str):
     :param building_id:
     :return:
     """
-    user_data = user.dict()
-    context = await get_common_context(user=user_data,
+    context = await get_common_context(user=user,
                                        building_id=building_id)
 
     return render_template('building/building.html', **context)
