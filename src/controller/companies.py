@@ -52,7 +52,11 @@ class CompaniesController:
                 raise UnauthorizedError('You are not authorized to access this company_id')
 
             company_orm = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
-            return Company(**company_orm.to_dict()) if company_orm else None
+            try:
+                company_data = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
+            except ValidationError as e:
+                pass
+            return company_data
 
     @error_handler
     async def internal_company_id_to_user_id(self, company_id: str) -> UserCompanyORM:
@@ -71,9 +75,10 @@ class CompaniesController:
     async def get_company_internal(company_id: str) -> Company | None:
         with Session() as session:
             company_orm = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
+
             try:
-                company_data: Company | None = Company(**company_orm.to_dict()) if company_orm else None
-            except ValidationError:
+                company_data = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
+            except ValidationError as e:
                 pass
 
             return company_data
@@ -88,7 +93,7 @@ class CompaniesController:
             # TODO Check if payment is already made
             company_orm: CompanyORM = CompanyORM(**company.dict())
             try:
-                response: Company | None = Company(**company_orm.to_dict())
+                response = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
             except ValidationError:
                 pass
 
@@ -178,7 +183,6 @@ class CompaniesController:
             session.commit()
             return company_data
 
-
     @error_handler
     async def update_bank_account(self, user: User, account_details: BusinessBankAccount) -> BusinessBankAccount | None:
         """
@@ -253,7 +257,11 @@ class CompaniesController:
 
             # Commit the changes to the database
             session.commit()
-            return Property(**original_property_orm.to_dict())
+            try:
+                property_ = Property(**original_property_orm.to_dict()) if isinstance(original_property_orm, Property) else None
+            except ValidationError as e:
+                pass
+            return property_
 
     @error_handler
     async def get_properties(self, user: User, company_id: str) -> list[Property]:
@@ -271,9 +279,13 @@ class CompaniesController:
             if not is_company_member:
                 raise UnauthorizedError(description="Not Authorized to access Properties in this Company")
 
-            properties: list[PropertyORM] = session.query(PropertyORM).filter(
-                PropertyORM.company_id == company_id).all()
-            return [Property(**_prop.to_dict()) for _prop in properties]
+            properties: list[PropertyORM] = session.query(PropertyORM).filter(PropertyORM.company_id == company_id).all()
+            try:
+                _property_list = [Property(**_prop.to_dict()) for _prop in properties
+                                  if isinstance(_prop, PropertyORM)] if properties else []
+            except ValidationError as e:
+                pass
+            return _property_list
 
     @error_handler
     async def get_property_by_id_internal(self, property_id: str) -> Property:
@@ -284,7 +296,12 @@ class CompaniesController:
         """
         with Session() as session:
             property_: PropertyORM = session.query(PropertyORM).filter(PropertyORM.property_id == property_id).first()
-            return Property(**property_.to_dict())
+            try:
+                _property = Property(**property_.to_dict()) if isinstance(property_, PropertyORM) else None
+            except ValidationError as e:
+                pass
+
+            return _property
 
     @staticmethod
     @error_handler
@@ -300,7 +317,7 @@ class CompaniesController:
             return users_for_company
 
     @error_handler
-    async def get_bank_accounts(self, user: User, company_id: str) -> BusinessBankAccount:
+    async def get_bank_accounts(self, user: User, company_id: str) -> BusinessBankAccount | None:
         """
 
         :param user:
@@ -309,16 +326,19 @@ class CompaniesController:
         """
         with Session() as session:
             user_id = user.user_id
-            is_company_member: bool = await self.is_company_member(user_id=user_id,
-                                                                   company_id=company_id,
+            is_company_member: bool = await self.is_company_member(user_id=user_id, company_id=company_id,
                                                                    session=session)
             if not is_company_member:
                 raise UnauthorizedError(description="Not Authorized to access that Bank Account")
 
             bank_account: BankAccountORM = session.query(BankAccountORM).filter(
                 BankAccountORM.company_id == company_id).first()
-
-            return BusinessBankAccount(**bank_account.to_dict())
+            try:
+                business_account = BusinessBankAccount(**bank_account.to_dict()) if isinstance(bank_account,
+                                                                                               BankAccountORM) else None
+            except ValidationError as e:
+                pass
+            return business_account
 
     @error_handler
     async def get_property(self, user: User, property_id: str) -> Property:
@@ -338,8 +358,12 @@ class CompaniesController:
                                                                    session=session)
             if not is_company_member:
                 raise UnauthorizedError(description="Not Authorized to access the Property")
+            try:
+                property_ = Property(**_property.to_dict()) if isinstance(_property, PropertyORM) else None
+            except ValidationError as e:
+                pass
 
-            return Property(**_property.to_dict())
+            return property_
 
     @error_handler
     async def get_property_units(self, user: User, property_id: str) -> list[Unit]:
@@ -360,7 +384,12 @@ class CompaniesController:
                 raise UnauthorizedError(description="Not Authorized to access the Property")
 
             property_units: list[UnitORM] = session.query(UnitORM).filter(UnitORM.property_id == property_id).all()
-            return [Unit(**prop.to_dict()) for prop in property_units]
+            try:
+                property_unit_list = [Unit(**unit_.to_dict()) for unit_ in property_units
+                                      if isinstance(unit_, UnitORM)] if property_units else []
+            except ValidationError as e:
+                pass
+            return property_unit_list
 
     @error_handler
     async def get_un_leased_units(self, user: User, property_id: str) -> list[Unit]:
@@ -385,9 +414,12 @@ class CompaniesController:
 
             property_units: list[UnitORM] = session.query(UnitORM).filter(UnitORM.property_id == property_id,
                                                                           UnitORM.is_occupied == False).all()
-
-            return [Unit(**building.to_dict()) for building in property_units
-                    if building] if isinstance(property_units, list) else []
+            try:
+                unit_list = [Unit(**building.to_dict()) for building
+                             in property_units if building] if isinstance(property_units, list) else []
+            except ValidationError as e:
+                pass
+            return unit_list
 
     @error_handler
     async def add_unit(self, user: User, unit_data: AddUnit, property_id: str) -> AddUnit:
@@ -433,7 +465,11 @@ class CompaniesController:
                 UnitORM.property_id == building_id, UnitORM.unit_id == unit_id).first()
             if unit_data is None:
                 return None
-            return Unit(**unit_data.to_dict())
+            try:
+                unit_ = Unit(**unit_data.to_dict()) if isinstance(unit_data, UnitORM) else None
+            except ValidationError as e:
+                pass
+            return unit_
 
     @error_handler
     async def update_unit(self, user_id: str, unit_data: Unit) -> Unit | None:
@@ -487,7 +523,12 @@ class CompaniesController:
             billable_orm.deleted = True
             session.merge(billable_orm)
             session.commit()
-            return CreateInvoicedItem(**billable_orm.to_dict())
+            try:
+                create_invoice = CreateInvoicedItem(**billable_orm.to_dict()) if isinstance(billable_orm, ItemsORM) else None
+            except ValidationError as e:
+                pass
+
+            return create_invoice
 
     @error_handler
     async def get_billable_items(self, building_id: str) -> list[BillableItem]:
@@ -497,9 +538,13 @@ class CompaniesController:
         :return:
         """
         with Session() as session:
-            billable_list: list[ItemsORM] = session.query(ItemsORM).filter(ItemsORM.property_id == building_id,
-                                                                           ItemsORM.deleted == False).all()
-            return [BillableItem(**item.to_dict()) for item in billable_list]
+            billable_list: list[ItemsORM] = session.query(ItemsORM).filter(ItemsORM.property_id == building_id, ItemsORM.deleted == False).all()
+            try:
+                billable_items = [BillableItem(**item.to_dict())
+                                  for item in billable_list if isinstance(item, ItemsORM)] if billable_list else []
+            except ValidationError as e:
+                pass
+            return billable_items
 
     @error_handler
     async def create_unit_bill_charge(self, charge_item: CreateUnitCharge) -> CreateUnitCharge:
@@ -521,7 +566,8 @@ class CompaniesController:
         :return:
         """
         with Session() as session:
-            charge_item_orm: UserChargesORM = session.query(UserChargesORM).filter(UserChargesORM.charge_id == charge_id).first()
+            charge_item_orm: UserChargesORM = session.query(UserChargesORM).filter(
+                UserChargesORM.charge_id == charge_id).first()
             _unit_charge = CreateUnitCharge(**charge_item_orm.to_dict())
             if charge_item_orm:
                 session.delete(charge_item_orm)
@@ -539,7 +585,13 @@ class CompaniesController:
         with Session() as session:
             charged_items = session.query(UserChargesORM).filter(UserChargesORM.property_id == building_id,
                                                                  UserChargesORM.unit_id == unit_id).all()
-            return [CreateUnitCharge(**charge.to_dict()) for charge in charged_items if charge] if charged_items else []
+            try:
+                unit_charge_list = [CreateUnitCharge(**charge.to_dict()) for charge in charged_items
+                                    if isinstance(charge, UserChargesORM)] if charged_items else []
+
+            except ValidationError as e:
+                pass
+            return unit_charge_list
 
     @error_handler
     async def get_item_by_number(self, item_number: str) -> BillableItem:

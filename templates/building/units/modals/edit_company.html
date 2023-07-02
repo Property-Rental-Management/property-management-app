@@ -19,18 +19,15 @@
                 <div class="card-footer">
                     <form id="TenantCompanyForm"
                           class="form-horizontal"
-                          {% if company %}
-                            action="{{ url_for('companies.update_tenant_company', company_id=company.company_id) }}"
-                          {% else %}
-                            action="#"
-                          {% endif %}
+                          action="{{ url_for('companies.update_tenant_company', company_id=company.company_id) }}"
                           enctype="application/x-www-form-urlencoded"
                           method="POST"
                     >
-
+                        {% if unit %}
                         <input type="hidden" value="{{ unit.tenant_id }}" name="tenant_id"/>
                         <input type="hidden" value="{{ unit.property_id }}" name="building_id" />
                         <input type="hidden" value="{{ unit.unit_id }}" name="unit_id" />
+                        {% endif %}
                         <input type="hidden" value="{{ company.company_id }}" name="company_id"/>
 
                     <div class="form-group">

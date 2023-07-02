@@ -44,19 +44,20 @@ async def get_company(user: User, company_id: str):
     user_data = user.dict()
 
     company: Company = await company_controller.get_company(company_id=company_id, user_id=user.user_id)
+    company_dicts = company.dict() if company else {}
+
     properties: list[Property] = await company_controller.get_properties(user=user, company_id=company_id)
 
     bank_accounts: BusinessBankAccount = await company_controller.get_bank_accounts(user=user, company_id=company_id)
+    bank_accounts_dicts = bank_accounts.dict() if isinstance(bank_accounts, BusinessBankAccount) else {}
 
     properties_dict = [prop.dict() for prop in properties if prop] if isinstance(properties, list) else []
-
-    bank_accounts_dicts = bank_accounts.dict() if bank_accounts else {}
 
     notifications: NotificationsModel = await notifications_controller.get_user_notifications(user_id=user.user_id)
     notifications_dicts = [notice.dict() for notice in notifications.unread_notification] if notifications else []
 
     context = dict(user=user_data,
-                   company=company.dict() if isinstance(company, Company) else {},
+                   company=company_dicts,
                    properties=properties_dict,
                    bank_account=bank_accounts_dicts,
                    notifications_list=notifications_dicts)

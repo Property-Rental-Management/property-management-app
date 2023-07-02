@@ -82,9 +82,16 @@
 <!-- Modals -->
 {% include "building/modals/add_tenant.html" %}
 {% include "building/units/modals/add_bill_modal.html" %}
-{% include "building/units/modals/edit_unit.html" %}
 {% include "building/units/modals/add_company.html" %}
+
+{% if unit %}
+{% include "building/units/modals/edit_unit.html" %}
+{% endif %}
+{% if company %}
 {% include "building/units/modals/edit_company.html" %}
+{% endif %}
+{% if tenant %}
 {% include "building/units/modals/edit_tenant.html" %}
+{% endif %}
 
 {% endblock %}
