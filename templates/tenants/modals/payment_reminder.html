@@ -1,0 +1,42 @@
+<div class="modal fade" id="sendReminderModal" tabindex="-1" role="dialog" aria-labelledby="sendReminderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sendReminderModalLabel">Send Payment Reminder</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="card-content font-weight-bold text-info">
+                    This Payment Reminder will be sent to - {{ tenant.email }}
+                </span>
+                <form>
+                    <input type="hidden" name="email" value="{{ tenant.email }}">
+                    <div class="form-group">
+                        <label for="reminder_subject">Subject:</label>
+                        <input type="text" class="form-control" id="subject" placeholder="Enter reminder subject">
+                    </div>
+                    <div class="form-group">
+                        <label for="reminder_message">Message:</label>
+                        <textarea class="form-control" id="message" rows="5" cols="8" placeholder="Enter reminder message"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="include_payment_link" checked>
+                            <label class="form-check-label font-weight-bold text-info" for="include_payment_link">
+                                Include Bank Details
+                            </label>
+                        </div>
+                    </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Reminder</button>
+                </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

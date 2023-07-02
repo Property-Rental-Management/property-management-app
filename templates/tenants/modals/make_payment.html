@@ -1,0 +1,47 @@
+<!-- Make Payment Modal -->
+<div class="modal fade" id="makePaymentModal" tabindex="-1" role="dialog" aria-labelledby="makePaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="makePaymentModalLabel">Make Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-center mb-4">Total Amount to be Paid: ${{ total_amount }}</h4>
+                <form>
+                    <div class="form-group">
+                        <label for="payment_amount" class="font-weight-bold">Payment Amount:</label>
+                        <input type="text" class="form-control" id="payment_amount" placeholder="Enter payment amount">
+                    </div>
+                    <div class="form-group">
+                    <span class="card-content font-weight-bold text-info">
+                        Payment Notification will be sent to : {{ tenant.email }}
+                    </span>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="send_notification" checked>
+                            <label class="form-check-label" for="send_notification">
+                                Send Notification
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="send_receipt" checked>
+                            <label class="form-check-label" for="send_receipt">
+                                Send Receipt via Email
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Make Payment</button>
+            </div>
+        </div>
+    </div>
+</div>

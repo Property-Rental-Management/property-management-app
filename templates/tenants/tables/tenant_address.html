@@ -1,8 +1,19 @@
 <div class="card">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h3 class="card-title">Tenant Address</h3>
+        <span class="card-content font-weight-bold">
+            Tenant Personal Physical Address
+        </span>
+        <div>
+            <button class="btn btn-sm btn-default">
+                <span class="font-weight-bold">
+                <i class="ti-printer"> </i>
+                    Print
+                </span>
+            </button>
+        </div>
     </div>
-    <div class="card-body">
+    <div class="card-footer">
         <ul class="list-group">
             <li class="list-group-item">Street: {{ address.street }}</li>
             <li class="list-group-item">City: {{ address.city }}</li>

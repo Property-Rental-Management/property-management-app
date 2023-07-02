@@ -1,0 +1,56 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">Monthly Rental Payments</h3>
+        <span class="card-content font-weight-bold">
+            Monthly Rental Payments for Tenant
+        </span>
+        <div>
+            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#makePaymentModal">
+                <span class="font-weight-bold">
+                    <i class="ti-money"></i>
+                    Make Payment
+                </span>
+            </button>
+            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#sendReminderModal">
+                <span class="font-weight-bold">
+                    <i class="ti-email"></i>
+                    Payment Reminder
+                </span>
+            </button>
+            <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#makePaymentModal">
+                <span class="font-weight-bold">
+                    <i class="ti-print"></i>
+                    Print
+                </span>
+            </button>
+
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <td>Receipt Number</td>
+                    <td>Amount</td>
+                    <td>Date Paid</td>
+                    <td>Balance</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipt in payment_receipts %}
+                    <tr>
+                        <td>{{ receipt.receipt_number }}</td>
+                        <td>{{ receipt.amount }}</td>
+                        <td>{{ receipt.date_paid }}</td>
+                        <td>{{ receipt.balance_remaining }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% include "tenants/modals/make_payment.html" %}
+{% include "tenants/modals/payment_reminder.html" %}

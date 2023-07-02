@@ -7,25 +7,53 @@
             <ul class="nav nav-tabs" id="tenantTabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
-                        <span class="font-weight-bold">
+                        <span class="font-weight-bold text-info">
+                            <i class="ti-user"> </i>
                             Tenant Details
                         </span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="address-tab" data-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="false">
-                        <span class="font-weight-bold">
+                        <span class="font-weight-bold text-info">
+                            <i class="ti-marker"> </i>
                             Address
                         </span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="company-tab" data-toggle="tab" href="#company" role="tab" aria-controls="company" aria-selected="false">
-                        <span class="font-weight-bold">
+                        <span class="font-weight-bold text-info">
+                            <i class="ti-folder"> </i>
                             Company
                         </span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="invoices-tab" data-toggle="tab" href="#invoices" role="tab" aria-controls="company" aria-selected="false">
+                        <span class="font-weight-bold text-info">
+                            <i class="ti-file"> </i>
+                            Invoices
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="statements-tab" data-toggle="tab" href="#statements" role="tab" aria-controls="statements" aria-selected="false">
+                        <span class="font-weight-bold text-info">
+                            <i class="ti-files"> </i>
+                            Statements
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="rentals-tab" data-toggle="tab" href="#rentals" role="tab" aria-controls="rentals" aria-selected="false">
+                        <span class="font-weight-bold text-info">
+                            <i class="ti-files"> </i>
+                            Rentals Payments
+                        </span>
+                    </a>
+                </li>
+
             </ul>
         </div>
         <div class="card-body">
@@ -46,6 +74,15 @@
                     {% else %}
                        {% include "tenants/modals/add_company.html" %}
                     {% endif %}
+                </div>
+                <div class="tab-pane fade" id="invoices" role="tabpanel" aria-labelledby="invoices-tab">
+                    {% include "tenants/tables/invoices_tables.html" %}
+                </div>
+                <div class="tab-pane fade" id="statements" role="tabpanel" aria-labelledby="statements-tab">
+                    {% include "tenants/tables/statements.html" %}
+                </div>
+                <div class="tab-pane fade" id="rentals" role="tabpanel" aria-labelledby="rentals-tab">
+                    {% include "tenants/tables/rentals.html" %}
                 </div>
             </div>
         </div>
