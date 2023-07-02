@@ -194,15 +194,17 @@ class UserController:
         :param token:
         :return:
         """
+        if email is None:
+            return False
+        if token is None:
+            return False
+
         if token in self._verification_tokens:
 
             _data: dict[str, str | int] = self._verification_tokens[token]
 
             current_time: int = int(time.time())
             elapsed_time = current_time - int(_data.get('timestamp', 0))
-            # print(f"elapsed time : {elapsed_time} time limit : {self._time_limit}")
-            # print(f"condition : {elapsed_time < self._time_limit}")
-            return True
-            # return (elapsed_time < self._time_limit) and (email.casefold() == _data.get('email'))
+            return (elapsed_time < self._time_limit) and (email.casefold() == _data.get('email'))
 
         return False

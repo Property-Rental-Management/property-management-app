@@ -189,6 +189,7 @@ async def verify_email():
 
         :return:
     """
+
     token = request.args.get('token')
     email = request.args.get('email')
     email_verified: bool = await user_controller.verify_email(email=email, token=token)
