@@ -41,3 +41,28 @@ class TenantORM(Base):
             'lease_start_date': self.lease_start_date,
             'lease_end_date': self.lease_end_date
         }
+
+
+class TenantAddressORM(Base):
+    __tablename__ = 'tenants_address'
+    address_id: str = Column(String(ID_LEN), primary_key=True)
+    street: str = Column(String(NAME_LEN))
+    city: str = Column(String(NAME_LEN))
+    province: str = Column(String(NAME_LEN))
+    country: str = Column(String(NAME_LEN))
+    postal_code: str = Column(String(NAME_LEN))
+
+    @classmethod
+    def create_if_not_table(cls):
+        if not inspect(engine).has_table(cls.__tablename__):
+            Base.metadata.create_all(bind=engine)
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            'address_id': self.address_id,
+            'street': self.street,
+            'city': self.city,
+            'province': self.province,
+            'country': self.country,
+            'postal_code': self.postal_code
+        }

@@ -34,14 +34,18 @@
                     {% include "tenants/tables/tenants_details.html" %}
                 </div>
                 <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
-                    <ul class="list-group">
-                        <li class="list-group-item">Address ID: {{ tenant.address_id }}</li>
-                    </ul>
+                    {% if tenant and tenant.address_id %}
+                    {% include "tenants/tables/tenant_address.html" %}
+                    {% else %}
+                        {% include "tenants/modals/add_address.html" %}
+                    {% endif %}
                 </div>
                 <div class="tab-pane fade" id="company" role="tabpanel" aria-labelledby="company-tab">
-                    <ul class="list-group">
-                        <li class="list-group-item">Company ID: {{ tenant.company_id }}</li>
-                    </ul>
+                    {% if tenant and tenant.company_id %}
+                        {% include "tenants/tables/company_data.html" %}
+                    {% else %}
+                       {% include "tenants/modals/add_company.html" %}
+                    {% endif %}
                 </div>
             </div>
         </div>

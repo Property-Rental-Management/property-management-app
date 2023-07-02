@@ -2,10 +2,10 @@ from pydantic import ValidationError
 
 from src.controller import error_handler
 from src.database.models.properties import Unit, Property
-from src.database.models.tenants import Tenant, QuotationForm, CreateTenant
+from src.database.models.tenants import Tenant, QuotationForm, CreateTenant, TenantAddress, CreateTenantAddress
 from src.database.models.users import User
 from src.database.sql import Session
-from src.database.sql.tenants import TenantORM
+from src.database.sql.tenants import TenantORM, TenantAddressORM
 from src.logger import init_logger
 from src.main import company_controller
 
@@ -25,12 +25,12 @@ class TenantController:
         :return:
         """
         with Session() as session:
-            print(f"obtaining tenants with company id : {company_id}")
+
             tenants_list: list[TenantORM] = session.query(TenantORM).filter(TenantORM.company_id == company_id).all()
             try:
                 _tenants_list = [Tenant(**tenant_orm.to_dict()) for tenant_orm
                                  in tenants_list if isinstance(tenant_orm, TenantORM)] if tenants_list else []
-                print(f"Tenant Models : {_tenants_list}")
+
             except ValidationError as e:
                 self._logger.error(str(e))
                 pass
@@ -142,3 +142,35 @@ class TenantController:
                     self._logger.error(str(e))
             return tenant_data
 
+    @error_handler
+    async def get_tenant_address(self, address_id: str) -> TenantAddress:
+        """
+            **get_tenant_address**
+        :param address_id:
+        :return:
+        """
+        with Session() as session:
+            tenant_address_orm: TenantAddressORM = session.query(TenantAddressORM).filter(
+                TenantAddressORM.address_id == address_id).first()
+            try:
+                tenant_address: TenantAddress = TenantAddress(**tenant_address_orm.to_dict()) if isinstance(
+                    tenant_address_orm, TenantAddressORM) else None
+            except ValidationError as e:
+                self._logger.error(str(e))
+                return None
+
+            return tenant_address
+
+    @error_handler
+    async def create_tenant_address(self, tenant_id: str, tenant_address: CreateTenantAddress) -> TenantAddress | None:
+        """
+
+        :param tenant_id:
+        :param tenant_address:
+        :return:
+        """
+        with Session() as session:
+            tenant_address_orm = TenantAddressORM(**tenant_address.dict())
+            session.add(tenant_address_orm)
+            session.commit()
+            return TenantAddress(**tenant_address.dict())

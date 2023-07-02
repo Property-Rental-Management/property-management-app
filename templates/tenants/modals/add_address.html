@@ -1,0 +1,76 @@
+
+
+<div class="card">
+    <div class="card-header  d-flex justify-content-between align-items-center">
+        <h3 class="card-title">Tenant Address </h3>
+        <div>
+            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addAddressModal">
+                <span class="font-weight-bold">
+                    <i class="ti-save"></i>
+                    Add Personal Address
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <form>
+            <div class="form-group">
+                Click on add Personal Address above in order to add
+                personal address details for tenant.
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add Address Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAddressModalLabel">Add Personal Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form enctype="application/x-www-form-urlencoded"
+                      action="{{ url_for('tenants.create_tenant_address', tenant_id=tenant.tenant_id) }}"
+                      method="POST"
+                >
+                    <div class="form-group">
+                        <label for="street">Street:</label>
+                        <input type="text" class="form-control" id="street" name="street" placeholder="Enter street">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City:</label>
+                        <input type="text" class="form-control" id="city" name="city" placeholder="Enter city">
+                    </div>
+                    <div class="form-group">
+                        <label for="province">Province:</label>
+                        <input type="text" class="form-control" id="province" name="province" placeholder="Enter province">
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country:</label>
+                        <input type="text" class="form-control" id="country" name="country" placeholder="Enter country">
+                    </div>
+                    <div class="form-group">
+                        <label for="postal_code">Postal Code:</label>
+                        <input type="text" class="form-control" id="postal_code" name="postal_code" placeholder="Enter postal code">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="ti-close"> </i>
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti-save"> </i>
+                            Save
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

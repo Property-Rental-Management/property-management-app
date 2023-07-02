@@ -11,6 +11,7 @@ def bootstrapper():
     from src.database.sql.invoices import InvoiceORM
     from src.database.sql.invoices import ItemsORM
     from src.database.sql.invoices import UserChargesORM
+    from src.database.sql.tenants import TenantAddressORM
 
     AddressORM.create_if_not_table()
     TenantORM.create_if_not_table()
@@ -30,4 +31,5 @@ def bootstrapper():
     InvoiceORM.create_if_not_table()
     ItemsORM.create_if_not_table()
     UserChargesORM.create_if_not_table()
+    TenantAddressORM.create_if_not_table()
 

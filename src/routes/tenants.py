@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 from pydantic import ValidationError
 
+from src.emailer import EmailModel
 from src.database.models.properties import Property
 from src.database.models.companies import Company
-from src.database.models.tenants import QuotationForm, Tenant, CreateTenant, TenantSendMail
-from src.main import tenant_controller, company_controller
+from src.database.models.tenants import QuotationForm, Tenant, CreateTenant, TenantSendMail, TenantAddress, \
+    CreateTenantAddress
+from src.main import tenant_controller, company_controller, send_mail
 from src.authentication import login_required
 from src.database.models.users import User
 
@@ -22,7 +24,7 @@ async def get_tenants(user: User):
     for company in companies:
         if isinstance(company, Company):
             tenants_list = await tenant_controller.get_tenants_by_company_id(company_id=company.company_id)
-            print(f"Tenants List : {tenants_list}")
+
         for tenant in tenants_list:
             tenant_dict = tenant.dict() if isinstance(tenant, Tenant) else None
             if tenant_dict:
@@ -85,14 +87,55 @@ async def get_tenant(user: User, tenant_id: str):
     :return:
     """
     context = dict(user=user.dict())
-    tenant_data = await tenant_controller.get_tenant_by_id(tenant_id=tenant_id)
-    context.update({'tenant': tenant_data.dict()})
+    tenant_data: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=tenant_id)
+
+    company_data: Company | None = None
+    if tenant_data and tenant_data.company_id:
+        company_data = await company_controller.get_company_internal(company_id=tenant_data.company_id)
+
+    tenant_address: TenantAddress | None = None
+    if tenant_data and tenant_data.address_id:
+        tenant_address = await tenant_controller.get_tenant_address(address_id=tenant_data.address_id)
+
+    tenant_data_dict = tenant_data.dict() if isinstance(tenant_data, Tenant) else {}
+    tenant_address_dict = tenant_address.dict() if isinstance(tenant_address, TenantAddress) else {}
+    company_dict = company_data.dict() if isinstance(company_data, Company) else {}
+
+    context.update({'tenant': tenant_data_dict,
+                    'tenant_address': tenant_address_dict,
+                    'company': company_dict})
+
     return render_template("tenants/tenant_details.html", **context)
+
+
+@tenants_route.post('/admin/tenant-address/<string:tenant_id>')
+@login_required
+async def create_tenant_address(user: User, tenant_id: str):
+    """
+
+    :param user:
+    :param tenant_id:
+    :return:
+    """
+    try:
+        tenant_address = CreateTenantAddress(**request.form)
+    except ValidationError as e:
+        flash(message="Unable to create Tenant Address please fill in all required fields", category="danger")
+        return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
+    tenant_address_: TenantAddress = await tenant_controller.create_tenant_address(tenant_id=tenant_id, tenant_address=tenant_address)
+    tenant: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=tenant_id)
+    if tenant:
+        tenant.address_id = tenant_address_.address_id
+        updated_tenant = await tenant_controller.update_tenant(tenant=tenant)
+        flash(message="Successfully updated tenant", category="success")
+        return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
+    flash(message="Unable to update Tenant Address", category="danger")
+    return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
 
 
 @tenants_route.post('/admin/tenant-email/<string:tenant_id>')
 @login_required
-async def send_email(user: User, tenant_id: str):
+async def do_send_email(user: User, tenant_id: str):
     """
         **send_email**
             will send email message to Tenant
@@ -106,6 +149,9 @@ async def send_email(user: User, tenant_id: str):
         flash(message="unable to send email please fill in all required fields", category="danger")
         return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id))
 
+    # TODO - add the ability to respond to the email within the email.
+    _ = await send_mail.send_mail_resend(email=EmailModel(to_=send_email_data.email, subject_=send_email_data.subject,
+                                                          html_=send_email_data.message))
     print(send_email_data)
     flash(message="Email sent successfully", category="success")
-    return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id))
+    return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)

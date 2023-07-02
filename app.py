@@ -1,6 +1,3 @@
-import logging
-
-from src.logger import init_logger
 from src.config import config_instance
 from src.main import create_app
 
