@@ -189,7 +189,7 @@ class UserController:
     @error_handler
     async def verify_email(self, email: str, token: str) -> bool:
         """
-
+            **verify_email**
         :param email:
         :param token:
         :return:
@@ -198,13 +198,12 @@ class UserController:
             return False
         if token is None:
             return False
+        if token not in self._verification_tokens:
+            return False
 
-        if token in self._verification_tokens:
+        _data: dict[str, str | int] = self._verification_tokens[token]
 
-            _data: dict[str, str | int] = self._verification_tokens[token]
+        current_time: int = int(time.time())
+        elapsed_time = current_time - int(_data.get('timestamp', 0))
+        return (elapsed_time < self._time_limit) and (email.casefold() == _data.get('email'))
 
-            current_time: int = int(time.time())
-            elapsed_time = current_time - int(_data.get('timestamp', 0))
-            return (elapsed_time < self._time_limit) and (email.casefold() == _data.get('email'))
-
-        return False

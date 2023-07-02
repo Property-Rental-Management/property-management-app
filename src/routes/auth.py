@@ -186,7 +186,7 @@ async def reset_password():
 @auth_route.get('/admin/verify-email')
 async def verify_email():
     """
-
+        **verify_email**
         :return:
     """
 
