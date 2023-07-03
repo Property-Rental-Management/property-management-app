@@ -59,6 +59,7 @@
         </div>
         <div class="tab-pane fade" id="monthly-charges">
                 {% include "building/units/tables/applied_charges.html" %}
+
         </div>
         <div class="tab-pane fade" id="book-unit">
             <div class="card">
@@ -105,5 +106,5 @@
 {% if tenant %}
 {% include "building/units/modals/edit_tenant.html" %}
 {% endif %}
-
+{% include "building/units/modals/print_invoice.html" %}
 {% endblock %}

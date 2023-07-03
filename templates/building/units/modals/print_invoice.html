@@ -10,20 +10,20 @@
       </div>
       <div class="modal-body">
         <div class="card-content">
-          <p>Use this form to print invoices.</p>
+          <span class="font-weight-bold text-info">Use this form to print invoices.</span>
         </div>
         <div class="card-footer">
-          <form id="printInvoiceForm" class="form-horizontal" action="{{ url_for('print_invoice') }}" method="post">
+          <form id="printInvoiceForm" class="form-horizontal" action="#" method="post">
             <div class="form-group">
-              <label for="invoiceOption">Select an option:</label>
-              <select id="invoiceOption" name="invoice_option">
+              <label for="invoiceOption" class="font-weight-bold">Select an option:</label>
+              <select id="invoiceOption" name="invoice_option" class="form-control">
                 <option value="current">Print Current Invoice</option>
                 <option value="select">Select Invoice</option>
               </select>
             </div>
             <div id="invoiceTableDiv">
               <h5>Select an invoice:</h5>
-              <table id="invoiceTable" class="table">
+              <table id="invoiceTable" class="table table-striped">
                 <thead>
                   <tr>
                     <th>Invoice Number</th>
