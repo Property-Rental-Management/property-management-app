@@ -390,7 +390,12 @@ async def unit_print_invoice(user: User):
     try:
         print_invoice_form = PrintInvoiceForm(**request.form)
     except ValidationError as e:
-        pass
+        building_id = request.form.get('building_id')
+        unit_id = request.form.get('unit_id')
+        _vars = dict(building_id=building_id, unit_id=unit_id)
+        flash(message="Please indicate what you want to print", category="danger")
+        return redirect(url_for("buildings.get_unit", **_vars))
+
     invoices_to_print_ = []
     if print_invoice_form.invoice_option == "select":
         for _invoice_id in print_invoice_form.invoice_numbers:

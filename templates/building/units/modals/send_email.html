@@ -35,10 +35,62 @@
                                       rows="5"
                             ></textarea>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Send</button>
+                        <div id="invoiceTableDiv">
+                          <h5>Select an invoice:</h5>
+                          <table id="invoiceTable" class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>Invoice Number</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Select</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for invoice in historical_invoices %}
+                              <tr>
+                                <td>{{ invoice.invoice_number }}</td>
+                                <td>{{ invoice.date }}</td>
+                                <td>{{ invoice.amount }}</td>
+                                <td>
+                                  <input type="checkbox" name="invoice_numbers[]" value="{{ invoice.invoice_number }}">
+                                </td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+
+                          </table>
+
                         </div>
+                        {% if not historical_invoices %}
+                        <div class="card-footer">
+                            <span class="card-content text-danger">
+                                Please Note: That there are not invoices to send, at this time.
+                            </span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                <i class="ti-close"> </i>
+                                Close
+                            </button>
+                            <button type="submit" class="btn btn-sm btn-primary" disabled>
+                                    <i class="ti-email"> </i>
+                                    Send
+                            </button>
+                        </div>
+                        {% else %}
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                <i class="ti-close"> </i>
+                                Close
+                            </button>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="ti-email"> </i>
+                                Send
+                            </button>
+                        </div>
+
+                        {% endif %}
 
                     </form>
                 </div>
