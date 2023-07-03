@@ -21,7 +21,7 @@ class InvoiceORM(Base):
 
     month: str = Column(String(NAME_LEN))
     amount: int = Column(Integer)
-    items: list[str] = Column(Text)
+    charge_ids: list[str] = Column(Text)
     invoice_sent: bool = Column(Boolean, default=False)
     invoice_printed: bool = Column(Boolean, default=False)
 

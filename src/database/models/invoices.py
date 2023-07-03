@@ -111,6 +111,17 @@ class Invoice(BaseModel):
         return _notes
 
 
+class UnitCharge(BaseModel):
+    charge_id: str
+    property_id: str
+    tenant_id: str
+    unit_id: str
+    item_number: str
+    amount: int
+    date_of_entry: date
+    is_invoiced: bool
+
+
 class CreateUnitCharge(BaseModel):
     charge_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     property_id: str
@@ -120,3 +131,8 @@ class CreateUnitCharge(BaseModel):
     amount: int
     date_of_entry: date = Field(default_factory=lambda: datetime.now().date())
     is_invoiced: bool = Field(default=False)
+
+
+class PrintInvoiceForm(BaseModel):
+    invoice_option: str
+    invoice_numbers: list[str]

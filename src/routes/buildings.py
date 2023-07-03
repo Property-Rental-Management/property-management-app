@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from pydantic import ValidationError
 
-from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge
+from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge, PrintInvoiceForm
 from src.logger import init_logger
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
 from src.database.models.tenants import Tenant
@@ -376,3 +376,25 @@ async def updated_unit(user: User, unit_id: str):
     return redirect(url_for("buildings.get_unit",
                             building_id=update_unit_model.property_id,
                             unit_id=update_unit_model.unit_id), code=302)
+
+
+@buildings_route.post('/admin/unit-print-invoice')
+@login_required
+async def unit_print_invoice(user: User):
+    """
+    **unit_print_invoice**
+
+    :param user:
+    :return:
+    """
+    try:
+        print_invoice_form = PrintInvoiceForm(**request.form)
+    except ValidationError as e:
+        pass
+    invoices_to_print_ = []
+    if print_invoice_form.invoice_option == "select":
+        for _invoice_id in print_invoice_form.invoice_numbers:
+            invoice_to_print = await lease_agreement_controller.get_invoice(invoice_id=_invoice_id)
+            invoices_to_print_.append(invoice_to_print)
+
+    return invoice_to_print

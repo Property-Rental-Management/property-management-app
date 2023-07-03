@@ -1,3 +1,5 @@
+from src.database.models.invoices import Invoice, UnitCharge
+from src.database.sql.invoices import InvoiceORM, ItemsORM, UserChargesORM
 from src.logger import init_logger
 from src.database.sql import Session
 from src.controller import error_handler
@@ -17,7 +19,7 @@ class LeaseController:
             return [LeaseAgreement(**lease.dict()) for lease in lease_agreements]
 
     @error_handler
-    async def create_lease_agreement(self, lease: CreateLeaseAgreement) -> LeaseAgreement:
+    async def create_lease_agreement(self, lease: CreateLeaseAgreement) -> LeaseAgreement | None:
         """
             **create_lease_agreement**
                 create lease agreement
@@ -51,8 +53,27 @@ class LeaseController:
         with Session() as session:
             try:
                 lease_orm_list: list[LeaseAgreementORM] = session.query(LeaseAgreementORM).filter(
-                    LeaseAgreementORM.is_active == True,LeaseAgreementORM.payment_period == payment_terms).all()
+                    LeaseAgreementORM.is_active == True, LeaseAgreementORM.payment_period == payment_terms).all()
                 return [LeaseAgreement(**lease.dict()) for lease in lease_orm_list if lease] if lease_orm_list else []
             except Exception as e:
                 self._logger.error(f"Error creating Lease Agreement:  {str(e)}")
             return []
+
+    @error_handler
+    async def get_invoice(self, invoice_number: str) -> dict[str, Invoice | list[UnitCharge]]:
+        """
+
+        :param invoice_number:
+
+        :return:
+        """
+        with Session() as session:
+            invoice_orm: InvoiceORM = session.query(InvoiceORM).filter(
+                InvoiceORM.invoice_number == invoice_number).first()
+            charged_items = []
+            for _charge_id in invoice_orm.charge_ids:
+                item = session.query(UserChargesORM).filter(UserChargesORM.charge_id == _charge_id).first()
+                charged_items.append(item)
+            charged_items_ = [UnitCharge(**item.to_dict()) for item in charged_items if item] if charged_items else []
+            invoice_dict = dict(invoice=Invoice(**invoice_orm.to_dict()), charged_items=charged_items_)
+            return invoice_dict

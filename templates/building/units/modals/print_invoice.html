@@ -13,10 +13,10 @@
           <span class="font-weight-bold text-info">Use this form to print invoices.</span>
         </div>
         <div class="card-footer">
-          <form id="printInvoiceForm" class="form-horizontal" action="#" method="post">
+          <form id="printInvoiceForm" class="form-horizontal" action="{{ url_for('buildings.unit_print_invoice') }}" method="post">
             <div class="form-group">
-              <label for="invoiceOption" class="font-weight-bold">Select an option:</label>
-              <select id="invoiceOption" name="invoice_option" class="form-control">
+              <label for="invoice_option" class="font-weight-bold">Select an option:</label>
+              <select id="invoice_option" name="invoice_option" class="form-control">
                 <option value="current">Print Current Invoice</option>
                 <option value="select">Select Invoice</option>
               </select>
@@ -39,7 +39,7 @@
                     <td>{{ invoice.date }}</td>
                     <td>{{ invoice.amount }}</td>
                     <td>
-                      <input type="checkbox" name="selected_invoices[]" value="{{ invoice.invoice_id }}">
+                      <input type="checkbox" name="invoice_numbers[]" value="{{ invoice.invoice_number }}">
                     </td>
                   </tr>
                   {% endfor %}
