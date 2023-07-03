@@ -235,7 +235,7 @@ class Firewall:
         if bypass_content_security_policy():
             return response
 
-        response.headers['Content-Security-Policy'] = "default-src 'self' https://static.cloudflareinsights.com https://fonts.googleapis.com https://www.googletagmanager.com https://netdna.bootstrapcdn.com https://t.paypal.com https://www.paypal.com https://www.cloudflare.com https://www.google-analytics.com https://fonts.gstatic.com; img-src 'self' https://www.paypalobjects.com;"
+        # response.headers['Content-Security-Policy'] = "default-src 'self' https://static.cloudflareinsights.com https://fonts.googleapis.com https://www.googletagmanager.com https://netdna.bootstrapcdn.com https://t.paypal.com https://www.paypal.com https://www.cloudflare.com https://www.google-analytics.com https://fonts.gstatic.com; img-src 'self' https://www.paypalobjects.com;"
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         return response
