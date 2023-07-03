@@ -1,0 +1,58 @@
+<!-- Modal dialog -->
+<div class="modal fade" id="printInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="printInvoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="printInvoiceModalLabel">Print Invoice</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-content">
+          <p>Use this form to print invoices.</p>
+        </div>
+        <div class="card-footer">
+          <form id="printInvoiceForm" class="form-horizontal" action="{{ url_for('print_invoice') }}" method="post">
+            <div class="form-group">
+              <label for="invoiceOption">Select an option:</label>
+              <select id="invoiceOption" name="invoice_option">
+                <option value="current">Print Current Invoice</option>
+                <option value="select">Select Invoice</option>
+              </select>
+            </div>
+            <div id="invoiceTableDiv">
+              <h5>Select an invoice:</h5>
+              <table id="invoiceTable" class="table">
+                <thead>
+                  <tr>
+                    <th>Invoice Number</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Select</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for invoice in historical_invoices %}
+                  <tr>
+                    <td>{{ invoice.invoice_number }}</td>
+                    <td>{{ invoice.date }}</td>
+                    <td>{{ invoice.amount }}</td>
+                    <td>
+                      <input type="checkbox" name="selected_invoices[]" value="{{ invoice.invoice_id }}">
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Print</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
