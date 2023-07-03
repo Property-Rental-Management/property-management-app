@@ -16,7 +16,9 @@
     <tbody>
         {% for unit in units %}
             <tr>
-                <td><a href="{{ url_for('buildings.get_unit', building_id=unit.property_id, unit_id=unit.unit_id) }}" class="alert-link"> {{ unit.unit_number }}</a></td>
+                <td><a href="{{ url_for('buildings.get_unit', building_id=unit.property_id, unit_id=unit.unit_id) }}" class="alert-link">
+                    Unit Num : {{ unit.unit_number }}
+                </a></td>
                 <td>{{ unit.is_occupied }}</td>
                 <td>{{ unit.rental_amount }}</td>
                 <td>{{ True if unit.tenant_id else False }}</td>

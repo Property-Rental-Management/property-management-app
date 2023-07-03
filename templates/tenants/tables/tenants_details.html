@@ -13,7 +13,7 @@
                     Send Email
                 </span>
             </button>
-            <button class="btn btn-sm btn-default">
+            <button class="btn btn-sm btn-default" onclick="window.print()">
                 <span class="font-weight-bold">
                 <i class="ti-printer"> </i>
                     Print
@@ -31,7 +31,7 @@
             <li class="list-group-item">Lease Start Date: {{ tenant.lease_start_date }}</li>
             <li class="list-group-item">Lease End Date: {{ tenant.lease_end_date }}</li>
             <li class="list-group-item">
-                <button class="btn btn-sm btn-danger">
+                <button class="btn btn-sm btn-danger disabled">
                     <i class="ti-cut"> </i>
                     Cancel Lease
                 </button>

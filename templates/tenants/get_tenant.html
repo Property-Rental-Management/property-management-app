@@ -3,6 +3,17 @@
 {% block content %}
     <!-- Add tabs navigation -->
     <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">Tenant Dashboard</h3>
+        <div>
+            <button class="btn btn-sm btn-default" onclick="window.print()">
+                <span class="font-weight-bold">
+                <i class="ti-printer"> </i>
+                    Print
+                </span>
+            </button>
+        </div>
+    </div>
 
         <ul class="nav nav-tabs">
             <li class="nav-item">
@@ -46,121 +57,6 @@
                     {% endfor %}
                 </tbody>
             </table>
-        </div>
-
-        <!-- Add Tenant Tab -->
-        <div class="tab-pane fade" id="add-tenant">
-            <!-- Add tenant details form -->
-            <form action="{{ url_for('tenants.tenant_rentals') }}" method="POST" class="form-horizontal">
-            <div class="row">
-            <div class="card col-lg-6 col-md-6 col-sm-12">
-                <div class="card-header">
-                    <h3 class="card-title">Add Tenant</h3>
-                </div>
-                <div class="form-group">
-                    <label>Tenant Name</label>
-                        <input type="text" class="form-control" name="tenant_name">
-                </div>
-                <div class="form-group">
-                    <label>Company Name</label>
-                        <input type="text" class="form-control" name="tenant_company">
-                </div>
-                <div class="form-group">
-                    <label>Tenant Cell</label>
-                        <input type="text" class="form-control" name="tenant_cell">
-                </div>
-                <div class="form-group">
-                    <label>Tenant Email</label>
-                        <input type="text" class="form-control" name="tenant_email">
-                </div>
-            </div>
-            <div class="card col-lg-6 col-md-6 col-sm-12">
-                <div class="card-header">
-                    <h3 class="card-title">Official Use</h3>
-                </div>
-
-                <div class="form-group">
-                    <label for="company">Company:</label>
-                    <select name="company" id="company" class="form-control">
-                        <!-- Populate the company_id options from a list or database -->
-                        {% for company in companies %}
-                            <option value="{{ company.company_id }}">{{ company.company_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="building">Building:</label>
-                    <select name="building" id="building" class="form-control">
-                        <!-- Populate the building options from a list or database -->
-                        {% for building in buildings %}
-                            <option value="{{ building.property_id }}">{{ building.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="booking_type">Booking Type:</label>
-                    <select name="booking_type" id="booking_type" class="form-control">
-                        <option value="">Select Booking/Rental Type</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="daily">Daily</option>
-                        <option value="hourly">Hourly</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="start_date">Start Date:</label>
-                     <input type="date" name="lease_start_date" id="lease_start_date" class="form-control">
-                    <br>
-                    <label for="end_date">End Date:</label>
-                     <input type="date" name="lease_end_date" id="lease_end_date" class="form-control">
-                </div>
-
-
-            </div>
-            <!-- footer section -->
-            <div class="card-footer col-lg-12 col-md-12 col-sm-12">
-                <button type="submit" class="btn btn-sm btn-primary">
-                    <i class="ti-save"> </i> Create Quote
-                </button>
-            </div>
-
-            <div class="card-footer col-lg-12 col-md-12 col-sm-12">
-                <!-- Instructions for creating Quotes -->
-<p class="font-weight-bold text-info">Instructions for creating Quotes:</p>
-      <ul class="list-group">
-          <li class="list-group-item"><strong>Fill in the tenant details:</strong>
-          <ul class="list-group">
-            <li>Enter the tenant's name in the "Tenant Name" field.</li>
-            <li>Provide the company name in the "Company Name" field.</li>
-            <li>Enter the tenant's contact number in the "Tenant Cell" field.</li>
-            <li>Provide the tenant's email address in the "Tenant Email" field.</li>
-          </ul>
-        </li>
-          <li class="list-group-item"><strong>Complete the official use section:</strong>
-          <ul class="list-group">
-            <li>Select the company associated with the tenant from the "Company" dropdown list.</li>
-            <li>Choose the building for the tenant from the "Building" dropdown list.
-              <br>Note: You need to select a company before selecting a building.</li>
-            <li>Specify the booking type from the "Booking Type" dropdown list.</li>
-            <li>Enter the start and end dates of the booking using the "Start Date" and "End Date" fields respectively.</li>
-          </ul>
-        </li>
-          <li class="list-group-item"><strong>Once you have filled in all the required information, click the "Create Quote" button located at the bottom of the form (in the card footer section). This will submit the form and generate a quote based on the provided details.</strong></li>
-          <li class="list-group-item text-warning"><strong>After creating the quote, you can perform additional actions from the tenant details section
-          </strong><br>
-              <span class="font-italic text-dark">
-              Printing Lease Agreements / Check In or Out <br />
-              </span>
-          </li>
-      </ul>
-            </div>
-
-            </div>
-
-            </form>
-
         </div>
     </div>
     </div>

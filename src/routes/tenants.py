@@ -146,12 +146,15 @@ async def do_send_email(user: User, tenant_id: str):
     try:
         send_email_data = TenantSendMail(**request.form)
     except ValidationError as e:
-        flash(message="unable to send email please fill in all required fields", category="danger")
-        return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id))
+        flash(message="Unable to send email please fill in all required fields", category="danger")
+        return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
 
-    # TODO - add the ability to respond to the email within the email.
+    if not(send_email_data.message and send_email_data.subject):
+        flash(message="Unable to send email please fill in all required fields", category="danger")
+        return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
+
     _ = await send_mail.send_mail_resend(email=EmailModel(to_=send_email_data.email, subject_=send_email_data.subject,
                                                           html_=send_email_data.message))
-    print(send_email_data)
+
     flash(message="Email sent successfully", category="success")
     return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
