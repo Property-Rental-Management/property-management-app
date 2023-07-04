@@ -82,7 +82,7 @@ class LeaseController:
             return Invoice(**invoice_orm.to_dict())
 
     @error_handler
-    async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit) -> InvoiceORM:
+    async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit) -> Invoice:
         """
 
         :param invoice_charges:
@@ -116,7 +116,7 @@ class LeaseController:
             session.add(invoice_orm)
             session.commit()
 
-            return invoice_orm
+            return Invoice(**invoice_orm.to_dict())
 
     @staticmethod
     async def calculate_due_date(date_issued: date) -> date:

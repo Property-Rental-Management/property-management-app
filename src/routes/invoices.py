@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, Response
 from pydantic import ValidationError
 
 from src.database.models.properties import Unit
@@ -21,7 +21,7 @@ async def get_invoices(user: User):
 
 @invoices_route.post('/admin/invoice/create-invoice')
 @login_required
-async def create_invoice(user: User) -> Invoice:
+async def create_invoice(user: User) -> Response:
     """
 
     :param user:
@@ -49,6 +49,7 @@ async def create_invoice(user: User) -> Invoice:
     else:
         unit_ = None
     created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges, unit_)
+    #     TODO render invoice to invoice template then return response
 
 
 async def redirect_to_unit(message_dict: dict[str, str]):
