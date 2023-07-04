@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
+from pydantic import ValidationError
+
 from src.authentication import login_required
 from src.database.models.users import User
 
@@ -22,4 +24,8 @@ async def create_invoice(user: User):
     :param user:
     :return:
     """
-    pass
+    try:
+        invoice_data = request.form
+    except ValidationError as e:
+        pass
+
