@@ -584,7 +584,8 @@ class CompaniesController:
         """
         with Session() as session:
             charged_items = session.query(UserChargesORM).filter(UserChargesORM.property_id == building_id,
-                                                                 UserChargesORM.unit_id == unit_id).all()
+                                                                 UserChargesORM.unit_id == unit_id,
+                                                                 UserChargesORM.is_invoiced == False).all()
             try:
                 unit_charge_list = [CreateUnitCharge(**charge.to_dict()) for charge in charged_items
                                     if isinstance(charge, UserChargesORM)] if charged_items else []
