@@ -13,3 +13,13 @@ async def get_invoices(user: User):
 
     return render_template('invoices/invoices.html', **context)
 
+
+@invoices_route.get('/admin/create-invoice')
+@login_required
+async def create_invoice(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    pass
