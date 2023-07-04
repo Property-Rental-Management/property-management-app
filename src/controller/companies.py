@@ -583,7 +583,7 @@ class CompaniesController:
         :return:
         """
         with Session() as session:
-            charged_items = session.query(UserChargesORM).filter(UserChargesORM.property_id == building_id,
+            charged_items: list[UserChargesORM] = session.query(UserChargesORM).filter(UserChargesORM.property_id == building_id,
                                                                  UserChargesORM.unit_id == unit_id,
                                                                  UserChargesORM.is_invoiced == False).all()
             try:
@@ -591,6 +591,7 @@ class CompaniesController:
                                     if isinstance(charge, UserChargesORM)] if charged_items else []
 
             except ValidationError as e:
+                print(str(e))
                 pass
             return unit_charge_list
 

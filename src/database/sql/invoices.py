@@ -153,7 +153,7 @@ class UserChargesORM(Base):
             "tenant_id": self.tenant_id,
             "unit_id": self.unit_id,
             "item_number": self.item_number,
-            "rental_amount": self.amount,
+            "amount": self.amount,
             "date_of_entry": self.date_of_entry,
             "is_invoiced": self.is_invoiced
         }
