@@ -329,8 +329,17 @@ async def create_billing_charge(user: User):
     :return:
 
     """
-    unit_charge_item: CreateUnitCharge = CreateUnitCharge(**request.form)
-    print(f"Unit Charge: {unit_charge_item}")
+    try:
+        unit_charge_item: CreateUnitCharge = CreateUnitCharge(**request.form)
+    except ValidationError:
+        flash(message="Please indicate all required fields in order to create a charge", category="danger")
+        _redirect_link = dict(building_id=request.form.get('property_id'))
+        return redirect(url_for("buildings.get_building", **_redirect_link), code=302)
+    if not (unit_charge_item.item_number and unit_charge_item.amount):
+        flash(message="Please indicate all required fields in order to create a charge", category="danger")
+        _redirect_link = dict(building_id=request.form.get('property_id'))
+        return redirect(url_for("buildings.get_building", **_redirect_link), code=302)
+
     _ = await company_controller.create_unit_bill_charge(charge_item=unit_charge_item)
     flash(message="Billing Charge Added to Unit", category="success")
     return redirect(url_for("buildings.get_building", building_id=unit_charge_item.property_id), code=302)

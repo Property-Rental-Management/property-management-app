@@ -7,6 +7,10 @@
             <i class="ti-money"> </i>
             Add Bill
         </a>
+            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#createInvoiceModal">
+                <i class="ti-files"> </i>
+            Create Invoice
+            </button>
             <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#emailModal">
                 <i class="ti-email"> </i>
                 Send Invoice
@@ -54,3 +58,6 @@
     </div>
 </div>
 
+{% include "building/units/modals/print_invoice.html" %}
+{% include "building/units/modals/send_email.html" %}
+{% include "building/units/modals/create_invoice.html" %}
