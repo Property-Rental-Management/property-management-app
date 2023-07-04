@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from pydantic import ValidationError
 
-from database.models.properties import Unit
+from src.database.models.properties import Unit
 from src.main import company_controller, lease_agreement_controller
 from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice
 from src.authentication import login_required

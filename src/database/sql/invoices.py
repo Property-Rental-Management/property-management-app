@@ -3,7 +3,7 @@ from datetime import date
 
 from sqlalchemy.orm import relationship
 
-from database.sql.tenants import TenantORM
+from src.database.sql.tenants import TenantORM
 from src.database.models.invoices import InvoicedItems, Customer
 from src.database.constants import ID_LEN, NAME_LEN
 from src.database.sql import Base, engine, Session
