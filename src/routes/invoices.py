@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from pydantic import ValidationError
 
-from src.database.models.invoices import UnitCreateInvoiceForm
+from database.models.properties import Unit
+from src.main import company_controller, lease_agreement_controller
+from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice
 from src.authentication import login_required
 from src.database.models.users import User
 
@@ -19,7 +21,7 @@ async def get_invoices(user: User):
 
 @invoices_route.post('/admin/invoice/create-invoice')
 @login_required
-async def create_invoice(user: User):
+async def create_invoice(user: User) -> Invoice:
     """
 
     :param user:
@@ -32,10 +34,21 @@ async def create_invoice(user: User):
                             category="danger")
         return await redirect_to_unit(message_dict)
 
-    if not (invoice_data.charge_ids and invoice_data.rental_amount):
+    if not (invoice_data.charge_ids or invoice_data.rental_amount):
         message_dict = dict(message="please indicate what to invoice",
                             category="danger")
-        return await redirect_to_unit()
+        return await redirect_to_unit(message_dict)
+    _vars = dict(building_id=invoice_data.property_id, unit_id=invoice_data.unit_id)
+    unit_charges: list[UnitCharge] = await company_controller.get_charged_items(**_vars)
+    invoice_charges: list[UnitCharge] = [charge for charge in unit_charges if
+                                         charge.charge_id in invoice_data.charge_ids] if invoice_data.charge_ids else []
+    unit_: Unit | None = None
+    if invoice_data.rental_amount:
+        unit_ = await company_controller.get_unit(user=user, building_id=invoice_data.property_id,
+                                                  unit_id=invoice_data.unit_id)
+    else:
+        unit_ = None
+    created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges, unit_)
 
 
 async def redirect_to_unit(message_dict: dict[str, str]):

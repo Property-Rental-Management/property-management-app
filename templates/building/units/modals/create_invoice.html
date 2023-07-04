@@ -97,14 +97,14 @@
     // Calculate the total based on selected charges
     chargeCheckboxes.forEach(function (checkbox) {
       if (checkbox.checked) {
-        // Get the corresponding total amount for the charge
+        // Get the corresponding total rental_amount for the charge
         let chargeRow = checkbox.closest('tr');
         let chargeTotal = parseFloat(chargeRow.querySelector('td:nth-child(2)').textContent.replace('R', '').trim());
         total += chargeTotal;
       }
     });
 
-    // Add rental amount if the rental checkbox is selected
+    // Add rental rental_amount if the rental checkbox is selected
     if (rentalCheckbox.checked) {
       let rentalAmount = parseFloat('{{ unit.rental_amount }}');
       total += rentalAmount;

@@ -49,7 +49,7 @@ class Unit(BaseModel):
     - property_id (str): The ID of the property the unit belongs to.
     - unit_id (str): The ID of the unit.
     - is_occupied (bool): Indicates if the unit is currently occupied.
-    - rental_amount (int): The rental amount for the unit.
+    - rental_amount (int): The rental rental_amount for the unit.
     - tenant_id (str): The ID of the tenant occupying the unit.
     - lease_start_date (date): The start date of the lease for the unit.
     - lease_end_date (date): The end date of the lease for the unit.

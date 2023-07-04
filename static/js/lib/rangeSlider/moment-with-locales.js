@@ -12075,7 +12075,7 @@ hooks.defineLocale('tr', {
 //! author : Robin van der Vliet : https://github.com/robin0van0der0v
 //! author : Iustì Canun
 
-// After the year there should be a slash and the amount of years since December 26, 1979 in Roman numerals.
+// After the year there should be a slash and the rental_amount of years since December 26, 1979 in Roman numerals.
 // This is currently too difficult (maybe even impossible) to add.
 hooks.defineLocale('tzl', {
     months : 'Januar_Fevraglh_Març_Avrïu_Mai_Gün_Julia_Guscht_Setemvar_Listopäts_Noemvar_Zecemvar'.split('_'),

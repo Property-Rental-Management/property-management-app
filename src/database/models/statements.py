@@ -11,7 +11,7 @@ class Statement(BaseModel):
     - statement_id (str): The unique ID of the statement.
     - tenant_id (str): The ID of the tenant associated with the statement.
     - month (str): The month of the statement.
-    - amount (float): The amount of the statement.
+    - rental_amount (float): The rental_amount of the statement.
     - items (list[str]): A list of items included in the statement.
     - is_paid (bool): Indicates if the statement has been paid.
     - payment_date (date): The date of payment.

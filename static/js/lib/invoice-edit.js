@@ -43,7 +43,7 @@ function calculate() {
     $('.invoicelist-body tbody tr').each(function () {
         var row = $(this),
             rate = row.find('.rate input').val(),
-            amount = row.find('.amount input').val();
+            amount = row.find('.rental_amount input').val();
 
         var sum = rate * amount;
         var tax = ((sum / (TAX_RATE + 100)) * TAX_RATE);
@@ -61,7 +61,7 @@ function calculate() {
 }
 
 
-var newRow = '<tr><td><a class="control removeRow" href="#">x</a><span contenteditable>Jeans</span></td><td><span contenteditable>Blue and black</span></td><td class="daterelated"><span contenteditable>Datum</span></td><td class="amount"><input type="text" value="1"/></td><td class="rate"><input type="text" value="60" /></td><td class="tax taxrelated"></td><td class="sum"></td></tr>';
+var newRow = '<tr><td><a class="control removeRow" href="#">x</a><span contenteditable>Jeans</span></td><td><span contenteditable>Blue and black</span></td><td class="daterelated"><span contenteditable>Datum</span></td><td class="rental_amount"><input type="text" value="1"/></td><td class="rate"><input type="text" value="60" /></td><td class="tax taxrelated"></td><td class="sum"></td></tr>';
 
 $('.invoicelist-body').on('keyup', 'input', function () {
     calculate();

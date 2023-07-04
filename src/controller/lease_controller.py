@@ -1,3 +1,4 @@
+from database.models.invoices import Invoice
 from src.database.models.invoices import Invoice, UnitCharge
 from src.database.sql.invoices import InvoiceORM, ItemsORM, UserChargesORM
 from src.logger import init_logger
@@ -40,12 +41,12 @@ class LeaseController:
     async def calculate_deposit_amount(rental_amount: int) -> int:
         """
             **calculate_deposit_amount**
-                calculate deposit amount
+                calculate deposit rental_amount
 
         :param rental_amount:
         :return:
         """
-        # TODO - calculate deposit amount based on user profile settings
+        # TODO - calculate deposit rental_amount based on user profile settings
         return rental_amount * 2
 
     @staticmethod
@@ -60,7 +61,7 @@ class LeaseController:
             return []
 
     @error_handler
-    async def get_invoice(self, invoice_number: str) -> dict[str, Invoice | list[UnitCharge]]:
+    async def get_invoice(self, invoice_number: str) -> Invoice:
         """
 
         :param invoice_number:
@@ -70,10 +71,24 @@ class LeaseController:
         with Session() as session:
             invoice_orm: InvoiceORM = session.query(InvoiceORM).filter(
                 InvoiceORM.invoice_number == invoice_number).first()
-            charged_items = []
-            for _charge_id in invoice_orm.charge_ids:
-                item = session.query(UserChargesORM).filter(UserChargesORM.charge_id == _charge_id).first()
-                charged_items.append(item)
-            charged_items_ = [UnitCharge(**item.to_dict()) for item in charged_items if item] if charged_items else []
-            invoice_dict = dict(invoice=Invoice(**invoice_orm.to_dict()), charged_items=charged_items_)
-            return invoice_dict
+            return Invoice(**invoice_orm.to_dict())
+
+    @error_handler
+    async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit):
+        """
+
+        :param invoice_charges:
+        :param unit_:
+        :return:
+        """
+        #todo obtain property - using unit_.property_id
+        #todo obtain company details using property
+        # todo obtain tenant usint unit_.tenant_id
+        service_name: str = f"{property_.name} Invoice"
+        description: str = f"{company.company_name} Monthly Rental Invoice for Property : {property_.name}"
+        _date_issued = datetime.now().date()
+        _due_date = await self.calculate_due_date(date_issued=_date_issued)
+        _invoice_data = dict(service_name=service_name, description=description, currency=profile.currency,
+                             customer=dict(tenant_id=tenant.tenant_id, name=tenant.name, email=tenant.email,
+                                           cell=tenant.cell),
+                             date_issued=_date_issued, due_date=_due_date, invoiced_items=_invoiced_items)

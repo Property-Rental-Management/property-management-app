@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, Extra
 from datetime import date, datetime
 from src.database.tools import create_invoice_number
 
@@ -20,6 +20,9 @@ class Customer(BaseModel):
     email: str
     cell: str
 
+    class Config:
+        extra = Extra.ignore
+
 
 class InvoicedItems(BaseModel):
     """
@@ -28,7 +31,7 @@ class InvoicedItems(BaseModel):
         Attributes
         - description: A string representing the description of the invoiced item.
         - multiplier: An integer representing the quantity or multiplier of the invoiced item.
-        - amount: An integer representing the unit price or amount of the invoiced item.
+        - rental_amount: An integer representing the unit price or rental_amount of the invoiced item.
     """
     property_id: str
     item_number: str
@@ -65,7 +68,7 @@ class Invoice(BaseModel):
     - invoice_number (str): The invoice number.
     - tenant_id (str): The ID of the tenant associated with the invoice.
     - month (str): The month of the invoice.
-    - amount (float): The amount of the invoice.
+    - rental_amount (float): The rental_amount of the invoice.
     - due_date (date): The due date of the invoice.
     - items (list[str]): A list of items included in the invoice.
     """
@@ -80,13 +83,15 @@ class Invoice(BaseModel):
     tax_rate: int = Field(default=15)
     date_issued: date
     due_date: date
-    items: list[InvoicedItems]
+    charge_ids: list[str]
+    invoice_items: list[InvoicedItems]
     invoice_sent: bool
     invoice_printed: bool
+    rental_amount: int
 
     @property
     def total_amount(self) -> int:
-        return sum(item.sub_total for item in self.items)
+        return sum(item.sub_total for item in self.invoice_items) + self.rental_amount
 
     @property
     def total_taxes(self) -> int:
@@ -147,4 +152,3 @@ class UnitCreateInvoiceForm(BaseModel):
     charge_ids: list[str]
     rental_amount: str
     send_invoice: str
-

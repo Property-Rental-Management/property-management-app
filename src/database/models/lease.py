@@ -13,8 +13,8 @@ class LeaseAgreement(BaseModel):
     - tenant_id (str): The ID of the tenant associated with the agreement.
     - start_date (date): The start date of the lease.
     - end_date (date): The end date of the lease.
-    - rent_amount (float): The monthly rent amount.
-    - deposit_amount (float): The security deposit amount.
+    - rent_amount (float): The monthly rent rental_amount.
+    - deposit_amount (float): The security deposit rental_amount.
     - is_active (bool): Indicates if the lease agreement is currently active.
     """
 

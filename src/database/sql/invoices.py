@@ -3,8 +3,10 @@ from datetime import date
 
 from sqlalchemy.orm import relationship
 
+from database.sql.tenants import TenantORM
+from src.database.models.invoices import InvoicedItems, Customer
 from src.database.constants import ID_LEN, NAME_LEN
-from src.database.sql import Base, engine
+from src.database.sql import Base, engine, Session
 
 
 class InvoiceORM(Base):
@@ -20,8 +22,8 @@ class InvoiceORM(Base):
     due_date: date = Column(Date)
 
     month: str = Column(String(NAME_LEN))
-    amount: int = Column(Integer)
-    charge_ids: list[str] = Column(Text)
+    rental_amount: int = Column(Integer)
+    charge_ids: str = Column(Text)
     invoice_sent: bool = Column(Boolean, default=False)
     invoice_printed: bool = Column(Boolean, default=False)
 
@@ -29,6 +31,61 @@ class InvoiceORM(Base):
     def create_if_not_table(cls):
         if not inspect(engine).has_table(cls.__tablename__):
             Base.metadata.create_all(bind=engine)
+
+    def to_dict(self) -> dict[str, str | date | int | list[str] | Customer | list[InvoicedItems]]:
+        """
+        Convert the instance attributes to a dictionary.
+
+        :return: A dictionary representation of the object.
+        """
+        return {
+            "invoice_number": self.invoice_number,
+            "tenant_id": self.tenant_id,
+            "service_name": self.service_name,
+            "description": self.description,
+            "currency": self.currency,
+            "discount": self.discount,
+            "tax_rate": self.tax_rate,
+            "date_issued": self.date_issued,
+            "due_date": self.due_date,
+            "month": self.month,
+            "rental_amount": self.rental_amount,
+            "charge_ids": self.charge_ids.split(",") if self.charge_ids else [],
+            "invoice_items": self.invoiced_items,
+            "customer": self.customer,
+            "invoice_sent": self.invoice_sent,
+            "invoice_printed": self.invoice_printed
+        }
+
+    @property
+    def invoiced_items(self) -> list[InvoicedItems]:
+        """
+
+        :return:
+        """
+        with Session() as session:
+            _invoiced_items = []
+            for _charge_id in list(self.charge_ids.split(",")):
+                charge_item_orm: UserChargesORM = session.query(UserChargesORM).filter(
+                    UserChargesORM.charge_id == _charge_id).first()
+                item_orm: ItemsORM = session.query(ItemsORM.item_number == charge_item_orm.item_number).first()
+                invoice_item_dict = dict(property_id=charge_item_orm.property_id,
+                                         item_number=charge_item_orm.item_number,
+                                         description=item_orm.description, multiplier=item_orm.multiplier,
+                                         amount=charge_item_orm.amount)
+
+                _invoiced_items.append(InvoicedItems(**invoice_item_dict))
+            return _invoiced_items
+
+    @property
+    def customer(self) -> Customer:
+        """
+
+        :return:
+        """
+        with Session() as session:
+            _tenant: TenantORM = session.query(TenantORM).filter(TenantORM.tenant_id == self.tenant_id).first()
+            return Customer(**_tenant.to_dict())
 
 
 class ItemsORM(Base):
@@ -96,7 +153,7 @@ class UserChargesORM(Base):
             "tenant_id": self.tenant_id,
             "unit_id": self.unit_id,
             "item_number": self.item_number,
-            "amount": self.amount,
+            "rental_amount": self.amount,
             "date_of_entry": self.date_of_entry,
             "is_invoiced": self.is_invoiced
         }

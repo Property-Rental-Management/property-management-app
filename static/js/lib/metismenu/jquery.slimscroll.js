@@ -66,10 +66,10 @@
         // check if mousewheel should scroll the window if we reach top/bottom
         allowPageScroll : false,
 
-        // scroll amount applied to each mouse wheel step
+        // scroll rental_amount applied to each mouse wheel step
         wheelStep : 20,
 
-        // scroll amount applied when user is using gestures
+        // scroll rental_amount applied when user is using gestures
         touchScrollStep : 200,
 
         // sets border radius
@@ -357,7 +357,7 @@
             bar.css({ top: delta + 'px' });
           }
 
-          // calculate actual scroll amount
+          // calculate actual scroll rental_amount
           percentScroll = parseInt(bar.css('top')) / (me.outerHeight() - bar.outerHeight());
           delta = percentScroll * (me[0].scrollHeight - me.outerHeight());
 

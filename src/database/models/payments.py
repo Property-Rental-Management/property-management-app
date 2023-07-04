@@ -11,7 +11,7 @@ class Payment(BaseModel):
         transaction_id (str): BankTransaction ID.
         tenant_id (str): ID of the tenant making the payment.
         property_id (str): ID of the property for which the payment is made.
-        amount (float): Payment amount.
+        amount (float): Payment rental_amount.
         date (date): Date of the payment.
         payment_method (str): Payment method used.
         is_successful (bool): Indicates whether the payment was successful.
