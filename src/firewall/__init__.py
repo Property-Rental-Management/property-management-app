@@ -231,19 +231,7 @@ class Firewall:
         if session_cookies:
             response.headers['Session-Vary'] = 'auth'
 
-        # exempting redoc & blog from content security policies except frame and XSS
-        if bypass_content_security_policy():
-            return response
-
         # response.headers['Content-Security-Policy'] = "default-src 'self' https://static.cloudflareinsights.com https://fonts.googleapis.com https://www.googletagmanager.com https://netdna.bootstrapcdn.com https://t.paypal.com https://www.paypal.com https://www.cloudflare.com https://www.google-analytics.com https://fonts.gstatic.com; img-src 'self' https://www.paypalobjects.com;"
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         return response
-
-
-def bypass_content_security_policy() -> bool:
-    # if request.url.casefold() == 'https://eod-stock-api.site/redoc':
-    #     return True
-    # if request.url.casefold().startswith('https://eod-stock-api.site/blog'):
-    #     return True
-    return False
