@@ -138,3 +138,13 @@ class PrintInvoiceForm(BaseModel):
     unit_id: str
     invoice_option: str
     invoice_numbers: list[str]
+
+
+class UnitCreateInvoiceForm(BaseModel):
+    property_id: str
+    unit_id: str
+    tenant_id: str
+    charge_ids: list[str]
+    rental_amount: str
+    send_invoice: str
+

@@ -9,7 +9,7 @@
         </button>
       </div>
     <form class="form-horizontal"
-          action="#"
+          action="{{ url_for('invoices.create_invoice') }}"
           method="POST"
           enctype="application/x-www-form-urlencoded"
     >
@@ -17,6 +17,10 @@
         <h4 id="invoice_total" class="text-center mb-4">Total to be Invoiced : </h4>
 
         <div class="form-group">
+          <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
+          <input type="hidden" name="tenant_id" value="{{ tenant.tenant_id }}">
+          <input type="hidden" name="property_id" value="{{ tenant.property_id }}">
+
           <label for="charges">Select Charges:</label>
           <table class="table table-striped">
                 <thead>
