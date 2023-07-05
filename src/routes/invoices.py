@@ -1,11 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, Response
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from pydantic import ValidationError
 
-from src.database.models.properties import Unit, Property
-from src.main import company_controller, lease_agreement_controller
-from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice
 from src.authentication import login_required
+from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice
+from src.database.models.properties import Unit, Property
 from src.database.models.users import User
+from src.main import company_controller, lease_agreement_controller
 
 invoices_route = Blueprint('invoices', __name__)
 
@@ -53,9 +53,6 @@ async def create_invoice(user: User):
         unit_ = None
     created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges=invoice_charges,
                                                                                unit_=unit_)
-
-    print(f"CREATE INVOICE: {created_invoice.dict()}")
-    #     TODO render invoice to invoice template then return response
 
     property_: Property = await company_controller.get_property(user=user, property_id=invoice_data.property_id)
     company_data = await company_controller.get_company_internal(company_id=property_.company_id)
