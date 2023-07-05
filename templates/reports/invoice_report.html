@@ -27,23 +27,18 @@
                         <!--End InvoiceTop-->
 
                         <div id="invoice-mid">
-
                             <div class="clientlogo"></div>
                             <div class="invoice-info">
                                 <h2>{{ invoice.customer.name }}</h2>
-                                <p>{{ invoice.customer.email }}<br> {{ invoice.customer.tel }}  </p>
+                                <p>{{ invoice.customer.email }}<br> {{ invoice.customer.cel }}  </p>
                             </div>
-
                             <div id="project">
                                 <h2>{{ invoice.service_name }}</h2>
                                 <p>{{ invoice.description }}</p>
                             </div>
-
                         </div>
                         <!--End Invoice Mid-->
-
                         <div id="invoice-bot">
-
                             <div id="invoice-table">
                                 <div class="table-responsive">
                                     <table class="table">
@@ -61,7 +56,7 @@
                                                 <h2>Sub-total</h2>
                                             </td>
                                         </tr>
-                                        {% for item in invoice.items %}
+                                        {% for item in invoice.invoice_items %}
                                             <tr class="service">
                                                 <td class="tableitem">
                                                     <p class="itemtext">{{ item.description }}</p>
@@ -77,7 +72,6 @@
                                                 </td>
                                             </tr>
                                         {% endfor %}
-
                                         <tr class="tabletitle">
                                             <td></td>
                                             <td></td>
@@ -88,7 +82,6 @@
                                                 <h2>{{ invoice.currency }} {{ invoice.total_amount }}</h2>
                                             </td>
                                         </tr>
-
                                         <tr class="tabletitle">
                                             <td></td>
                                             <td></td>
@@ -109,17 +102,14 @@
                                                 <h2>{{ invoice.currency }} {{ invoice.amount_payable }}</h2>
                                             </td>
                                         </tr>
-
                                     </table>
                                 </div>
                             </div>
                             <!--End Table-->
-
                             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                                 <input type="hidden" name="cmd" value="_s-xclick">
                                 <input type="hidden" name="hosted_button_id" value="QRZ7QTM9XRPJ6">
                             </form>
-
                             <div id="legalcopy">
                                 <p class="legal">
                                     {{ invoice.notes }}
@@ -135,7 +125,6 @@
                                     <li class="list-group-item">Branch: {{ bank_account.branch }}</li>
                                 </ul>
                             </div>
-
                         </div>
                         <!--End InvoiceBot-->
                     </div>

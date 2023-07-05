@@ -27,6 +27,38 @@ class InvoiceORM(Base):
     invoice_sent: bool = Column(Boolean, default=False)
     invoice_printed: bool = Column(Boolean, default=False)
 
+    def __init__(
+            self,
+            invoice_number,
+            tenant_id,
+            service_name,
+            description,
+            currency,
+            discount,
+            tax_rate,
+            date_issued,
+            due_date,
+            month,
+            rental_amount,
+            charge_ids,
+            invoice_sent=False,
+            invoice_printed=False
+    ):
+        self.invoice_number = invoice_number
+        self.tenant_id = tenant_id
+        self.service_name = service_name
+        self.description = description
+        self.currency = currency
+        self.discount = discount
+        self.tax_rate = tax_rate
+        self.date_issued = date_issued
+        self.due_date = due_date
+        self.month = month
+        self.rental_amount = rental_amount
+        self.charge_ids = charge_ids
+        self.invoice_sent = invoice_sent
+        self.invoice_printed = invoice_printed
+
     @classmethod
     def create_if_not_table(cls):
         if not inspect(engine).has_table(cls.__tablename__):

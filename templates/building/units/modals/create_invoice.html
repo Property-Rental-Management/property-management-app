@@ -20,7 +20,7 @@
           <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
           <input type="hidden" name="tenant_id" value="{{ tenant.tenant_id }}">
           <input type="hidden" name="property_id" value="{{ tenant.property_id }}">
-
+          <input type="hidden" id="charge_ids" name="charge_ids" value="">
           <label for="charges">Select Charges:</label>
           <table class="table table-striped">
                 <thead>
@@ -35,12 +35,13 @@
                         <tr>
                             <td>{{ charged_item.item.description }}</td>
                             <td>R {{ charged_item.item.multiplier * charged_item.amount }}</td>
-                            <td><input type="checkbox" name="charge_ids[]" value="{{ charged_item.charge_id }}"></td>
+                            <td><input type="checkbox" name="charge_id_list[]" value="{{ charged_item.charge_id }}"></td>
                         </tr>
                     {% endfor %}
                 </tbody>
 
           </table>
+
         </div>
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="includeRental" name="rental_amount">
@@ -83,17 +84,18 @@
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+
   function updateInvoiceTotal() {
     // Get the invoice total element
     let invoiceTotalElement = document.getElementById('invoice_total');
 
     // Get the checkboxes for charges and rental
-    let chargeCheckboxes = document.querySelectorAll('input[name="charge_ids[]"]');
+    let chargeCheckboxes = document.querySelectorAll('input[name="charge_id_list[]"]');
     let rentalCheckbox = document.getElementById('includeRental');
 
     // Initialize the total to zero
     let total = 0;
-
+    const chargeIdsInput = document.getElementById("charge_ids");
     // Calculate the total based on selected charges
     chargeCheckboxes.forEach(function (checkbox) {
       if (checkbox.checked) {
@@ -101,6 +103,12 @@
         let chargeRow = checkbox.closest('tr');
         let chargeTotal = parseFloat(chargeRow.querySelector('td:nth-child(2)').textContent.replace('R', '').trim());
         total += chargeTotal;
+
+        if (chargeIdsInput.value){
+        chargeIdsInput.value += "," + checkbox.value;
+        }else{
+            chargeIdsInput.value = checkbox.value;
+        }
       }
     });
 
@@ -115,7 +123,7 @@
   }
 
   // Event listeners to update the invoice total when checkboxes are clicked
-  let chargeCheckboxes = document.querySelectorAll('input[name="charge_ids[]"]');
+  let chargeCheckboxes = document.querySelectorAll('input[name="charge_id_list[]"]');
   let rentalCheckbox = document.getElementById('includeRental');
   let sendInvoiceCheckbox = document.getElementById('sendInvoice');
 
@@ -128,6 +136,7 @@
 
   // Initial update of the invoice total
   updateInvoiceTotal();
+
 </script>
 
 {% endblock %}

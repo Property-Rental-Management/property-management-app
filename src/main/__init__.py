@@ -31,6 +31,7 @@ def create_app(config):
     app.template_folder = template_folder()
     app.static_folder = static_folder()
     app.config['SECRET_KEY'] = config.SECRET_KEY
+    app.config['BASE_URL'] = "https://rental-manager.site"
 
     with app.app_context():
         encryptor.init_app(app=app)

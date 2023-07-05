@@ -9,11 +9,11 @@
     <title>{{ title }}</title>
 
     <!-- Styles -->
-    <link href="{{ url_for('static', filename='css/lib/font-awesome.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/lib/themify-icons.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/lib/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/lib/helper.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/lib/font-awesome.min.css', _external=True) }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/lib/themify-icons.css', _external=True) }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/lib/bootstrap.min.css', _external=True) }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/lib/helper.css', _external=True) }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css', _external=True) }}" rel="stylesheet">
 </head>
 
 <body class="bg-primary">

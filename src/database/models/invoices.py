@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic import BaseModel, Field, Extra
+from pydantic import BaseModel, Field, Extra, validator
 from datetime import date, datetime
 from src.database.tools import create_invoice_number
 
@@ -152,3 +152,12 @@ class UnitCreateInvoiceForm(BaseModel):
     charge_ids: list[str]
     rental_amount: str
     send_invoice: str
+
+    @validator('charge_ids', pre=True)
+    def validate_charge_ids(cls, value) -> list[str]:
+        if isinstance(value, str):
+            return value.split(",")
+        return value
+
+    class Config:
+        extra = Extra.ignore

@@ -258,7 +258,8 @@ class CompaniesController:
             # Commit the changes to the database
             session.commit()
             try:
-                property_ = Property(**original_property_orm.to_dict()) if isinstance(original_property_orm, Property) else None
+                property_ = Property(**original_property_orm.to_dict()) if isinstance(original_property_orm,
+                                                                                      Property) else None
             except ValidationError as e:
                 pass
             return property_
@@ -279,7 +280,8 @@ class CompaniesController:
             if not is_company_member:
                 raise UnauthorizedError(description="Not Authorized to access Properties in this Company")
 
-            properties: list[PropertyORM] = session.query(PropertyORM).filter(PropertyORM.company_id == company_id).all()
+            properties: list[PropertyORM] = session.query(PropertyORM).filter(
+                PropertyORM.company_id == company_id).all()
             try:
                 _property_list = [Property(**_prop.to_dict()) for _prop in properties
                                   if isinstance(_prop, PropertyORM)] if properties else []
@@ -524,7 +526,8 @@ class CompaniesController:
             session.merge(billable_orm)
             session.commit()
             try:
-                create_invoice = CreateInvoicedItem(**billable_orm.to_dict()) if isinstance(billable_orm, ItemsORM) else None
+                create_invoice = CreateInvoicedItem(**billable_orm.to_dict()) if isinstance(billable_orm,
+                                                                                            ItemsORM) else None
             except ValidationError as e:
                 pass
 
@@ -538,7 +541,8 @@ class CompaniesController:
         :return:
         """
         with Session() as session:
-            billable_list: list[ItemsORM] = session.query(ItemsORM).filter(ItemsORM.property_id == building_id, ItemsORM.deleted == False).all()
+            billable_list: list[ItemsORM] = session.query(ItemsORM).filter(ItemsORM.property_id == building_id,
+                                                                           ItemsORM.deleted == False).all()
             try:
                 billable_items = [BillableItem(**item.to_dict())
                                   for item in billable_list if isinstance(item, ItemsORM)] if billable_list else []
@@ -583,9 +587,10 @@ class CompaniesController:
         :return:
         """
         with Session() as session:
-            charged_items: list[UserChargesORM] = session.query(UserChargesORM).filter(UserChargesORM.property_id == building_id,
-                                                                 UserChargesORM.unit_id == unit_id,
-                                                                 UserChargesORM.is_invoiced == False).all()
+            charged_items: list[UserChargesORM] = session.query(UserChargesORM).filter(
+                UserChargesORM.property_id == building_id,
+                UserChargesORM.unit_id == unit_id,
+                UserChargesORM.is_invoiced == False).all()
             try:
                 unit_charge_list = [CreateUnitCharge(**charge.to_dict()) for charge in charged_items
                                     if isinstance(charge, UserChargesORM)] if charged_items else []
