@@ -7,11 +7,11 @@ from CloudFlare import CloudFlare
 from CloudFlare.exceptions import CloudFlareAPIError
 from flask import Flask, request, abort, Response
 from requests import ReadTimeout
+from requests.exceptions import ConnectionError
 
-from src.logger import init_logger
 from src.config import config_instance
 from src.config import is_development
-
+from src.logger import init_logger
 
 DEFAULT_IPV4 = ['173.245.48.0/20', '103.21.244.0/22', '103.22.200.0/22', '103.31.4.0/22',
                 '141.101.64.0/18', '108.162.192.0/18', '190.93.240.0/20', '188.114.96.0/20',
@@ -192,8 +192,7 @@ class Firewall:
         """
         return headers.get("x-real-ip")
 
-    @staticmethod
-    def get_ip_ranges() -> tuple[list[str], list[str]]:
+    def get_ip_ranges(self) -> tuple[list[str], list[str]]:
         """
         **get_ip_ranges**
             obtains a list of ip addresses from cloudflare edge servers
@@ -210,6 +209,7 @@ class Firewall:
                     ipv6_cidrs = response_data.get('result', {}).get('ipv6_cidrs', [])
                     return ipv4_cidrs, ipv6_cidrs
                 except (ConnectionError, ReadTimeout):
+                    self._logger.error("Firewall failed to connect to Cloudflare - unable to verify CIDRS")
                     return [], []
 
         except CloudFlareAPIError:

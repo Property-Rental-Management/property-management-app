@@ -59,6 +59,13 @@ class LeaseController:
 
     @staticmethod
     async def get_agreements_by_payment_terms(self, payment_terms: str = "monthly") -> list[LeaseAgreement]:
+        """
+        **get_agreements_by_payment_terms**
+
+        :param self:
+        :param payment_terms:
+        :return:
+        """
         with Session() as session:
             try:
                 lease_orm_list: list[LeaseAgreementORM] = session.query(LeaseAgreementORM).filter(
@@ -94,8 +101,7 @@ class LeaseController:
         """
         with Session() as session:
             try:
-                if unit_ and unit_.property_id:
-                    _property_id = unit_.property_id
+                _property_id = unit_.property_id if unit_ and unit_.property_id else None
 
                 property_id = _property_id if _property_id is not None else \
                     invoice_charges[0].property_id if invoice_charges else None
