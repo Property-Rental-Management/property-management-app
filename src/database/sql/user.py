@@ -6,6 +6,7 @@ from src.database.sql import Base, engine
 
 class UserORM(Base):
     """
+
         User ORM
     """
     __tablename__ = 'users'
