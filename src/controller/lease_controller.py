@@ -94,9 +94,11 @@ class LeaseController:
         # todo obtain tenant usint unit_.tenant_id
         with Session() as session:
             try:
-                property_orm = session.query(PropertyORM).filter(PropertyORM.property_id == unit_.property_id).first()
+                property_id = invoice_charges[0].property_id if invoice_charges else unit_.property_id
+                property_orm = session.query(PropertyORM).filter(PropertyORM.property_id == property_id).first()
                 company_orm = session.query(CompanyORM).filter(CompanyORM).first()
-                tenant_orm = session.query(TenantORM).filter(TenantORM.tenant_id == unit_.tenant_id).first()
+                tenant_id = invoice_charges[0].tenant_id if invoice_charges else unit_.tenant_id
+                tenant_orm = session.query(TenantORM).filter(TenantORM.tenant_id == tenant_id).first()
                 property_: Property = Property(**property_orm.to_dict())
                 company: Company = Company(**company_orm.to_dict())
                 tenant: Tenant = Tenant(**tenant_orm.to_dict())
