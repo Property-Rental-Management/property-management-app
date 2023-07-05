@@ -26,8 +26,17 @@ class UserORM(Base):
         if not inspect(engine).has_table(cls.__tablename__):
             Base.metadata.create_all(bind=engine)
 
-    def __init__(self, user_id: str, is_tenant: bool, tenant_id: str, username: str, password_hash: str,
-                 email: str, full_name: str, contact_number: str, account_verified: bool =False):
+    def __init__(self,
+                 user_id: str,
+                 is_tenant: bool,
+                 tenant_id: str,
+                 username: str,
+                 password_hash: str,
+                 email: str,
+                 full_name: str,
+                 contact_number: str,
+                 account_verified: bool = False
+                 ):
         self.user_id = user_id
         self.tenant_id = tenant_id
         self.is_tenant = is_tenant
@@ -53,7 +62,3 @@ class UserORM(Base):
             'contact_number': self.contact_number,
             'account_verified': self.account_verified
         }
-
-
-
-
