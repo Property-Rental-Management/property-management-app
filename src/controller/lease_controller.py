@@ -81,6 +81,7 @@ class LeaseController:
                 InvoiceORM.invoice_number == invoice_number).first()
             return Invoice(**invoice_orm.to_dict())
 
+
     @error_handler
     async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit) -> Invoice:
         """
@@ -94,7 +95,15 @@ class LeaseController:
         # todo obtain tenant usint unit_.tenant_id
         with Session() as session:
             try:
-                property_id = invoice_charges[0].property_id if invoice_charges else unit_.property_id
+                _property_id = unit_.property_id if unit_ else None
+                if unit_ and unit_.property_id:
+                    _property_id = unit_.property_id
+
+                if (_property_id is None) and invoice_charges:
+                    property_id = invoice_charges[0].property_id
+                else:
+                    property_id = _property_id
+
                 property_orm = session.query(PropertyORM).filter(PropertyORM.property_id == property_id).first()
                 company_orm = session.query(CompanyORM).filter(CompanyORM).first()
                 tenant_id = invoice_charges[0].tenant_id if invoice_charges else unit_.tenant_id

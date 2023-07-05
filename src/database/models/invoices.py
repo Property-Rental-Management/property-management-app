@@ -150,7 +150,7 @@ class UnitCreateInvoiceForm(BaseModel):
     unit_id: str
     tenant_id: str
     charge_ids: list[str]
-    rental_amount: str
+    rental_amount: int
     send_invoice: str
 
     @validator('charge_ids', pre=True)

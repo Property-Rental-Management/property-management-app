@@ -29,11 +29,12 @@ async def create_invoice(user: User):
     """
     try:
         invoice_data: UnitCreateInvoiceForm = UnitCreateInvoiceForm(**request.form)
+        print(invoice_data)
+
     except ValidationError as e:
         print(e)
         print(dict(**request.form))
-        message_dict = dict(message="Unable to create invoice please input all required fields",
-                            category="danger")
+        message_dict = dict(message="Unable to create invoice please input all required fields", category="danger")
         return await redirect_to_unit(message_dict)
 
     if not (invoice_data.charge_ids or invoice_data.rental_amount):
@@ -50,7 +51,8 @@ async def create_invoice(user: User):
                                                   unit_id=invoice_data.unit_id)
     else:
         unit_ = None
-    created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges, unit_)
+    created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges=invoice_charges,
+                                                                               unit_=unit_)
 
     print(f"CREATE INVOICE: {created_invoice.dict()}")
     #     TODO render invoice to invoice template then return response
