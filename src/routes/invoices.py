@@ -3,7 +3,7 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice
-from src.database.models.properties import Unit, Property
+from src.database.models.properties import Property
 from src.database.models.users import User
 from src.main import company_controller, lease_agreement_controller
 
@@ -45,14 +45,16 @@ async def create_invoice(user: User):
     unit_charges: list[UnitCharge] = await company_controller.get_charged_items(**_vars)
     invoice_charges: list[UnitCharge] = [charge for charge in unit_charges if
                                          charge.charge_id in invoice_data.charge_ids] if invoice_data.charge_ids else []
-    unit_: Unit | None = None
-    if invoice_data.rental_amount:
-        unit_ = await company_controller.get_unit(user=user, building_id=invoice_data.property_id,
-                                                  unit_id=invoice_data.unit_id)
-    else:
-        unit_ = None
+
+    unit_ = await company_controller.get_unit(user=user, building_id=invoice_data.property_id,
+                                              unit_id=invoice_data.unit_id)
+    # checking if rental amount should be included - remember rental_amount is a checkbox -
+    # the actual rental amount is on unit_
+    include_rental: bool = invoice_data.rental_amount == "on"
+
     created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges=invoice_charges,
-                                                                               unit_=unit_)
+                                                                               unit_=unit_,
+                                                                               include_rental=include_rental)
 
     property_: Property = await company_controller.get_property(user=user, property_id=invoice_data.property_id)
     company_data = await company_controller.get_company_internal(company_id=property_.company_id)

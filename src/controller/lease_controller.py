@@ -82,10 +82,12 @@ class LeaseController:
             return Invoice(**invoice_orm.to_dict())
 
     @error_handler
-    async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit) -> Invoice | None:
+    async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit,
+                             include_rental: bool = False) -> Invoice | None:
         """
             **create_invoice**
                 will attempt to create an invoice if success returns an invoice on failure returns None
+        :param include_rental:
         :param invoice_charges:
         :param unit_:
         :return:
@@ -135,10 +137,12 @@ class LeaseController:
 
                 charge_ids = ",".join(list_charge_ids) if list_charge_ids else []
                 # TODO - should use Pydantic here to enable an extra layer of data verification before creating ORM
+                # this will set rent to zero if it should not be included on invoice
+                _rental_amount = unit_.rental_amount if include_rental else 0
                 invoice_orm: InvoiceORM = InvoiceORM(
                     invoice_number=str(uuid.uuid4()), service_name=service_name, description=description, currency="R",
                     tenant_id=tenant.tenant_id, discount=0, tax_rate=0, date_issued=date_issued, due_date=due_date,
-                    month=due_date.month, rental_amount=unit_.rental_amount, charge_ids=charge_ids, invoice_sent=False,
+                    month=due_date.month, rental_amount=_rental_amount, charge_ids=charge_ids, invoice_sent=False,
                     invoice_printed=False)
 
                 session.add(invoice_orm)

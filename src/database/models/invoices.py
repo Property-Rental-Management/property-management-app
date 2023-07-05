@@ -1,7 +1,8 @@
 import uuid
+from datetime import date, datetime
 
 from pydantic import BaseModel, Field, Extra, validator
-from datetime import date, datetime
+
 from src.database.tools import create_invoice_number
 
 
@@ -150,7 +151,7 @@ class UnitCreateInvoiceForm(BaseModel):
     unit_id: str
     tenant_id: str
     charge_ids: list[str]
-    rental_amount: int
+    rental_amount: str
     send_invoice: str
 
     @validator('charge_ids', pre=True)
