@@ -155,7 +155,7 @@ class UnitCreateInvoiceForm(BaseModel):
     send_invoice: str
 
     @validator('charge_ids', pre=True)
-    def validate_charge_ids(cls, value) -> list[str]:
+    def validate_charge_id_s(cls, value) -> list[str]:
         if isinstance(value, str):
             return value.split(",")
         return value
