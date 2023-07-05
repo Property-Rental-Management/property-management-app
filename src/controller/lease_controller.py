@@ -145,7 +145,7 @@ class LeaseController:
                 session.commit()
 
             except Exception as e:
-                print(str(e))
+                self._logger.error(str(e))
         return Invoice(**invoice_orm.to_dict())
 
     @staticmethod
