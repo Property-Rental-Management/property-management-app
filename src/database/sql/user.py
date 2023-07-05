@@ -23,7 +23,7 @@ class UserORM(Base):
             Base.metadata.create_all(bind=engine)
 
     def __init__(self, user_id: str, is_tenant: bool, tenant_id: str, username: str, password_hash: str,
-                 email: str, full_name: str, contact_number: str):
+                 email: str, full_name: str, contact_number: str, account_verified: bool =False):
         self.user_id = user_id
         self.tenant_id = tenant_id
         self.is_tenant = is_tenant
@@ -32,6 +32,7 @@ class UserORM(Base):
         self.email = email
         self.full_name = full_name
         self.contact_number = contact_number
+        self.account_verified = account_verified
 
     def __bool__(self) -> bool:
         return bool(self.user_id) and bool(self.username) and bool(self.email)
