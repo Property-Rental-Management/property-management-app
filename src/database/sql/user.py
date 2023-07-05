@@ -5,6 +5,9 @@ from src.database.sql import Base, engine
 
 
 class UserORM(Base):
+    """
+        User ORM
+    """
     __tablename__ = 'users'
 
     user_id: str = Column(String(ID_LEN), primary_key=True, unique=True)
