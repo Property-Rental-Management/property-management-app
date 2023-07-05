@@ -144,7 +144,8 @@ class LeaseController:
                     tenant_id=tenant.tenant_id, discount=0, tax_rate=0, date_issued=date_issued, due_date=due_date,
                     month=due_date.month, rental_amount=_rental_amount, charge_ids=charge_ids, invoice_sent=False,
                     invoice_printed=False)
-
+                # TODO - find a way to allow user to indicate Discount and Tax Rate - preferrably Tax rate can be set on
+                #  settings
                 session.add(invoice_orm)
                 session.commit()
 
