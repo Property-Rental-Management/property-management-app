@@ -78,7 +78,7 @@ class LeaseController:
     @error_handler
     async def get_invoice(self, invoice_number: str) -> Invoice:
         """
-
+            **get_invoice**
         :param invoice_number:
 
         :return:
@@ -161,6 +161,11 @@ class LeaseController:
 
     @staticmethod
     async def calculate_due_date(date_issued: date) -> date:
+        """
+            **calculate_due_date**
+        :param date_issued:
+        :return:
+        """
         if date_issued.day >= 7:
             if date_issued.month == 12:
                 due_date = date(date_issued.year + 1, 1, 7)
@@ -174,6 +179,7 @@ class LeaseController:
     @staticmethod
     async def get_charge_ids(invoice_charges: list[UnitCharge]) -> list[str]:
         """
+            **get_charge_ids**
 
         :param invoice_charges:
         :return:
