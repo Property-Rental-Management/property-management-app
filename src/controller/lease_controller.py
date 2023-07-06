@@ -54,7 +54,6 @@ class LeaseController:
         :param rental_amount:
         :return:
         """
-        # TODO - calculate deposit rental_amount based on user profile settings
         return rental_amount * 2
 
     @staticmethod
