@@ -1,17 +1,17 @@
 from pydantic import ValidationError
 
-from src.controller import error_handler
+from src.controller import error_handler, Controllers
 from src.database.models.properties import Unit, Property
 from src.database.models.tenants import Tenant, QuotationForm, CreateTenant, TenantAddress, CreateTenantAddress
 from src.database.models.users import User
-from src.database.sql import Session
 from src.database.sql.tenants import TenantORM, TenantAddressORM
 from src.logger import init_logger
 from src.main import company_controller
 
 
-class TenantController:
+class TenantController(Controllers):
     def __init__(self):
+        super().__init__()
         self._logger = init_logger(self.__class__.__name__)
 
     @error_handler
@@ -24,7 +24,7 @@ class TenantController:
         :param company_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
 
             tenants_list: list[TenantORM] = session.query(TenantORM).filter(TenantORM.company_id == company_id).all()
             try:
@@ -45,7 +45,7 @@ class TenantController:
         :param cell:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             tenant = session.query(TenantORM).filter(TenantORM.cell == cell).first()
             try:
                 tenant_data = Tenant(**tenant.to_dict()) if isinstance(tenant, TenantORM) else None
@@ -60,7 +60,7 @@ class TenantController:
         :param tenant_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             tenant = session.query(TenantORM).filter(TenantORM.tenant_id == tenant_id).first()
             try:
                 tenant_data = Tenant(**tenant.to_dict()) if isinstance(tenant, TenantORM) else None
@@ -71,7 +71,7 @@ class TenantController:
 
     @error_handler
     async def get_un_booked_tenants(self) -> list[Tenant]:
-        with Session() as session:
+        with self.get_session() as session:
             tenants_list: list[TenantORM] = session.query(TenantORM).filter(TenantORM.is_renting == False).all()
             try:
                 tenant_list = [Tenant(**tenant.to_dict()) for tenant in tenants_list if tenant] if tenants_list else []
@@ -111,7 +111,7 @@ class TenantController:
         :param tenant:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             tenant_orm: TenantORM = TenantORM(**tenant.dict())
             session.add(tenant_orm)
             session.commit()
@@ -124,7 +124,7 @@ class TenantController:
 
     @error_handler
     async def update_tenant(self, tenant: Tenant) -> Tenant | None:
-        with Session() as session:
+        with self.get_session() as session:
             tenant_orm: TenantORM = session.query(TenantORM).filter(TenantORM.tenant_id == tenant.tenant_id).first()
 
             if tenant_orm:
@@ -149,7 +149,7 @@ class TenantController:
         :param address_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             tenant_address_orm: TenantAddressORM = session.query(TenantAddressORM).filter(
                 TenantAddressORM.address_id == address_id).first()
             try:
@@ -169,7 +169,7 @@ class TenantController:
         :param tenant_address:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             tenant_address_orm = TenantAddressORM(**tenant_address.dict())
             session.add(tenant_address_orm)
             session.commit()

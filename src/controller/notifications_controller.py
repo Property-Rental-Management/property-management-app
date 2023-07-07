@@ -1,23 +1,21 @@
-from src.controller import error_handler
+from src.controller import error_handler, Controllers
 from src.database.models.notifications import NotificationsModel, Notification
 from src.database.sql.notifications import NotificationORM
-from src.database.sql import Session
 
 
-class NotificationsController:
+class NotificationsController(Controllers):
 
     def __init__(self):
         pass
 
-    @staticmethod
     @error_handler
-    async def get_user_notifications(user_id: str) -> NotificationsModel | None:
+    async def get_user_notifications(self, user_id: str) -> NotificationsModel | None:
         """
 
         :param user_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             notifications: list[NotificationORM] = session.query(NotificationORM).filter(
                 NotificationORM.user_id == user_id).all()
             notifications_ = [Notification(**notification.dict()) for notification in notifications]

@@ -1,13 +1,12 @@
 import uuid
 from datetime import datetime, date
 
-from src.controller import error_handler
+from src.controller import error_handler, Controllers
 from src.database.models.companies import Company
 from src.database.models.invoices import Invoice, UnitCharge
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
 from src.database.models.properties import Unit, Property
 from src.database.models.tenants import Tenant
-from src.database.sql import Session
 from src.database.sql.companies import CompanyORM
 from src.database.sql.invoices import InvoiceORM
 from src.database.sql.lease import LeaseAgreementORM
@@ -16,13 +15,14 @@ from src.database.sql.tenants import TenantORM
 from src.logger import init_logger
 
 
-class LeaseController:
+class LeaseController(Controllers):
     def __init__(self):
+        super().__init__()
         self._logger = init_logger(self.__class__.__name__)
 
     @error_handler
     async def get_all_active_lease_agreements(self) -> list[LeaseAgreement]:
-        with Session() as session:
+        with self.get_session() as session:
             lease_agreements: list[LeaseAgreementORM] = session.query(LeaseAgreementORM).filter(
                 LeaseAgreementORM.is_active == True).all()
             return [LeaseAgreement(**lease.dict()) for lease in lease_agreements]
@@ -35,7 +35,7 @@ class LeaseController:
         :param lease:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             try:
                 lease_orm: LeaseAgreementORM = LeaseAgreementORM(**lease.dict())
                 session.add(lease_orm)
@@ -56,7 +56,7 @@ class LeaseController:
         """
         return rental_amount * 2
 
-    @staticmethod
+
     async def get_agreements_by_payment_terms(self, payment_terms: str = "monthly") -> list[LeaseAgreement]:
         """
         **get_agreements_by_payment_terms**
@@ -65,7 +65,7 @@ class LeaseController:
         :param payment_terms:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             try:
                 lease_orm_list: list[LeaseAgreementORM] = session.query(LeaseAgreementORM).filter(
                     LeaseAgreementORM.is_active == True, LeaseAgreementORM.payment_period == payment_terms).all()
@@ -82,7 +82,7 @@ class LeaseController:
 
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             invoice_orm: InvoiceORM = session.query(InvoiceORM).filter(
                 InvoiceORM.invoice_number == invoice_number).first()
             return Invoice(**invoice_orm.to_dict())
@@ -98,7 +98,7 @@ class LeaseController:
         :param unit_:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             try:
                 _property_id = unit_.property_id if unit_ and unit_.property_id else None
 

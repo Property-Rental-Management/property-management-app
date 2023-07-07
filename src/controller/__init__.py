@@ -18,7 +18,7 @@ class Controllers:
         if self.sessions:
             return self.sessions.pop()
         self.sessions = [Session() for _ in range(20)]
-        return self.sessions.pop()
+        return self.get_session()
 
 
 class UnauthorizedError(Exception):
