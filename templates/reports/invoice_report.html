@@ -5,42 +5,42 @@
 {% block content %}
 
 
-<div id="invoice" class="effect2 m-t-120">
+    <div id="invoice" class="effect2 m-t-120">
 
-                        <div id="invoice-top">
-                            <div class="invoice-logo"></div>
-                            <div class="invoice-info">
-                                <h2>{{ company.name }}</h2>
-                                <p> {{ company.website }}<br/>
-                                    {{ company.email }}<br/>
-                                    {{ company.contant_number }}
-                                </p>
-                            </div>
-                            <!--End Info-->
-                            <div class="title">
-                                <h4>Invoice {{ invoice.invoice_number }}</h4>
-                                <p>Issued: {{ invoice.date_issued }}<br> Payment Due: {{ invoice.payment_due }}
-                                </p>
-                            </div>
-                            <!--End Title-->
-                        </div>
-                        <!--End InvoiceTop-->
+        <div id="invoice-top">
+            <div class="invoice-logo"></div>
+            <div class="invoice-info">
+                <h2>{{ company.company_name }}</h2>
+                <h3>{{ company.description }}</h3>
+                <p> {{ company.website }}<br/>
+                    {{ company.contant_number }}
+                </p>
+            </div>
+            <!--End Info-->
+            <div class="title">
+                <h4>Invoice {{ invoice.invoice_number }}</h4>
+                <p>Issued: {{ invoice.date_issued }}<br> Payment Due: {{ invoice.due_date }}
+                </p>
+            </div>
+            <!--End Title-->
+        </div>
+        <!--End InvoiceTop-->
 
-                        <div id="invoice-mid">
-                            <div class="clientlogo"></div>
-                            <div class="invoice-info">
-                                <h2>{{ invoice.customer.name }}</h2>
-                                <p>{{ invoice.customer.email }}<br> {{ invoice.customer.cel }}  </p>
-                            </div>
-                            <div id="project">
-                                <h2>{{ invoice.service_name }}</h2>
-                                <p>{{ invoice.description }}</p>
-                            </div>
-                        </div>
-                        <!--End Invoice Mid-->
-                        <div id="invoice-bot">
-                            <div id="invoice-table">
-                                <div class="table-responsive">
+        <div id="invoice-mid">
+            <div class="clientlogo"></div>
+            <div class="invoice-info">
+                <h2>{{ invoice.customer.name }}</h2>
+                <p>{{ invoice.customer.email }}<br> {{ invoice.customer.cell }}  </p>
+            </div>
+            <div id="project">
+                <h2>{{ invoice.service_name }}</h2>
+                <p>{{ invoice.description }}</p>
+            </div>
+        </div>
+        <!--End Invoice Mid-->
+        <div id="invoice-bot">
+            <div id="invoice-table">
+                <div class="table-responsive">
                                     <table class="table">
                                         <tr class="tabletitle">
                                             <td class="table-item">
@@ -72,6 +72,24 @@
                                                 </td>
                                             </tr>
                                         {% endfor %}
+                                        {% if invoice.rental_amount %}
+                                            <tr class="service">
+                                                <td class="tableitem">
+                                                    <p class="itemtext">Rental</p>
+                                                </td>
+                                                <td class="tableitem">
+                                                    <p class="itemtext">1</p>
+                                                </td>
+                                                <td class="tableitem">
+                                                    <p class="itemtext">{{ invoice.rental_amount }}</p>
+                                                </td>
+                                                <td class="tableitem">
+                                                    <p class="itemtext">{{ invoice.rental_amount }}</p>
+                                                </td>
+                                            </tr>
+
+                                        {% endif %}
+
                                         <tr class="tabletitle">
                                             <td></td>
                                             <td></td>
@@ -103,30 +121,30 @@
                                             </td>
                                         </tr>
                                     </table>
-                                </div>
-                            </div>
-                            <!--End Table-->
-                            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                                <input type="hidden" name="cmd" value="_s-xclick">
-                                <input type="hidden" name="hosted_button_id" value="QRZ7QTM9XRPJ6">
-                            </form>
-                            <div id="legalcopy">
-                                <p class="legal">
-                                    {{ invoice.notes }}
-                                </p>
-                            </div>
-                            <div id="legalcopy">
-                                <h4>Banking Details</h4>
-                                <ul class="list-group">
-                                    <li class="list-group-item">Account Holder: {{ bank_account.account_holder }}</li>
-                                    <li class="list-group-item">Account Number: {{ bank_account.account_number }}</li>
-                                    <li class="list-group-item">Account Type: {{ bank_account.account_type }}</li>
-                                    <li class="list-group-item">Bank Name: {{ bank_account.bank_name }}</li>
-                                    <li class="list-group-item">Branch: {{ bank_account.branch }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!--End InvoiceBot-->
-                    </div>
+                </div>
+            </div>
+            <!--End Table-->
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id" value="QRZ7QTM9XRPJ6">
+            </form>
+            <div id="legalcopy">
+                <p class="font-weight-bold legal mb-3">
+                    {{ invoice.notes | safe }}
+                </p>
+            </div>
+            <div id="legalcopy">
+                <h4>Banking Details</h4>
+                <ul class="list-group">
+                    <li class="list-group-item  text-dark">Account Holder: {{ bank_account.account_holder }}</li>
+                    <li class="list-group-item  text-dark">Account Number: {{ bank_account.account_number }}</li>
+                    <li class="list-group-item  text-dark">Account Type: {{ bank_account.account_type }}</li>
+                    <li class="list-group-item  text-dark">Bank Name: {{ bank_account.bank_name }}</li>
+                    <li class="list-group-item  text-dark">Branch: {{ bank_account.branch }}</li>
+                </ul>
+            </div>
+        </div>
+        <!--End InvoiceBot-->
+    </div>
 
 {% endblock %}

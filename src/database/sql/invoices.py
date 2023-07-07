@@ -1,5 +1,6 @@
 from datetime import date
 
+from pydantic import ValidationError
 from sqlalchemy import Column, Integer, String, Text, Boolean, Date, ForeignKey, inspect
 
 from src.database.constants import ID_LEN, NAME_LEN
@@ -10,7 +11,7 @@ from src.database.sql.tenants import TenantORM
 
 class InvoiceORM(Base):
     __tablename__ = 'invoices'
-    invoice_number: str = Column(String(ID_LEN), primary_key=True)
+    invoice_number = Column(Integer, primary_key=True, autoincrement=True)
     tenant_id: str = Column(String(ID_LEN), ForeignKey('tenants.tenant_id'))
     service_name: str = Column(String(NAME_LEN))
     description: str = Column(String(255))
@@ -28,7 +29,6 @@ class InvoiceORM(Base):
 
     def __init__(
             self,
-            invoice_number,
             tenant_id,
             service_name,
             description,
@@ -43,7 +43,6 @@ class InvoiceORM(Base):
             invoice_sent=False,
             invoice_printed=False
     ):
-        self.invoice_number = invoice_number
         self.tenant_id = tenant_id
         self.service_name = service_name
         self.description = description
@@ -112,10 +111,14 @@ class InvoiceORM(Base):
                             print(f"item {item_orm.to_dict()}")
                             invoice_item_dict = dict(property_id=charge_item_orm.property_id,
                                                      item_number=charge_item_orm.item_number,
-                                                     description=item_orm.description, multiplier=item_orm.multiplier,
+                                                     description=item_orm.description,
+                                                     multiplier=item_orm.multiplier,
                                                      amount=charge_item_orm.amount)
-
-                            _invoiced_items.append(InvoicedItems(**invoice_item_dict).dict())
+                            try:
+                                _invoiced_items.append(InvoicedItems(**invoice_item_dict).dict())
+                            except ValidationError as e:
+                                print(f"Validation Error creating invoideItems: {str(e)}")
+            print(f"invoiced Items : {_invoiced_items}")
             return _invoiced_items
 
     @property

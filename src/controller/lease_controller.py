@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime, date
 
 from pydantic import ValidationError
@@ -57,7 +56,6 @@ class LeaseController(Controllers):
         :return:
         """
         return rental_amount * 2
-
 
     async def get_agreements_by_payment_terms(self, payment_terms: str = "monthly") -> list[LeaseAgreement]:
         """
@@ -153,25 +151,26 @@ class LeaseController(Controllers):
                 # this will set rent to zero if it should not be included on invoice
                 _rental_amount = unit_.rental_amount if include_rental else 0
                 try:
-                    invoice_orm: InvoiceORM = InvoiceORM(
-                        invoice_number=str(uuid.uuid4()), service_name=service_name, description=description,
-                        currency="R",
-                        tenant_id=tenant.tenant_id, discount=0, tax_rate=0, date_issued=date_issued, due_date=due_date,
-                        month=due_date.month, rental_amount=_rental_amount, charge_ids=charge_ids, invoice_sent=False,
-                        invoice_printed=False)
+                    invoice_orm: InvoiceORM = InvoiceORM(service_name=service_name, description=description,
+                                                         currency="R", tenant_id=tenant.tenant_id, discount=0,
+                                                         tax_rate=0, date_issued=date_issued, due_date=due_date,
+                                                         month=due_date.month, rental_amount=_rental_amount,
+                                                         charge_ids=charge_ids, invoice_sent=False,
+                                                         invoice_printed=False)
+
                     self._logger.info(f"Invoice ORM : {invoice_orm}")
                 except Exception as e:
                     self._logger.error(str(e))
                 # TODO - find a way to allow user to indicate Discount and Tax Rate - preferrably Tax rate can be set on
                 #  settings
+                session.add(invoice_orm)
+                session.commit()
                 try:
                     _response = Invoice(**invoice_orm.to_dict())
                 except ValidationError as e:
                     self._logger.error(str(e))
-                self._logger.info(_response)
+                self._logger.info(f"Invoice Created Successfully : {_response}")
 
-                session.add(invoice_orm)
-                session.commit()
                 return _response
 
             except Exception as e:

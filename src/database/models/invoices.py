@@ -3,8 +3,6 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, Field, Extra, validator
 
-from src.database.tools import create_invoice_number
-
 
 class Customer(BaseModel):
     """
@@ -44,6 +42,19 @@ class InvoicedItems(BaseModel):
     def sub_total(self) -> int:
         return self.amount * self.multiplier
 
+    def dict(self) -> dict[str, str | int]:
+        return {
+            'property_id': self.property_id,
+            'item_number': self.item_number,
+            'description': self.description,
+            'multiplier': self.multiplier,
+            'amount': self.amount,
+            'sub_total': self.sub_total
+        }
+
+    class Config:
+        extra = Extra.ignore
+
 
 class CreateInvoicedItem(BaseModel):
     item_number: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -74,8 +85,7 @@ class Invoice(BaseModel):
     - items (list[str]): A list of items included in the invoice.
     """
 
-    invoice_number: str = Field(default_factory=create_invoice_number,
-                                description="The invoice number.")
+    invoice_number: int
     service_name: str
     description: str
     currency: str
@@ -125,8 +135,32 @@ class Invoice(BaseModel):
         """
         return _notes
 
+    def dict(self):
+        return {
+            'invoice_number': self.invoice_number,
+            'service_name': self.service_name,
+            'description': self.description,
+            'currency': self.currency,
+            'customer': self.customer,
+            'discount': self.discount,
+            'tax_rate': self.tax_rate,
+            'date_issued': self.date_issued,
+            'due_date': self.due_date,
+            'charge_ids': self.charge_ids,
+            'invoice_items': self.invoice_items,
+            'invoice_sent': self.invoice_sent,
+            'invoice_printed': self.invoice_printed,
+            'rental_amount': self.rental_amount,
+            'total_amount': self.total_amount,
+            'total_taxes': self.total_taxes,
+            'amount_payable': self.amount_payable,
+            'days_remaining': self.days_remaining,
+            'notes': self.notes
+        }
+
     class Config:
         extra = Extra.ignore
+
 
 class UnitCharge(BaseModel):
     charge_id: str
