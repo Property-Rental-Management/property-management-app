@@ -98,17 +98,14 @@ class InvoiceORM(Base):
             charge_ids = self.charge_ids
             if isinstance(charge_ids, list):
                 charge_ids = ",".join(charge_ids)
-            print(f"charge ids : {charge_ids}")
             for _charge_id in charge_ids.split(","):
                 if _charge_id:
                     charge_item_orm: UserChargesORM = session.query(UserChargesORM).filter(
                         UserChargesORM.charge_id == _charge_id).first()
                     if charge_item_orm:
-                        print(f"Charge Item {charge_item_orm.to_dict()}")
                         item_orm: ItemsORM = session.query(ItemsORM).filter(
                             ItemsORM.item_number == charge_item_orm.item_number).first()
                         if item_orm:
-                            print(f"item {item_orm.to_dict()}")
                             invoice_item_dict = dict(property_id=charge_item_orm.property_id,
                                                      item_number=charge_item_orm.item_number,
                                                      description=item_orm.description,
@@ -117,8 +114,8 @@ class InvoiceORM(Base):
                             try:
                                 _invoiced_items.append(InvoicedItems(**invoice_item_dict).dict())
                             except ValidationError as e:
-                                print(f"Validation Error creating invoideItems: {str(e)}")
-            print(f"invoiced Items : {_invoiced_items}")
+                                pass
+
             return _invoiced_items
 
     @property

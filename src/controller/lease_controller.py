@@ -145,7 +145,7 @@ class LeaseController(Controllers):
 
                 list_charge_ids = await self.get_charge_ids(invoice_charges=invoice_charges) \
                     if invoice_charges else []
-                print(f'charge_ids : {list_charge_ids}')
+
                 charge_ids = ",".join(list_charge_ids) if list_charge_ids else []
                 # TODO - should use Pydantic here to enable an extra layer of data verification before creating ORM
                 # this will set rent to zero if it should not be included on invoice
