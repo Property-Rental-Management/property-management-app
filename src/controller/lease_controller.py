@@ -130,8 +130,8 @@ class LeaseController(Controllers):
                     Tenant : {tenant}
                     """)
 
-                service_name = f"{property_.name} Invoice" if property_.name else None
-                description = f"{company.company_name} Monthly Rental for a Unit on {property_.name}" \
+                service_name: str = f"{property_.name} Invoice" if property_.name else None
+                description: str = f"{company.company_name} Monthly Rental for a Unit on {property_.name}" \
                     if company.company_name and property_.name else None
 
                 if service_name is None or description is None:
@@ -203,6 +203,15 @@ class LeaseController(Controllers):
             **get_charge_ids**
 
         :param invoice_charges:
-        :return:
+        :return: list[str]
         """
         return [charge.charge_id for charge in invoice_charges if charge] if invoice_charges else []
+
+    async def get_invoices(self, tenant_id: str) -> list[Invoice]:
+        """
+            **get_invoices**
+        :return:
+        """
+        with self.get_session() as session:
+            invoice_list: list[InvoiceORM] = session.query(InvoiceORM).filter(InvoiceORM.tenant_id == tenant_id).all()
+            return [Invoice(**_invoice.to_dict()) for _invoice in invoice_list if _invoice] if invoice_list else []

@@ -28,24 +28,24 @@
               <table id="invoiceTable" class="table table-striped">
                 <thead>
                   <tr>
-                    <th>Invoice Number</th>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th>Select</th>
+                      <th>Invoice Number</th>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Select</th>
                   </tr>
                 </thead>
-                <tbody>
+                  <tbody>
                   {% for invoice in historical_invoices %}
-                  <tr>
-                    <td>{{ invoice.invoice_number }}</td>
-                    <td>{{ invoice.date }}</td>
-                    <td>{{ invoice.amount }}</td>
-                    <td>
-                      <input type="checkbox" name="invoice_numbers[]" value="{{ invoice.invoice_number }}">
-                    </td>
-                  </tr>
+                      <tr>
+                          <td>{{ invoice.invoice_number }}</td>
+                          <td>{{ invoice.date_issued }}</td>
+                          <td>{{ invoice.amount_payable }}</td>
+                          <td>
+                              <input type="checkbox" name="invoice_numbers[]" value="{{ invoice.invoice_number }}">
+                          </td>
+                      </tr>
                   {% endfor %}
-                </tbody>
+                  </tbody>
 
               </table>
 

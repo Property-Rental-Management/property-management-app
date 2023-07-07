@@ -141,7 +141,9 @@ async def get_unit(user: User, building_id: str, unit_id: str):
     :return:
     """
     context = dict(user=user.dict())
+    historical_invoices = {}
     unit_data: Unit = await company_controller.get_unit(user=user, building_id=building_id, unit_id=unit_id)
+
     if unit_data and unit_data.tenant_id:
         tenant_data: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=unit_data.tenant_id)
         context.update({'tenant': tenant_data.dict()})
@@ -150,6 +152,7 @@ async def get_unit(user: User, building_id: str, unit_id: str):
             company_data: Company = await company_controller.get_company_internal(company_id=tenant_data.company_id)
             if company_data:
                 context.update({'company': company_data.dict()})
+            historical_invoices = await lease_agreement_controller.get_invoices(tenant_id=tenant_data.tenant_id)
     else:
         tenants_list: list[Tenant] = await tenant_controller.get_un_booked_tenants()
         context.update({'tenants': tenants_list})
@@ -166,7 +169,8 @@ async def get_unit(user: User, building_id: str, unit_id: str):
 
     context.update({'unit': unit_data,
                     'billable_items': billable_dicts,
-                    'charged_items': charged_items_dicts})
+                    'charged_items': charged_items_dicts,
+                    'historical_invoices': historical_invoices})
 
     return render_template('building/units/unit.html', **context)
 
