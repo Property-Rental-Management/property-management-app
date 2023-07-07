@@ -1,10 +1,24 @@
 import functools
-from flask import redirect, url_for, flash
 
-from src.logger import init_logger
+from flask import redirect, url_for, flash
 from sqlalchemy.exc import OperationalError, ProgrammingError, IntegrityError
 
+from src.database.sql import Session
+from src.logger import init_logger
+
 error_logger = init_logger("error_logger")
+
+
+class Controllers:
+
+    def __init__(self):
+        self.sessions = [Session() for _ in range(20)]
+
+    def get_session(self) -> Session:
+        if self.sessions:
+            return self.sessions.pop()
+        self.sessions = [Session() for _ in range(20)]
+        return self.sessions.pop()
 
 
 class UnauthorizedError(Exception):

@@ -2,22 +2,22 @@ import uuid
 
 from pydantic import ValidationError
 
-from src.controller import error_handler, UnauthorizedError
+from src.controller import error_handler, UnauthorizedError, Controllers
 from src.database.models.bank_accounts import BusinessBankAccount
 from src.database.models.companies import Company, UpdateCompany, TenantRelationCompany, CreateTenantCompany, \
     UpdateTenantCompany
 from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge
 from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty
 from src.database.models.users import User
-from src.database.sql import Session
 from src.database.sql.bank_account import BankAccountORM
 from src.database.sql.companies import CompanyORM, UserCompanyORM, TenantCompanyORM
 from src.database.sql.invoices import ItemsORM, UserChargesORM
 from src.database.sql.properties import PropertyORM, UnitORM
 
 
-class CompaniesController:
+class CompaniesController(Controllers):
     def __init__(self):
+        super().__init__()
         pass
 
     @error_handler
@@ -26,10 +26,9 @@ class CompaniesController:
             UserCompanyORM.user_id == user_id, UserCompanyORM.company_id == company_id).first()
         return isinstance(result, UserCompanyORM)
 
-    @staticmethod
     @error_handler
-    async def get_user_companies(user_id: str) -> list[Company]:
-        with Session() as session:
+    async def get_user_companies(self, user_id: str) -> list[Company]:
+        with self.get_session() as session:
             user_company_list = session.query(UserCompanyORM).filter(UserCompanyORM.user_id == user_id).all()
 
             response = []
@@ -44,7 +43,7 @@ class CompaniesController:
 
     @error_handler
     async def get_company(self, company_id: str, user_id: str) -> Company | None:
-        with Session() as session:
+        with self.get_session() as session:
             _is_company_member: bool = await self.is_company_member(company_id=company_id,
                                                                     user_id=user_id,
                                                                     session=session)
@@ -65,15 +64,14 @@ class CompaniesController:
         :param company_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_company: UserCompanyORM = session.query(UserCompanyORM).filter(
                 UserCompanyORM.company_id == company_id).filter()
             return user_company
 
-    @staticmethod
     @error_handler
-    async def get_company_internal(company_id: str) -> Company | None:
-        with Session() as session:
+    async def get_company_internal(self, company_id: str) -> Company | None:
+        with self.get_session() as session:
             company_orm = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
 
             try:
@@ -83,13 +81,12 @@ class CompaniesController:
 
             return company_data
 
-    @staticmethod
     @error_handler
-    async def create_company(company: Company, user: User) -> Company:
+    async def create_company(self, company: Company, user: User) -> Company:
         # Perform necessary operations to create the company_id
         # For example, you can save the company_id data in a database
         # and associate it with the user
-        with Session() as session:
+        with self.get_session() as session:
             # TODO Check if payment is already made
             company_orm: CompanyORM = CompanyORM(**company.dict())
             try:
@@ -104,30 +101,29 @@ class CompaniesController:
 
             return response
 
-    @staticmethod
     @error_handler
-    async def create_company_internal(company: CreateTenantCompany) -> Company:
+    async def create_company_internal(self, company: CreateTenantCompany) -> Company:
         """
         **create_company_internal**
 
         :param company:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             _company = Company(**company.dict())
             company_orm: CompanyORM = CompanyORM(**_company.dict())
             session.add(company_orm)
             session.commit()
             return company
 
-    @staticmethod
     @error_handler
-    async def create_company_tenant_relation_internal(company_relation: TenantRelationCompany) -> TenantRelationCompany:
+    async def create_company_tenant_relation_internal(self,
+                                                      company_relation: TenantRelationCompany) -> TenantRelationCompany:
         """
             **create_company_tenant_relation_internal**
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             company_tenant_relation_orm: TenantCompanyORM = TenantCompanyORM(**company_relation.dict())
             session.add(company_tenant_relation_orm)
             session.commit()
@@ -142,7 +138,7 @@ class CompaniesController:
         :param company_data:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
             company_id = company_data.company_id
             is_company_member: bool = await self.is_company_member(user_id=user_id, company_id=company_id,
@@ -169,7 +165,7 @@ class CompaniesController:
             **update_tenant_company**
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             company_id: str = company_data.company_id
             o_company_data: CompanyORM = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
 
@@ -190,7 +186,7 @@ class CompaniesController:
             will either update or create a new bank account record
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
             company_id = account_details.company_id
             is_company_member: bool = await self.is_company_member(user_id=user_id, company_id=company_id,
@@ -220,7 +216,7 @@ class CompaniesController:
         :param _property:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
             company_id = _property.company_id
             is_company_member: bool = await self.is_company_member(user_id=user_id, company_id=company_id,
@@ -235,7 +231,7 @@ class CompaniesController:
 
     @error_handler
     async def update_property(self, user: User, property_details: UpdateProperty) -> Property | None:
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
             company_id = property_details.company_id
             is_company_member: bool = await self.is_company_member(user_id=user_id,
@@ -272,7 +268,7 @@ class CompaniesController:
         :param company_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
             is_company_member: bool = await self.is_company_member(user_id=user_id,
                                                                    company_id=company_id,
@@ -296,7 +292,7 @@ class CompaniesController:
         :param property_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             property_: PropertyORM = session.query(PropertyORM).filter(PropertyORM.property_id == property_id).first()
             try:
                 _property = Property(**property_.to_dict()) if isinstance(property_, PropertyORM) else None
@@ -305,7 +301,7 @@ class CompaniesController:
 
             return _property
 
-    @staticmethod
+
     @error_handler
     async def user_company_id(company_id: str) -> list[UserCompanyORM]:
         """
@@ -313,7 +309,7 @@ class CompaniesController:
         :param company_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session as session:
             users_for_company: list[UserCompanyORM] = session.query(UserCompanyORM).filter(
                 UserCompanyORM.company_id == company_id).all()
             return users_for_company
@@ -326,7 +322,7 @@ class CompaniesController:
         :param company_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
             is_company_member: bool = await self.is_company_member(user_id=user_id, company_id=company_id,
                                                                    session=session)
@@ -350,7 +346,7 @@ class CompaniesController:
         :param property_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             _property: PropertyORM = session.query(PropertyORM).filter(
                 PropertyORM.property_id == property_id).first()
 
@@ -373,7 +369,7 @@ class CompaniesController:
 
         :return: False
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
 
             _property: PropertyORM = session.query(PropertyORM).filter(
@@ -402,7 +398,7 @@ class CompaniesController:
         :param property_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
 
             _property: PropertyORM = session.query(PropertyORM).filter(
@@ -432,7 +428,7 @@ class CompaniesController:
         :param unit_data:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_id = user.user_id
 
             _property: PropertyORM = session.query(PropertyORM).filter(
@@ -462,7 +458,7 @@ class CompaniesController:
         :param unit_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             unit_data: UnitORM = session.query(UnitORM).filter(
                 UnitORM.property_id == building_id, UnitORM.unit_id == unit_id).first()
             if unit_data is None:
@@ -481,7 +477,7 @@ class CompaniesController:
         :param unit_data:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             unit_orm: UnitORM = session.query(UnitORM).filter(UnitORM.unit_id == unit_data.unit_id,
                                                               UnitORM.property_id == unit_data.property_id).first()
 
@@ -505,7 +501,7 @@ class CompaniesController:
         :param billable_item:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             billable_orm: ItemsORM = ItemsORM(**billable_item.dict())
             session.add(billable_orm)
             session.commit()
@@ -513,14 +509,14 @@ class CompaniesController:
 
     @error_handler
     async def get_billed_item(self, property_id: str, item_number: str):
-        with Session() as session:
+        with self.get_session() as session:
             billable_orm: ItemsORM = session.query(ItemsORM).filter(ItemsORM.property_id == property_id,
                                                                     ItemsORM.item_number == item_number).first()
             return CreateInvoicedItem(**billable_orm.to_dict())
 
     @error_handler
     async def delete_billed_item(self, property_id: str, item_number: str):
-        with Session() as session:
+        with self.get_session() as session:
             billable_orm: ItemsORM = session.query(ItemsORM).filter(ItemsORM.property_id == property_id).first()
             billable_orm.deleted = True
             session.merge(billable_orm)
@@ -540,7 +536,7 @@ class CompaniesController:
         :param building_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             billable_list: list[ItemsORM] = session.query(ItemsORM).filter(ItemsORM.property_id == building_id,
                                                                            ItemsORM.deleted == False).all()
             try:
@@ -557,7 +553,7 @@ class CompaniesController:
         :param charge_item:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             charge_item_orm: UserChargesORM = UserChargesORM(**charge_item.dict())
             session.add(charge_item_orm)
             session.commit()
@@ -569,7 +565,7 @@ class CompaniesController:
 
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             charge_item_orm: UserChargesORM = session.query(UserChargesORM).filter(
                 UserChargesORM.charge_id == charge_id).first()
             _unit_charge = CreateUnitCharge(**charge_item_orm.to_dict())
@@ -586,7 +582,7 @@ class CompaniesController:
         :param unit_id:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             charged_items: list[UserChargesORM] = session.query(UserChargesORM).filter(
                 UserChargesORM.property_id == building_id,
                 UserChargesORM.unit_id == unit_id,
@@ -607,6 +603,6 @@ class CompaniesController:
         :param item_number:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             billable_item: ItemsORM = session.query(ItemsORM).filter(ItemsORM.item_number == item_number).first()
             return BillableItem(**billable_item.to_dict())

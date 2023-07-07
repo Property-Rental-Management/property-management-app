@@ -1,20 +1,21 @@
-import uuid
 import time
+import uuid
+
 from flask import Flask, render_template
 from pydantic import ValidationError
 from sqlalchemy import or_
 
+from src.controller import error_handler, UnauthorizedError, Controllers
 from src.database.models.users import User, CreateUser
-from src.database.sql import Session
 from src.database.sql.user import UserORM
-from src.controller import error_handler, UnauthorizedError
-from src.main import send_mail
 from src.emailer import EmailModel
+from src.main import send_mail
 
 
-class UserController:
+class UserController(Controllers):
 
     def __init__(self):
+        super().__init__()
         self._time_limit = 360
         self._verification_tokens: dict[str, int | dict[str, str | int]] = {}
 
@@ -28,7 +29,7 @@ class UserController:
         :param token: The password reset token to validate.
         :return: True if the token is valid, False otherwise.
         """
-        if token in set(self._verification_tokens.key()):
+        if token in set(self._verification_tokens.keys()):
             timestamp: int = self._verification_tokens[token]
             current_time: int = int(time.time())
             elapsed_time = current_time - timestamp
@@ -36,9 +37,8 @@ class UserController:
 
         return False
 
-    @staticmethod
     @error_handler
-    async def get(user_id: str) -> dict[str, str] | None:
+    async def get(self, user_id: str) -> dict[str, str] | None:
         """
 
         :param user_id:
@@ -47,13 +47,12 @@ class UserController:
         if not user_id:
             return None
 
-        with Session() as session:
+        with self.get_session() as session:
             user_data: UserORM = session.query(UserORM).filter(UserORM.user_id == user_id).first()
             return user_data.to_dict()
 
-    @staticmethod
     @error_handler
-    async def get_by_email(email: str) -> User | None:
+    async def get_by_email(self, email: str) -> User | None:
         """
 
         :param email:
@@ -62,7 +61,7 @@ class UserController:
         if not email:
             return None
 
-        with Session() as session:
+        with self.get_session() as session:
             user_data: UserORM = session.query(UserORM).filter(UserORM.email == email.casefold()).first()
 
             return User(**user_data.to_dict()) if user_data else None
@@ -112,15 +111,14 @@ class UserController:
 
         return password_reset_link
 
-    @staticmethod
     @error_handler
-    async def post(user: CreateUser) -> User | None:
+    async def post(self, user: CreateUser) -> User | None:
         """
 
         :param user:
         :return:
         """
-        with Session() as session:
+        with self.get_session() as session:
             user_data: UserORM = session.query(UserORM).filter(or_(UserORM.user_id == user.user_id,
                                                                    UserORM.email == user.email)).first()
             if user_data:
@@ -131,10 +129,9 @@ class UserController:
             session.commit()
             return User(**user_data.to_dict())
 
-    @staticmethod
     @error_handler
-    async def put(user: User) -> dict[str, str] | None:
-        with Session() as session:
+    async def put(self, user: User) -> dict[str, str] | None:
+        with self.get_session() as session:
             user_data: UserORM = session.query(UserORM).filter_by(user_id=user.user_id).first()
             if not user_data:
                 return None
@@ -150,10 +147,9 @@ class UserController:
 
             return user_data.to_dict()
 
-    @staticmethod
     @error_handler
-    async def login(username: str, password: str) -> User | None:
-        with Session() as session:
+    async def login(self, username: str, password: str) -> User | None:
+        with self.get_session() as session:
             user_data: UserORM = session.query(UserORM).filter_by(username=username).first()
             try:
                 if user_data:
@@ -206,4 +202,3 @@ class UserController:
         current_time: int = int(time.time())
         elapsed_time = current_time - int(_data.get('timestamp', 0))
         return (elapsed_time < self._time_limit) and (email.casefold() == _data.get('email'))
-

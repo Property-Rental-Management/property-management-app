@@ -1,16 +1,16 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from pydantic import ValidationError
 
-from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge, PrintInvoiceForm
-from src.logger import init_logger
-from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
-from src.database.models.tenants import Tenant
-from src.database.models.notifications import NotificationsModel
-from src.main import company_controller, notifications_controller, tenant_controller, lease_agreement_controller
-from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty, UpdateUnit
-from src.database.models.companies import Company
-from src.database.models.users import User
 from src.authentication import login_required
+from src.database.models.companies import Company
+from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge, PrintInvoiceForm
+from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
+from src.database.models.notifications import NotificationsModel
+from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty, UpdateUnit
+from src.database.models.tenants import Tenant
+from src.database.models.users import User
+from src.logger import init_logger
+from src.main import company_controller, notifications_controller, tenant_controller, lease_agreement_controller
 
 buildings_route = Blueprint('buildings', __name__)
 buildings_logger = init_logger("Buildings-Router")
@@ -164,7 +164,8 @@ async def get_unit(user: User, building_id: str, unit_id: str):
         flash(message="Could not find Unit with that ID", category="danger")
         redirect(url_for('buildings.get_building', building_id=building_id))
 
-    context.update({'unit': unit_data, 'billable_items': billable_dicts,
+    context.update({'unit': unit_data,
+                    'billable_items': billable_dicts,
                     'charged_items': charged_items_dicts})
 
     return render_template('building/units/unit.html', **context)

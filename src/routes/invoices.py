@@ -45,27 +45,34 @@ async def create_invoice(user: User):
 
     _vars = dict(building_id=invoice_data.property_id, unit_id=invoice_data.unit_id)
     unit_charges: list[UnitCharge] = await company_controller.get_charged_items(**_vars)
-    invoice_logger.info(f"found unit charges : {unit_charges}")
+    if unit_charges:
+        invoice_logger.info(f"found unit charges : {unit_charges}")
     invoice_charges: list[UnitCharge] = [charge for charge in unit_charges if
                                          charge.charge_id in invoice_data.charge_ids] if invoice_data.charge_ids else []
 
     unit_ = await company_controller.get_unit(user=user, building_id=invoice_data.property_id,
                                               unit_id=invoice_data.unit_id)
-    invoice_logger.info(f"found Unit : {unit_.dict()}")
-    # checking if rental amount should be included - remember rental_amount is a checkbox -
-    # the actual rental amount is on unit_
+    if unit_:
+        invoice_logger.info(f"found Unit : {unit_.dict()}")
+        # checking if rental amount should be included - remember rental_amount is a checkbox -
+        # the actual rental amount is on unit_
+
     include_rental: bool = invoice_data.rental_amount == "on"
 
     created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges=invoice_charges,
                                                                                unit_=unit_,
                                                                                include_rental=include_rental)
-    invoice_logger.info(f"Invoice created : {created_invoice.dict()}")
+    if created_invoice:
+        invoice_logger.info(f"Invoice created : {created_invoice.dict()}")
 
     property_: Property = await company_controller.get_property(user=user, property_id=invoice_data.property_id)
     company_data = await company_controller.get_company_internal(company_id=property_.company_id)
-    _title = f"{property_.name} - Invoice"
-    context = dict(invoice=created_invoice.dict(), company=company_data.dict(), title=_title)
-    return render_template('reports/invoice_report.html', **context)
+    if property_ and company_data:
+        _title = f"{property_.name} - Invoice"
+        flash(message="Successfully created Invoice", category="success")
+        context = dict(invoice=created_invoice.dict(), company=company_data.dict(), title=_title)
+
+        return render_template('reports/invoice_report.html', **context)
 
 
 async def redirect_to_unit(message_dict: dict[str, str]):
