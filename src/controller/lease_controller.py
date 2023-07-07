@@ -2,13 +2,13 @@ from datetime import datetime, date
 
 from pydantic import ValidationError
 
-from database.sql import Session
 from src.controller import error_handler, Controllers
 from src.database.models.companies import Company
 from src.database.models.invoices import Invoice, UnitCharge
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
 from src.database.models.properties import Unit, Property
 from src.database.models.tenants import Tenant
+from src.database.sql import Session
 from src.database.sql.companies import CompanyORM
 from src.database.sql.invoices import InvoiceORM, UserChargesORM
 from src.database.sql.lease import LeaseAgreementORM
