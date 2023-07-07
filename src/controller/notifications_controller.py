@@ -6,7 +6,7 @@ from src.database.sql.notifications import NotificationORM
 class NotificationsController(Controllers):
 
     def __init__(self):
-        pass
+        super().__init__()
 
     @error_handler
     async def get_user_notifications(self, user_id: str) -> NotificationsModel | None:
