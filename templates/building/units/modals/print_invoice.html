@@ -19,35 +19,37 @@
             <div class="form-group">
               <label for="invoice_option" class="font-weight-bold">Select an option:</label>
               <select id="invoice_option" name="invoice_option" class="form-control">
-                <option value="current">Print Current Invoice</option>
-                <option value="select">Select Invoice</option>
+                  <option value="current">Print Current Invoice</option>
+                  <option value="select">Select Invoice</option>
               </select>
             </div>
-            <div id="invoiceTableDiv">
-              <h5>Select an invoice:</h5>
-              <table id="invoiceTable" class="table table-striped">
-                <thead>
-                  <tr>
-                      <th>Invoice Number</th>
-                      <th>Date</th>
-                      <th>Amount</th>
-                      <th>Select</th>
-                  </tr>
-                </thead>
-                  <tbody>
-                  {% for invoice in historical_invoices %}
+              <div id="invoiceTableDiv">
+                  <h5>Select an invoice:</h5>
+                  <table id="invoiceTable" class="table table-striped">
+                      <thead>
                       <tr>
-                          <td>{{ invoice.invoice_number }}</td>
-                          <td>{{ invoice.date_issued }}</td>
-                          <td>{{ invoice.amount_payable }}</td>
-                          <td>
-                              <input type="checkbox" name="invoice_numbers[]" value="{{ invoice.invoice_number }}">
-                          </td>
+                          <th>Invoice Number</th>
+                          <th>Customer</th>
+                          <th>Date</th>
+                          <th>Amount</th>
+                          <th>Select</th>
                       </tr>
-                  {% endfor %}
-                  </tbody>
+                      </thead>
+                      <tbody>
+                      {% for invoice in historical_invoices %}
+                          <tr>
+                              <td>{{ invoice.invoice_number }}</td>
+                              <td>{{ invoice.customer.name }}</td>
+                              <td>{{ invoice.date_issued }}</td>
+                              <td>{{ invoice.amount_payable }}</td>
+                              <td>
+                                  <input type="checkbox" name="invoice_numbers[]" value="{{ invoice.invoice_number }}">
+                              </td>
+                          </tr>
+                      {% endfor %}
+                      </tbody>
 
-              </table>
+                  </table>
 
             </div>
           {% if not historical_invoices %}
