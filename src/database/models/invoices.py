@@ -90,6 +90,15 @@ class Invoice(BaseModel):
     invoice_printed: bool
     rental_amount: int
 
+    @validator('charge_ids', pre=True)
+    def validate_charge_ids(cls, value):
+        print(f"value = {value}")
+        if isinstance(value, str):
+            return value.split(",")
+        elif isinstance(value, list):
+            return value
+        raise ValueError(f"invalid charge_ids {value}")
+
     @property
     def total_amount(self) -> int:
         return sum(item.sub_total for item in self.invoice_items) + self.rental_amount
@@ -116,6 +125,8 @@ class Invoice(BaseModel):
         """
         return _notes
 
+    class Config:
+        extra = Extra.ignore
 
 class UnitCharge(BaseModel):
     charge_id: str

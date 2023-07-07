@@ -1,12 +1,11 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, Date, ForeignKey, inspect
 from datetime import date
 
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Text, Boolean, Date, ForeignKey, inspect
 
-from src.database.sql.tenants import TenantORM
-from src.database.models.invoices import InvoicedItems, Customer
 from src.database.constants import ID_LEN, NAME_LEN
+from src.database.models.invoices import InvoicedItems, Customer
 from src.database.sql import Base, engine, Session
+from src.database.sql.tenants import TenantORM
 
 
 class InvoiceORM(Base):
@@ -64,7 +63,7 @@ class InvoiceORM(Base):
         if not inspect(engine).has_table(cls.__tablename__):
             Base.metadata.create_all(bind=engine)
 
-    def to_dict(self) -> dict[str, str | date | int | list[str] | Customer | list[InvoicedItems]]:
+    def to_dict(self) -> dict[str, str | date | int | list[str] | dict | list[dict]]:
         """
         Convert the instance attributes to a dictionary.
 
@@ -82,7 +81,7 @@ class InvoiceORM(Base):
             "due_date": self.due_date,
             "month": self.month,
             "rental_amount": self.rental_amount,
-            "charge_ids": self.charge_ids.split(",") if self.charge_ids else [],
+            "charge_ids": self.charge_ids,
             "invoice_items": self.invoiced_items,
             "customer": self.customer,
             "invoice_sent": self.invoice_sent,
@@ -90,34 +89,44 @@ class InvoiceORM(Base):
         }
 
     @property
-    def invoiced_items(self) -> list[InvoicedItems]:
+    def invoiced_items(self) -> list[dict]:
         """
 
         :return:
         """
         with Session() as session:
             _invoiced_items = []
-            for _charge_id in list(self.charge_ids.split(",")):
-                charge_item_orm: UserChargesORM = session.query(UserChargesORM).filter(
-                    UserChargesORM.charge_id == _charge_id).first()
-                item_orm: ItemsORM = session.query(ItemsORM.item_number == charge_item_orm.item_number).first()
-                invoice_item_dict = dict(property_id=charge_item_orm.property_id,
-                                         item_number=charge_item_orm.item_number,
-                                         description=item_orm.description, multiplier=item_orm.multiplier,
-                                         amount=charge_item_orm.amount)
+            charge_ids = self.charge_ids
+            if isinstance(charge_ids, list):
+                charge_ids = ",".join(charge_ids)
+            print(f"charge ids : {charge_ids}")
+            for _charge_id in charge_ids.split(","):
+                if _charge_id:
+                    charge_item_orm: UserChargesORM = session.query(UserChargesORM).filter(
+                        UserChargesORM.charge_id == _charge_id).first()
+                    if charge_item_orm:
+                        print(f"Charge Item {charge_item_orm.to_dict()}")
+                        item_orm: ItemsORM = session.query(ItemsORM).filter(
+                            ItemsORM.item_number == charge_item_orm.item_number).first()
+                        if item_orm:
+                            print(f"item {item_orm.to_dict()}")
+                            invoice_item_dict = dict(property_id=charge_item_orm.property_id,
+                                                     item_number=charge_item_orm.item_number,
+                                                     description=item_orm.description, multiplier=item_orm.multiplier,
+                                                     amount=charge_item_orm.amount)
 
-                _invoiced_items.append(InvoicedItems(**invoice_item_dict))
+                            _invoiced_items.append(InvoicedItems(**invoice_item_dict).dict())
             return _invoiced_items
 
     @property
-    def customer(self) -> Customer:
+    def customer(self) -> dict:
         """
 
         :return:
         """
         with Session() as session:
             _tenant: TenantORM = session.query(TenantORM).filter(TenantORM.tenant_id == self.tenant_id).first()
-            return Customer(**_tenant.to_dict())
+            return Customer(**_tenant.to_dict()).dict()
 
 
 class ItemsORM(Base):

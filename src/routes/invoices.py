@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from pydantic import ValidationError
 
 from src.authentication import login_required
+from src.database.models.companies import Company
 from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice
 from src.database.models.properties import Property
 from src.database.models.users import User
@@ -66,11 +67,17 @@ async def create_invoice(user: User):
         invoice_logger.info(f"Invoice created : {created_invoice.dict()}")
 
     property_: Property = await company_controller.get_property(user=user, property_id=invoice_data.property_id)
-    company_data = await company_controller.get_company_internal(company_id=property_.company_id)
+    company_data: Company = await company_controller.get_company_internal(company_id=property_.company_id)
     if property_ and company_data:
         _title = f"{property_.name} - Invoice"
         flash(message="Successfully created Invoice", category="success")
-        context = dict(invoice=created_invoice.dict(), company=company_data.dict(), title=_title)
+        bank_account = await company_controller.get_bank_accounts(user=user, company_id=company_data.company_id)
+        if bank_account:
+            bank_account_dict = bank_account.dict()
+        else:
+            bank_account_dict = {}
+        context = dict(invoice=created_invoice.dict(), company=company_data.dict(), title=_title,
+                       bank_account=bank_account_dict)
 
         return render_template('reports/invoice_report.html', **context)
 
