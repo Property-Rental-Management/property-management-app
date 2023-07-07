@@ -2,6 +2,7 @@ from datetime import datetime, date
 
 from pydantic import ValidationError
 
+from database.sql import Session
 from src.controller import error_handler, Controllers
 from src.database.models.companies import Company
 from src.database.models.invoices import Invoice, UnitCharge
@@ -9,7 +10,7 @@ from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
 from src.database.models.properties import Unit, Property
 from src.database.models.tenants import Tenant
 from src.database.sql.companies import CompanyORM
-from src.database.sql.invoices import InvoiceORM
+from src.database.sql.invoices import InvoiceORM, UserChargesORM
 from src.database.sql.lease import LeaseAgreementORM
 from src.database.sql.properties import PropertyORM
 from src.database.sql.tenants import TenantORM
@@ -173,6 +174,8 @@ class LeaseController(Controllers):
                     self._logger.error(str(e))
                 self._logger.info(f"Invoice Created Successfully : {_response}")
 
+                # NOTE: marking user charges as invoiced
+                await self.mark_charges_as_invoiced(session=session, charge_ids=list_charge_ids)
                 return _response
 
             except Exception as e:
@@ -206,6 +209,20 @@ class LeaseController(Controllers):
         :return: list[str]
         """
         return [charge.charge_id for charge in invoice_charges if charge] if invoice_charges else []
+
+    @staticmethod
+    async def mark_charges_as_invoiced(session: Session, charge_ids: list[str]):
+        """
+
+        :param session:
+        :param charge_ids:
+        :return:
+        """
+        for _id in charge_ids:
+            user_charge: UserChargesORM = session.query(UserChargesORM).filter(UserChargesORM.charge_id == _id).first()
+            user_charge.is_invoiced = True
+            session.merge(user_charge)
+            session.commit()
 
     async def get_invoices(self, tenant_id: str) -> list[Invoice]:
         """

@@ -147,12 +147,13 @@ async def get_unit(user: User, building_id: str, unit_id: str):
     if unit_data and unit_data.tenant_id:
         tenant_data: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=unit_data.tenant_id)
         context.update({'tenant': tenant_data.dict()})
-        if tenant_data.company_id:
+        historical_invoices = await lease_agreement_controller.get_invoices(tenant_id=tenant_data.tenant_id)
 
+        if tenant_data.company_id:
             company_data: Company = await company_controller.get_company_internal(company_id=tenant_data.company_id)
             if company_data:
                 context.update({'company': company_data.dict()})
-            historical_invoices = await lease_agreement_controller.get_invoices(tenant_id=tenant_data.tenant_id)
+
     else:
         tenants_list: list[Tenant] = await tenant_controller.get_un_booked_tenants()
         context.update({'tenants': tenants_list})
