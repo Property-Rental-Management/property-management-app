@@ -72,6 +72,7 @@ class BillableItem(BaseModel):
     deleted: bool
 
 
+# noinspection PyMethodParameters
 class Invoice(BaseModel):
     """
     Represents an invoice.
@@ -191,6 +192,7 @@ class PrintInvoiceForm(BaseModel):
     invoice_numbers: list[str]
 
 
+# noinspection PyMethodParameters
 class UnitCreateInvoiceForm(BaseModel):
     property_id: str
     unit_id: str

@@ -10,6 +10,10 @@ from src.database.sql.tenants import TenantORM
 
 
 class InvoiceORM(Base):
+    """
+        **InvoiceORM**
+
+    """
     __tablename__ = 'invoices'
     invoice_number = Column(Integer, primary_key=True, autoincrement=True)
     tenant_id: str = Column(String(ID_LEN), ForeignKey('tenants.tenant_id'))
