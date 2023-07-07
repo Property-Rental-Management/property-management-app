@@ -99,20 +99,20 @@ class LeaseController(Controllers):
         """
         with self.get_session() as session:
             try:
-                _property_id = unit_.property_id if unit_ and unit_.property_id else None
+                _property_id: str = unit_.property_id if unit_ and unit_.property_id else None
+                property_id: str = _property_id if _property_id is not None else invoice_charges[0].property_id \
+                    if invoice_charges else None
 
-                property_id = _property_id if _property_id is not None else \
-                    invoice_charges[0].property_id if invoice_charges else None
+                property_orm: PropertyORM = session.query(PropertyORM).filter(
+                    PropertyORM.property_id == property_id).first()
+                company_orm: CompanyORM = session.query(CompanyORM).first()
 
-                property_orm = session.query(PropertyORM).filter(PropertyORM.property_id == property_id).first()
-                company_orm = session.query(CompanyORM).first()
+                tenant_id: str = invoice_charges[0].tenant_id if invoice_charges else unit_.tenant_id
+                tenant_orm: TenantORM = session.query(TenantORM).filter(TenantORM.tenant_id == tenant_id).first()
 
-                tenant_id = invoice_charges[0].tenant_id if invoice_charges else unit_.tenant_id
-                tenant_orm = session.query(TenantORM).filter(TenantORM.tenant_id == tenant_id).first()
-
-                property_ = Property(**property_orm.to_dict()) if property_orm else None
-                company = Company(**company_orm.to_dict()) if company_orm else None
-                tenant = Tenant(**tenant_orm.to_dict()) if tenant_orm else None
+                property_: Property = Property(**property_orm.to_dict()) if property_orm else None
+                company: Company = Company(**company_orm.to_dict()) if company_orm else None
+                tenant: Tenant = Tenant(**tenant_orm.to_dict()) if tenant_orm else None
 
                 if (property_ is None) or (company is None) or (tenant is None):
                     self._logger.error(f"""                    
@@ -131,19 +131,19 @@ class LeaseController(Controllers):
                     """)
 
                 service_name = f"{property_.name} Invoice" if property_.name else None
-                description = f"{company.company_name} Monthly Rental Invoice for Property: {property_.name}" \
+                description = f"{company.company_name} Monthly Rental for a Unit on {property_.name}" \
                     if company.company_name and property_.name else None
 
                 if service_name is None or description is None:
                     self._logger.error(f"""
-                    This should not happen : service_name {service_name} & Description: {description}
-                    """)
+                    This should not happen : 
+                    Service Name: {service_name} & Description: {description}""")
                     return None
 
-                date_issued = datetime.now().date()
-                due_date = await self.calculate_due_date(date_issued=date_issued)
+                date_issued: date = datetime.now().date()
+                due_date: date = await self.calculate_due_date(date_issued=date_issued)
 
-                list_charge_ids = await self.get_charge_ids(invoice_charges=invoice_charges) \
+                list_charge_ids: list[str] = await self.get_charge_ids(invoice_charges=invoice_charges) \
                     if invoice_charges else []
 
                 charge_ids = ",".join(list_charge_ids) if list_charge_ids else []
@@ -159,14 +159,16 @@ class LeaseController(Controllers):
                                                          invoice_printed=False)
 
                     self._logger.info(f"Invoice ORM : {invoice_orm}")
+
                 except Exception as e:
                     self._logger.error(str(e))
                 # TODO - find a way to allow user to indicate Discount and Tax Rate - preferrably Tax rate can be set on
                 #  settings
                 session.add(invoice_orm)
                 session.commit()
+
                 try:
-                    _response = Invoice(**invoice_orm.to_dict())
+                    _response: Invoice = Invoice(**invoice_orm.to_dict())
                 except ValidationError as e:
                     self._logger.error(str(e))
                 self._logger.info(f"Invoice Created Successfully : {_response}")
