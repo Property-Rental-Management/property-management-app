@@ -61,6 +61,13 @@ class InvoiceORM(Base):
         self.invoice_sent = invoice_sent
         self.invoice_printed = invoice_printed
 
+    def __bool__(self) -> bool:
+        """
+
+        :return:
+        """
+        return bool(self.tenant_id)
+
     @classmethod
     def create_if_not_table(cls):
         if not inspect(engine).has_table(cls.__tablename__):
@@ -94,7 +101,7 @@ class InvoiceORM(Base):
     @property
     def invoiced_items(self) -> list[dict]:
         """
-
+            **invoiced_items**
         :return:
         """
         with Session() as session:

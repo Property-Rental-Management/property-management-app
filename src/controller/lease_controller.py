@@ -165,6 +165,10 @@ class LeaseController(Controllers):
                     self._logger.error(str(e))
                 # TODO - find a way to allow user to indicate Discount and Tax Rate - preferrably Tax rate can be set on
                 #  settings
+                if not invoice_orm:
+                    self._logger.error("Whoa -- BIG Trouble not creating Invoice look at the InvoiceORM")
+                    return None
+
                 session.add(invoice_orm)
                 session.commit()
 
@@ -220,9 +224,10 @@ class LeaseController(Controllers):
         """
         for _id in charge_ids:
             user_charge: UserChargesORM = session.query(UserChargesORM).filter(UserChargesORM.charge_id == _id).first()
-            user_charge.is_invoiced = True
-            session.merge(user_charge)
-            session.commit()
+            if user_charge:
+                user_charge.is_invoiced = True
+                session.merge(user_charge)
+                session.commit()
 
     async def get_invoices(self, tenant_id: str) -> list[Invoice]:
         """
