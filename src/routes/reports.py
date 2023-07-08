@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, flash, url_for, redirect
 
-from database.models.companies import Company
 from src.authentication import login_required
 from src.controller.lease_controller import InvoiceManager
+from src.database.models.companies import Company
 from src.database.models.invoices import Invoice
 from src.database.models.users import User
 from src.main import lease_agreement_controller, company_controller
