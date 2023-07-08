@@ -209,18 +209,30 @@ class UnitEMailInvoiceForm(BaseModel):
 
 
 # noinspection PyMethodParameters
+from pydantic import Extra, validator
+
+
 class UnitCreateInvoiceForm(BaseModel):
     property_id: str
     unit_id: str
     tenant_id: str
-    charge_ids: list[str]
-    rental_amount: str
+    charge_ids: list[str] | None
+    rental_amount: str | None
     send_invoice: str
 
     @validator('charge_ids', pre=True)
-    def validate_charge_id_s(cls, value) -> list[str]:
+    def validate_charge_ids(cls, value) -> list[str]:
         if isinstance(value, str):
             return value.split(",")
+        return value
+
+    @validator('rental_amount', pre=True)
+    def validate_rental_amount(cls, value, values) -> list[str, None]:
+        charge_ids = values.get('charge_ids')
+        if value is None and charge_ids is None:
+            raise ValueError("Either 'charge_ids' or 'rental_amount' must be provided.")
+        elif value is not None and charge_ids is not None:
+            raise ValueError("Only one of 'charge_ids' or 'rental_amount' can be provided, not both.")
         return value
 
     class Config:

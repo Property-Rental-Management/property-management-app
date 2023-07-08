@@ -35,6 +35,7 @@ async def get_invoice(building_id: str, invoice_number: str):
     :param invoice_number:
     :return:
     """
+    # TODO move this to invoices
     invoice_number = await invoice_man.get_invoice(invoice_number)
     if invoice_number is None:
         flash(message="Invoice not found - inform your building admin to resend the invoice",
