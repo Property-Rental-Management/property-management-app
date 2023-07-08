@@ -303,7 +303,7 @@ class CompaniesController(Controllers):
 
 
     @error_handler
-    async def user_company_id(company_id: str) -> list[UserCompanyORM]:
+    async def user_company_id(self, company_id: str) -> list[UserCompanyORM]:
         """
 
         :param company_id:
@@ -329,6 +329,24 @@ class CompaniesController(Controllers):
             if not is_company_member:
                 raise UnauthorizedError(description="Not Authorized to access that Bank Account")
 
+            bank_account: BankAccountORM = session.query(BankAccountORM).filter(
+                BankAccountORM.company_id == company_id).first()
+            try:
+                business_account = BusinessBankAccount(**bank_account.to_dict()) if isinstance(bank_account,
+                                                                                               BankAccountORM) else None
+            except ValidationError as e:
+                pass
+            return business_account
+
+    @error_handler
+    async def get_bank_account_internal(self, company_id: str) -> BusinessBankAccount | None:
+        """
+
+        :param user:
+        :param company_id:
+        :return:
+        """
+        with self.get_session() as session:
             bank_account: BankAccountORM = session.query(BankAccountORM).filter(
                 BankAccountORM.company_id == company_id).first()
             try:

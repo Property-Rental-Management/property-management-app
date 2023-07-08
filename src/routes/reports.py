@@ -50,7 +50,7 @@ async def get_invoice(building_id: str, invoice_number: str):
     building: Property = await company_controller.get_property_by_id_internal(property_id=building_id)
     company_id = building.company_id
     company: Company = await company_controller.get_company_internal(company_id=company_id)
-    bank_account = await company_controller.get_bank_accounts(company_id=company_id)
+    bank_account = await company_controller.get_bank_account_internal(company_id=company_id)
     if company is None:
         flash(message="Error Reading Invoice Issuer Data", category="danger")
         return redirect(url_for('home.get_home'), code=302)
