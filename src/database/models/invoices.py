@@ -223,6 +223,7 @@ class UnitCreateInvoiceForm(BaseModel):
     charge_ids: list[str] | None
     rental_amount: str | None
     send_invoice: str | None
+    due_after: int | None
 
     @validator('charge_ids', pre=True)
     def validate_charge_ids(cls, value) -> list[str]:

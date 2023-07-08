@@ -62,10 +62,11 @@ async def create_invoice(user: User):
         # the actual rental amount is on unit_
 
     include_rental: bool = invoice_data.rental_amount == "on"
-
+    due_after = invoice_data.due_after
     created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges=invoice_charges,
                                                                                unit_=unit_,
-                                                                               include_rental=include_rental)
+                                                                               include_rental=include_rental,
+                                                                               due_after=due_after)
     if not created_invoice:
         message_dict = dict(message="Unable to create invoice", category="danger")
         return await redirect_to_unit(message_dict)

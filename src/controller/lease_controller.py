@@ -92,10 +92,11 @@ class LeaseController(Controllers):
             return Invoice(**invoice_orm.to_dict())
 
     async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit,
-                             include_rental: bool = False) -> Invoice | None:
+                             include_rental: bool = False, due_after: int | None = None) -> Invoice | None:
         """
             **create_invoice**
                 will attempt to create an invoice if success returns an invoice on failure returns None
+        :param due_after:
         :param include_rental:
         :param invoice_charges:
         :param unit_:
@@ -143,7 +144,7 @@ class LeaseController(Controllers):
                     return None
 
                 date_issued: date = datetime.now().date()
-                due_date: date = await self.calculate_due_date(date_issued=date_issued)
+                due_date: date = await self.calculate_due_date(date_issued=date_issued, due_after=due_after)
 
                 list_charge_ids: list[str] = await self.get_charge_ids(invoice_charges=invoice_charges) \
                     if invoice_charges else []
@@ -189,12 +190,16 @@ class LeaseController(Controllers):
             return None
 
     @staticmethod
-    async def calculate_due_date(date_issued: date) -> date:
+    async def calculate_due_date(date_issued: date, due_after: int | None) -> date:
         """
             **calculate_due_date**
+        :param due_after:
         :param date_issued:
         :return:
         """
+        if due_after is not None:
+            return date_issued + timedelta(days=due_after)
+
         if date_issued.day >= 7:
             if date_issued.month == 12:
                 due_date = date(date_issued.year + 1, 1, 7)

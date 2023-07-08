@@ -56,9 +56,14 @@
                     Send Invoice to User
                 </label>
             </div>
-
+            <div class="form-check">
+                <label class="label" for="due_after">
+                    Invoice Due After (Days)
+                </label>
+                <input class="form-control" type="number" id="due_after" name="due_after">
+            </div>
         </div>
-      <div class="modal-footer">
+        <div class="modal-footer">
           <span class="card-content font-weight-bold text-info">
               This invoice will be invoiced to {{ tenant.name }} of Unit : {{ unit.unit_number }}
           </span>
