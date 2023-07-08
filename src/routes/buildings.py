@@ -5,16 +5,17 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.companies import Company
-from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge, PrintInvoiceForm, \
-    UnitEMailInvoiceForm
+from src.database.models.invoices import (CreateInvoicedItem, BillableItem, CreateUnitCharge,
+                                          PrintInvoiceForm, UnitEMailInvoiceForm)
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
 from src.database.models.notifications import NotificationsModel
 from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty, UpdateUnit
 from src.database.models.tenants import Tenant
 from src.database.models.users import User
+from src.emailer import EmailModel
 from src.logger import init_logger
 from src.main import company_controller, notifications_controller, tenant_controller, lease_agreement_controller, \
-    invoice_man
+    invoice_man, send_mail
 
 buildings_route = Blueprint('buildings', __name__)
 buildings_logger = init_logger("Buildings-Router")
@@ -472,11 +473,20 @@ async def do_send_invoice_email(user: User):
     message_ = f"""
     {message}
 
-    Invoices are attached below:
+    <h3>Invoices are attached below:</h3>
 
     {links}
     """
-    return dict(email=message_)
+    to_ = invoice_email_form.email
+    subject_ = invoice_email_form.subject
+
+    new_mail = dict(to_=to_, subject_=subject_, html_=message_)
+
+    await send_mail.send_mail_resend(email=EmailModel(**new_mail))
+    # TODO - send the email with resend
+    flash(message="Email Sent with selected invoices", category="success")
+    return redirect(url_for('buildings.get_unit', building_id=invoice_email_form.building_id,
+                            unit_id=invoice_email_form.unit_id), code=302)
 
 
 async def process_send_mail_form() -> UnitEMailInvoiceForm:

@@ -10,8 +10,8 @@ from src.main import lease_agreement_controller, company_controller, invoice_man
 
 reports_route = Blueprint('reports', __name__)
 
-
 report_logger = init_logger('REPORT LOGGER:')
+
 
 @reports_route.get('/admin/reports')
 @login_required
