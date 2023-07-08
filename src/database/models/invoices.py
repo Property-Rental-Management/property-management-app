@@ -229,10 +229,8 @@ class UnitCreateInvoiceForm(BaseModel):
     @validator('rental_amount', pre=True)
     def validate_rental_amount(cls, value, values) -> list[str, None]:
         charge_ids = values.get('charge_ids')
-        if value is None and charge_ids is None:
+        if (value is None) and (charge_ids is None):
             raise ValueError("Either 'charge_ids' or 'rental_amount' must be provided.")
-        elif value is not None and charge_ids is not None:
-            raise ValueError("Only one of 'charge_ids' or 'rental_amount' can be provided, not both.")
         return value
 
     class Config:
