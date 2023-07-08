@@ -468,14 +468,15 @@ async def do_send_invoice_email(user: User):
                 for invoice_number in invoice_email_form.invoice_numbers]
     message = invoice_email_form.message
 
-    links = "\n".join(f"<a href='{url}'>{url}</a>" for url in url_list)
+    links = "\n".join(f"<li class='list-group-item'><a href='{url}'>{url}</a></li>" for url in url_list)
+    formatted_links = f"<ul class='list-group'>{links}</ul>"
 
     message_ = f"""
     {message}
 
     <h3>Invoices are attached below:</h3>
 
-    {links}
+    {formatted_links}
     """
     to_ = invoice_email_form.email
     subject_ = invoice_email_form.subject
