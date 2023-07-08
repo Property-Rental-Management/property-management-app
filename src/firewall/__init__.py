@@ -79,7 +79,7 @@ class Firewall:
 
     def __init__(self):
         self.allowed_hosts = config_instance().HOST_ADDRESSES.split(",")
-        self._max_payload_size: int = 8 * 64
+        self._max_payload_size: int = 8 * 256
         try:
             self.cloud_flare = CloudFlare(email=EMAIL, token=TOKEN)
         except CloudFlareAPIError:
