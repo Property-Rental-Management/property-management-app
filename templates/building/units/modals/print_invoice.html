@@ -3,64 +3,68 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="printInvoiceModalLabel">Print Invoice</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+          <h5 class="modal-title" id="printInvoiceModalLabel">Print Invoice</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
       </div>
-      <div class="modal-body">
-        <div class="card-content">
-          <span class="font-weight-bold text-info">Use this form to print invoices.</span>
-        </div>
-        <div class="card-footer">
-          <form id="printInvoiceForm" class="form-horizontal" action="{{ url_for('buildings.unit_print_invoice') }}" method="post">
-            <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
-            <input type="hidden" name="building_id" value="{{ unit.property_id}}">
-            <div class="form-group">
-              <label for="invoice_option" class="font-weight-bold">Select an option:</label>
-                <select id="invoice_option" name="invoice_option" class="form-control">
-                    <option value="current">Print Current Invoice</option>
-                    <option value="select">Select Invoice</option>
-                </select>
+        <div class="modal-body">
+            <div class="card-content">
+                <span class="font-weight-bold text-info">Use this form to print invoices.</span>
             </div>
-              <div id="invoiceTableDiv">
-                  <h5>Select an invoice:</h5>
-                  <table id="invoiceTable" class="table table-striped">
-                      <thead>
-                      <tr>
-                          <th>Invoice #</th>
-                          <th>Customer</th>
-                          <th>Date</th>
-                          <th>Amount</th>
-                          <th>Select</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      {% for invoice in historical_invoices %}
-                          <tr>
-                              <td>{{ invoice.invoice_number }}</td>
-                              <td>{{ invoice.customer.name }}</td>
-                              <td>{{ invoice.date_issued }}</td>
-                              <td>{{ invoice.amount_payable }}</td>
-                              <td>
-                                  <input type="checkbox" name="invoice_numbers[]" value="{{ invoice.invoice_number }}">
-                              </td>
-                          </tr>
-                      {% endfor %}
-                      </tbody>
-
-                  </table>
-
-            </div>
-          {% if not historical_invoices %}
             <div class="card-footer">
-                <span class="card-content text-danger">Please Note: There are no invoices to print, at this time.</span>
-            </div>
 
-            <div class="form-group">
-              <button type="submit" class="btn btn-sm btn-primary" disabled>
-                  <i class="ti-printer"> </i>
-                  Print
+                <form id="printInvoiceForm" class="form-horizontal"
+                      action="{{ url_for('buildings.unit_print_invoice') }}"
+                      method="POST"
+                >
+                    <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
+                    <input type="hidden" name="building_id" value="{{ unit.property_id }}">
+
+                    <div class="form-group">
+                        <label for="invoice_option" class="font-weight-bold">Select an option:</label>
+                        <select id="invoice_option" name="invoice_option" class="form-control">
+                            <option value="current">Print Current Invoice</option>
+                            <option value="select">Select Invoice</option>
+                        </select>
+                    </div>
+                    <div id="invoiceTableDiv">
+                        <h5>Select an invoice:</h5>
+                        <table id="invoiceTable" class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Select</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for invoice in historical_invoices %}
+                                <tr>
+                                    <td>{{ invoice.invoice_number }}</td>
+                                    <td>{{ invoice.customer.name }}</td>
+                                    <td>{{ invoice.date_issued }}</td>
+                                    <td>{{ invoice.amount_payable }}</td>
+                                    <td>
+                                        <input type="radio" name="selected_invoice"
+                                               value="{{ invoice.invoice_number }}">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if not historical_invoices %}
+                        <div class="card-footer">
+                            <span class="card-content text-danger">Please Note: There are no invoices to print, at this time.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-sm btn-primary" disabled>
+                                <i class="ti-printer"> </i>
+                                Print
               </button>
               <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
                   <i class="ti-close"> </i>
