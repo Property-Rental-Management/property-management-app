@@ -41,60 +41,60 @@
         <div id="invoice-bot">
             <div id="invoice-table">
                 <div class="table-responsive">
-                                    <table class="table">
-                                        <tr class="tabletitle">
-                                            <td class="table-item">
-                                                <h2>Item Description</h2>
-                                            </td>
-                                            <td class="Hours">
-                                                <h2>Time</h2>
-                                            </td>
-                                            <td class="Rate">
-                                                <h2>Rate</h2>
-                                            </td>
-                                            <td class="subtotal">
-                                                <h2>Sub-total</h2>
-                                            </td>
-                                        </tr>
-                                        {% for item in invoice.invoice_items %}
-                                            <tr class="service">
-                                                <td class="tableitem">
-                                                    <p class="itemtext">{{ item.description }}</p>
-                                                </td>
-                                                <td class="tableitem">
-                                                    <p class="itemtext">{{ item.multiplier }}</p>
-                                                </td>
-                                                <td class="tableitem">
-                                                    <p class="itemtext">{{ item.amount|currency }}</p>
-                                                </td>
-                                                <td class="tableitem">
-                                                    <p class="itemtext">{{ item.sub_total|currency }}</p>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        {% if invoice.rental_amount %}
-                                            <tr class="service">
-                                                <td class="tableitem">
-                                                    <p class="itemtext">Rental</p>
-                                                </td>
-                                                <td class="tableitem">
-                                                    <p class="itemtext">1</p>
-                                                </td>
-                                                <td class="tableitem">
-                                                    <p class="itemtext">{{ invoice.rental_amount|currency }}</p>
-                                                </td>
-                                                <td class="tableitem">
-                                                    <p class="itemtext">{{ invoice.rental_amount|currency }}</p>
-                                                </td>
-                                            </tr>
+                    <table class="table">
+                        <tr class="tabletitle">
+                            <td class="table-item">
+                                <h2>Description</h2>
+                            </td>
+                            <td class="Hours">
+                                <h2>Quantity</h2>
+                            </td>
+                            <td class="Rate">
+                                <h2>Unit Price</h2>
+                            </td>
+                            <td class="subtotal">
+                                <h2>Sub-Total</h2>
+                            </td>
+                        </tr>
+                        {% for item in invoice.invoice_items %}
+                            <tr class="service">
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ item.description }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ item.multiplier|currency }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ invoice.currency }} {{ item.amount|currency }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ invoice.currency }} {{ item.sub_total|currency }}</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if invoice.rental_amount %}
+                            <tr class="service">
+                                <td class="tableitem">
+                                    <p class="itemtext">Rental</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">1</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ invoice.currency }} {{ invoice.rental_amount|currency }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ invoice.currency }} {{ invoice.rental_amount|currency }}</p>
+                                </td>
+                            </tr>
 
-                                        {% endif %}
+                        {% endif %}
 
-                                        <tr class="tabletitle">
-                                            <td></td>
-                                            <td></td>
-                                            <td class="Rate">
-                                                <h2>Total</h2>
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Total</h2>
                                             </td>
                                             <td class="payment">
                                                 <h2>{{ invoice.currency }} {{ invoice.total_amount|currency }}</h2>
