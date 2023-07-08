@@ -1,3 +1,5 @@
+import functools
+
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from pydantic import ValidationError
 
@@ -460,7 +462,7 @@ async def do_send_invoice_email(user: User):
         print(str(e))
         return render_template(url_for('buildings.get_unit', building_id=invoice_email_form.building_id,
                                        unit_id=invoice_email_form.unit_id))
-
+    hold_invoice = functools.partial(invoice_man.hold_invoice, building_id=invoice_email_form.building_id)
     url_list = [await invoice_man.hold_invoice(invoice_number=invoice_number) for invoice_number in
                 invoice_email_form.invoice_numbers]
     message = invoice_email_form.message

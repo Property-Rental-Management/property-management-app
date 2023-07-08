@@ -249,11 +249,11 @@ class InvoiceManager:
     def init_app(self, app: Flask):
         self._base_url = app.config['BASE_URL']
 
-    async def hold_invoice(self, invoice_number: str) -> str:
+    async def hold_invoice(self, building_id: str, invoice_number: str) -> str:
         expiration_date: datetime = datetime.now() + timedelta(days=1)
         self._logger.info(f"Invoice added will expire @: {expiration_date}")
         self.invoices[invoice_number] = expiration_date
-        url = url_for('reports.get_invoice', invoice_number=invoice_number, _external=True)
+        url = url_for('reports.get_invoice', invoice_number=invoice_number, building_id=building_id, _external=True)
         return url
 
     async def get_invoice(self, invoice_number: str) -> str | None:
