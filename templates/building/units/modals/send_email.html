@@ -21,6 +21,8 @@
                           action="{{ url_for('buildings.do_send_invoice_email') }}"
                           method="POST"
                     >
+                        <input type="hidden" name="building_id" value="{{ unit.property_id }}">
+                        <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
                         <input type="hidden" class="form-control" id="email" name="email" value="{{ tenant.email }}"
                                readonly>
                         <div class="form-group">
