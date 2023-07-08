@@ -30,33 +30,34 @@
                         <td>Include</td>
                     </tr>
                     </thead>
-                <tbody>
+                    <tbody>
                     {% for charged_item in charged_items %}
                         <tr>
                             <td>{{ charged_item.item.description }}</td>
-                            <td>R {{ charged_item.item.multiplier * charged_item.amount }}</td>
-                            <td><input type="checkbox" name="charge_id_list[]" value="{{ charged_item.charge_id }}"></td>
+                            <td>R {{ (charged_item.item.multiplier * charged_item.amount)|currency }}</td>
+                            <td><input type="checkbox" name="charge_id_list[]" value="{{ charged_item.charge_id }}">
+                            </td>
                         </tr>
                     {% endfor %}
-                </tbody>
+                    </tbody>
 
-          </table>
+                </table>
+
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="includeRental" name="rental_amount">
+                <label class="form-check-label mb-4" for="includeRental">
+                    Include Unit Rental: R {{ unit.rental_amount|currency }}.00
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="sendInvoice" name="send_invoice">
+                <label class="form-check-label mb-4" for="sendInvoice">
+                    Send Invoice to User
+                </label>
+            </div>
 
         </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="includeRental" name="rental_amount">
-          <label class="form-check-label mb-4" for="includeRental">
-            Include Unit Rental:  R {{ unit.rental_amount }}.00
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="sendInvoice" name="send_invoice">
-          <label class="form-check-label mb-4" for="sendInvoice">
-            Send Invoice to User
-          </label>
-        </div>
-
-      </div>
       <div class="modal-footer">
           <span class="card-content font-weight-bold text-info">
               This invoice will be invoiced to {{ tenant.name }} of Unit : {{ unit.unit_number }}

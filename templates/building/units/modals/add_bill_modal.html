@@ -13,26 +13,27 @@
       <span class="font-weight-bold text-black">Used to create Bills for Property Units - This allows for variable billing for items such as Electricity
       and Water
       </span>
-        <form action="{{ url_for('buildings.create_billing_charge') }}" method="POST">
-            <input type="hidden" class="form-control" id="property_id" name="property_id" value="{{ unit.property_id }}">
-            <input type="hidden" class="form-control" id="tenant_id" name="tenant_id" value="{{ unit.tenant_id }}">
-            <input type="hidden" class="form-control" id="unit_id" name="unit_id" value="{{ unit.unit_id }}">
-          <div class="form-group">
-              <select class="form-control" id="item_number" name="item_number">
-                  <option value="">Select Billable Item</option>
-                  {% for item in billable_items %}
-                    <option value="{{ item.item_number }}">
-                        {{ item.description }}, <span class="font-weight-bold font-italic text-info">Charge Per Unit = {{ item.multiplier }}</span>
-                    </option>
-                  {% endfor %}
-              </select>
-          </div>
-          <div class="form-group">
-            <label for="amountEntry" class="label font-weight-bold">Amount / Units / Meter Readings Used</label>
-            <input type="number" class="form-control" id="amount" name="amount" required>
-          </div>
-        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-sm btn-primary">
+          <form action="{{ url_for('buildings.create_billing_charge') }}" method="POST">
+              <input type="hidden" class="form-control" id="property_id" name="property_id"
+                     value="{{ unit.property_id }}">
+              <input type="hidden" class="form-control" id="tenant_id" name="tenant_id" value="{{ unit.tenant_id }}">
+              <input type="hidden" class="form-control" id="unit_id" name="unit_id" value="{{ unit.unit_id }}">
+              <div class="form-group">
+                  <select class="form-control" id="item_number" name="item_number">
+                      <option value="">Select Billable Item</option>
+                      {% for item in billable_items %}
+                          <option value="{{ item.item_number }}">
+                              {{ item.description }}, <span class="font-weight-bold font-italic text-info">Charge Per Unit = {{ item.multiplier|currency }}</span>
+                          </option>
+                      {% endfor %}
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label for="amountEntry" class="label font-weight-bold">Amount / Units / Meter Readings Used</label>
+                  <input type="number" class="form-control" id="amount" name="amount" required>
+              </div>
+              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-sm btn-primary">
               <i class="ti-cloud-up"> </i>
               Submit
           </button>
