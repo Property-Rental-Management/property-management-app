@@ -53,8 +53,11 @@ async def create_invoice(user: User):
 
     unit_ = await company_controller.get_unit(user=user, building_id=invoice_data.property_id,
                                               unit_id=invoice_data.unit_id)
-    if unit_:
-        invoice_logger.info(f"found Unit : {unit_.dict()}")
+    if not unit_:
+        invoice_logger.info(f"Unit not found")
+        message_dict = dict(message="Invoiced Unit not Found", category="danger")
+        return await redirect_to_unit(message_dict)
+
         # checking if rental amount should be included - remember rental_amount is a checkbox -
         # the actual rental amount is on unit_
 
@@ -63,23 +66,34 @@ async def create_invoice(user: User):
     created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges=invoice_charges,
                                                                                unit_=unit_,
                                                                                include_rental=include_rental)
-    if created_invoice:
-        invoice_logger.info(f"Invoice created : {created_invoice.dict()}")
+    if not created_invoice:
+        message_dict = dict(message="Unable to create invoice", category="danger")
+        return await redirect_to_unit(message_dict)
 
     property_: Property = await company_controller.get_property_by_id_internal(property_id=invoice_data.property_id)
-    company_data: Company = await company_controller.get_company_internal(company_id=property_.company_id)
-    if property_ and company_data:
-        _title = f"{property_.name} - Invoice"
-        flash(message="Successfully created Invoice", category="success")
-        bank_account = await company_controller.get_bank_account_internal(company_id=company_data.company_id)
-        if bank_account:
-            bank_account_dict = bank_account.dict()
-        else:
-            bank_account_dict = {}
-        context = dict(invoice=created_invoice.dict(), company=company_data.dict(), title=_title,
-                       bank_account=bank_account_dict)
+    if not property_:
+        message_dict = dict(message="Invoiced Property not found", category="danger")
+        return await redirect_to_unit(message_dict)
 
-        return render_template('reports/invoice_report.html', **context)
+    company_data: Company = await company_controller.get_company_internal(company_id=property_.company_id)
+    if not company_data:
+        message_dict = dict(message="Invoiced Property not found", category="danger")
+        return await redirect_to_unit(message_dict)
+
+    _title = f"{property_.name} - Invoice"
+    flash(message="Successfully created Invoice", category="success")
+    bank_account = await company_controller.get_bank_account_internal(company_id=company_data.company_id)
+
+    if not bank_account:
+        message_dict = dict(message="Company Bank Account not found", category="danger")
+        return await redirect_to_unit(message_dict)
+
+    bank_account_dict = bank_account.dict()
+
+    context = dict(invoice=created_invoice.dict(), company=company_data.dict(), title=_title,
+                   bank_account=bank_account_dict)
+
+    return render_template('reports/invoice_report.html', **context)
 
 
 async def redirect_to_unit(message_dict: dict[str, str]):
