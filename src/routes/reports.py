@@ -25,6 +25,7 @@ async def get_reports(user: User):
 async def get_invoice(building_id: str, invoice_number: str):
     """
         **get_invoice**
+
             used for temporarily holding invoice links for invoices sent as emails
             the links should expire after one day
     :param building_id:
