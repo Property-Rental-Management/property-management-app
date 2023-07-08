@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from flask import Flask, url_for
 from pydantic import ValidationError
@@ -250,7 +250,7 @@ class InvoiceManager:
         self._base_url = app.config['BASE_URL']
 
     async def hold_invoice(self, invoice_number: str) -> str:
-        expiration_date: datetime = datetime.now() + datetime.timedelta(days=1)
+        expiration_date: datetime = datetime.now() + timedelta(days=1)
         self._logger.info(f"Invoice added will expire @: {expiration_date}")
         self.invoices[invoice_number] = expiration_date
         url = url_for('reports.get_invoice', invoice_number=invoice_number, _external=True)
@@ -259,7 +259,7 @@ class InvoiceManager:
     async def get_invoice(self, invoice_number: str) -> str | None:
         expiration_date = self.invoices.get(invoice_number)
         if expiration_date:
-            if datetime.datetime.now() <= expiration_date:
+            if datetime.now() <= expiration_date:
                 self._logger.info(f"Retrieving invoice: {invoice_number}")
                 return invoice_number
             else:
