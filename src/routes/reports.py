@@ -40,10 +40,10 @@ async def get_invoice(building_id: str, invoice_number: str):
               category="danger")
         return redirect(url_for('home.get_home'), code=302)
 
-    init_logger.info(f"Invoice Number : {invoice_number}")
+    report_logger.info(f"Invoice Number : {invoice_number}")
     invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
     if invoice is None:
-        init_logger.info('did not find invoice')
+        report_logger.info('did not find invoice')
         flash(message="Error Reading Invoice Issuer Data - Inform the building manager to resend the invoice",
               category="danger")
         return redirect(url_for('home.get_home'), code=302)
