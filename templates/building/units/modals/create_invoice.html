@@ -46,7 +46,7 @@
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="includeRental" name="rental_amount">
-                <label class="form-check-label mb-4" for="includeRental">
+                <label class="form-check-label mb-4 font-weight-bold  text-info" for="includeRental">
                     Include Unit Rental: R {{ unit.rental_amount|currency }}.00
                 </label>
             </div>
@@ -57,7 +57,7 @@
                 </label>
             </div>
             <div class="form-check">
-                <label class="label" for="due_after">
+                <label class="label font-weight-bold text-info" for="due_after">
                     Invoice Due After (Days)
                 </label>
                 <input class="form-control" type="number" id="due_after" name="due_after">
