@@ -425,7 +425,7 @@ async def unit_print_invoice(user: User):
         return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
                                 unit_id=print_invoice_form.unit_id))
 
-    company: Company = await company_controller.get_company(user=user, company_id=building.company_id)
+    company: Company = await company_controller.get_company_internal(company_id=building.company_id)
     bank_account = await company_controller.get_bank_accounts(user=user, company_id=building.company_id)
 
     if company is None:
