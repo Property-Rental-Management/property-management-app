@@ -21,7 +21,7 @@ async def get_reports(user: User):
     return render_template('reports/reports.html', **context)
 
 
-@reports_route.get('/reports/invoice/<string:building_id><string:invoice_number>')
+@reports_route.get('/reports/invoice/<string:building_id>/<string:invoice_number>')
 async def get_invoice(building_id: str, invoice_number: str):
     """
         **get_invoice**
