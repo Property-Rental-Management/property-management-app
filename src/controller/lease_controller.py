@@ -258,6 +258,7 @@ class InvoiceManager:
 
     async def get_invoice(self, invoice_number: str) -> str | None:
         expiration_date = self.invoices.get(invoice_number)
+        self._logger.info(f"stored data : {self.invoices}")
         self._logger.info(f"fetching invoice number : {invoice_number} and found date : {expiration_date}")
         if expiration_date:
             if datetime.now() <= expiration_date:
