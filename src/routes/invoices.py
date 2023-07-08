@@ -62,6 +62,7 @@ async def create_invoice(user: User):
         # the actual rental amount is on unit_
 
     include_rental: bool = invoice_data.rental_amount == "on"
+    # NOte; allows user to specify the invoice due date
     due_after = invoice_data.due_after
     created_invoice: Invoice = await lease_agreement_controller.create_invoice(invoice_charges=invoice_charges,
                                                                                unit_=unit_,
