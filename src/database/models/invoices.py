@@ -191,6 +191,23 @@ class PrintInvoiceForm(BaseModel):
     invoice_number: str
 
 
+class UnitEMailInvoiceForm(BaseModel):
+    unit_id: str
+    building_id: str
+    email: str
+    subject: str
+    message: str
+    invoice_numbers: list[str]
+
+    @validator("invoice_numbers", pre=True)
+    def validate_invoice_numbers(cls, value):
+        if isinstance(value, str):
+            return value.split(",")
+        elif isinstance(value, list):
+            return value
+        return None
+
+
 # noinspection PyMethodParameters
 class UnitCreateInvoiceForm(BaseModel):
     property_id: str

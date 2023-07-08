@@ -3,14 +3,16 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.companies import Company
-from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge, PrintInvoiceForm
+from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge, PrintInvoiceForm, \
+    UnitEMailInvoiceForm
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
 from src.database.models.notifications import NotificationsModel
 from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty, UpdateUnit
 from src.database.models.tenants import Tenant
 from src.database.models.users import User
 from src.logger import init_logger
-from src.main import company_controller, notifications_controller, tenant_controller, lease_agreement_controller
+from src.main import company_controller, notifications_controller, tenant_controller, lease_agreement_controller, \
+    invoice_man
 
 buildings_route = Blueprint('buildings', __name__)
 buildings_logger = init_logger("Buildings-Router")
@@ -441,3 +443,46 @@ async def unit_print_invoice(user: User):
     context['company'] = company.dict()
     context['bank_account'] = bank_account.dict()
     return render_template('reports/invoice_report.html', **context)
+
+
+@buildings_route.post('/admin/email-invoices')
+@login_required
+async def do_send_invoice_email(user: User):
+    """
+        **do_send_invoice_email*8
+    :param user:
+    :return:
+    """
+    invoice_email_form: UnitEMailInvoiceForm | None = None
+    try:
+        invoice_email_form = await process_send_mail_form()
+    except ValidationError as e:
+        print(str(e))
+        return render_template(url_for('buildings.get_unit', building_id=invoice_email_form.building_id,
+                                       unit_id=invoice_email_form.unit_id))
+
+    url_list = [await invoice_man.hold_invoice(invoice_number=invoice_number) for invoice_number in
+                invoice_email_form.invoice_numbers]
+    message = invoice_email_form.message
+
+    links = "\n".join(f"<a href='{url}'>{url}</a>" for url in url_list)
+
+    message_ = f"""
+    {message}
+
+    Invoices are attached below:
+
+    {links}
+    """
+
+
+async def process_send_mail_form() -> UnitEMailInvoiceForm:
+    invoice_numbers = request.form.getlist('invoice_numbers[]')
+    email = request.form.get('email')
+    subject = request.form.get('subject')
+    message = request.form.get('message')
+    building_id = request.form.get('building_id')
+    unit_id = request.form.get('unit_id')
+    invoice_email_dict = dict(invoice_numbers=invoice_numbers, email=email, subject=subject,
+                              message=message, building_id=building_id, unit_id=unit_id)
+    return UnitEMailInvoiceForm(**invoice_email_dict)

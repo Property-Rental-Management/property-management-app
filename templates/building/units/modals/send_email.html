@@ -16,15 +16,17 @@
                         </span>
                     </div>
 
-                    <form enctype="application/x-www-form-urlencoded"
+                    <form enctype="multipart/form-data"
                           class="form-horizontal"
-                          action="{{ url_for('tenants.do_send_email', tenant_id=tenant.tenant_id) }}"
+                          action="{{ url_for('buildings.do_send_invoice_email') }}"
                           method="POST"
                     >
-                        <input type="hidden" class="form-control" id="email" name="email" value="{{ tenant.email }}" readonly>
+                        <input type="hidden" class="form-control" id="email" name="email" value="{{ tenant.email }}"
+                               readonly>
                         <div class="form-group">
                             <label for="subject">Subject:</label>
-                            <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter email subject">
+                            <input type="text" class="form-control" id="subject" name="subject"
+                                   placeholder="Enter email subject">
                         </div>
                         <div class="form-group">
                             <label for="message">Message:</label>
