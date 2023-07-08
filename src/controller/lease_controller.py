@@ -109,7 +109,7 @@ class LeaseController(Controllers):
                     PropertyORM.property_id == property_id).first()
                 company_orm: CompanyORM = session.query(CompanyORM).first()
 
-                tenant_id: str = invoice_charges[0].tenant_id if invoice_charges else unit_.tenant_id
+                tenant_id: str = unit_.tenant_id
                 tenant_orm: TenantORM = session.query(TenantORM).filter(TenantORM.tenant_id == tenant_id).first()
 
                 property_: Property = Property(**property_orm.to_dict()) if property_orm else None
@@ -148,7 +148,7 @@ class LeaseController(Controllers):
                 list_charge_ids: list[str] = await self.get_charge_ids(invoice_charges=invoice_charges) \
                     if invoice_charges else []
 
-                charge_ids = ",".join(list_charge_ids) if list_charge_ids else []
+                charge_ids = ",".join(list_charge_ids) if list_charge_ids else None
                 # TODO - should use Pydantic here to enable an extra layer of data verification before creating ORM
                 # this will set rent to zero if it should not be included on invoice
                 _rental_amount = unit_.rental_amount if include_rental else 0
