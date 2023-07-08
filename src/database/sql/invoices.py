@@ -104,14 +104,14 @@ class InvoiceORM(Base):
             **invoiced_items**
         :return:
         """
-        with Session() as session:
-            _invoiced_items = []
-            charge_ids = self.charge_ids
-            if not charge_ids:
-                return _invoiced_items
-            if isinstance(charge_ids, list):
-                charge_ids = ",".join(charge_ids)
+        _invoiced_items = []
+        charge_ids = self.charge_ids
+        if not charge_ids:
+            return _invoiced_items
+        if isinstance(charge_ids, list):
+            charge_ids = ",".join(charge_ids)
 
+        with Session() as session:
             for _charge_id in charge_ids.split(","):
                 if _charge_id:
                     charge_item_orm: UserChargesORM = session.query(UserChargesORM).filter(
