@@ -23,6 +23,9 @@ notifications_controller = NotificationsController()
 from src.controller.lease_controller import LeaseController
 
 lease_agreement_controller = LeaseController()
+from src.controller.lease_controller import InvoiceManager
+
+invoice_man = InvoiceManager()
 
 
 def create_app(config):
@@ -38,6 +41,7 @@ def create_app(config):
         user_controller.init_app(app=app)
         firewall.init_app(app=app)
         send_mail.init_app(app=app)
+        invoice_man.init_app(app=app)
 
         from src.routes.home import home_route
         from src.routes.companies import companies_route

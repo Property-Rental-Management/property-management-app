@@ -1,5 +1,7 @@
+import datetime
 from datetime import datetime, date
 
+from flask import Flask
 from pydantic import ValidationError
 
 from src.controller import error_handler, Controllers
@@ -237,3 +239,32 @@ class LeaseController(Controllers):
         with self.get_session() as session:
             invoice_list: list[InvoiceORM] = session.query(InvoiceORM).filter(InvoiceORM.tenant_id == tenant_id).all()
             return [Invoice(**_invoice.to_dict()) for _invoice in invoice_list if _invoice] if invoice_list else []
+
+
+class InvoiceManager:
+    def __init__(self):
+        self._base_url = ""
+        self._logger = init_logger()
+        self.invoices = {}
+
+    def init_app(self, app: Flask):
+        self._base_url = app.config['BASE_URL']
+
+    async def hold_invoice(self, invoice_number: str) -> datetime:
+        expiration_date: datetime = datetime.datetime.now() + datetime.timedelta(days=1)
+        self._logger.info(f"Invoice added will expire @: {expiration_date}")
+        self.invoices[invoice_number] = expiration_date
+        return expiration_date
+
+    async def get_invoice(self, invoice_number: str) -> str | None:
+        expiration_date = self.invoices.get(invoice_number)
+        if expiration_date:
+            if datetime.datetime.now() <= expiration_date:
+                self._logger.info(f"Retrieving invoice: {invoice_number}")
+                return invoice_number
+            else:
+                self.invoices.pop(invoice_number)
+                self._logger.info(f"The invoice {invoice_number} has expired")
+        else:
+            self._logger.info(f"The invoice {invoice_number} does not exist")
+        return None

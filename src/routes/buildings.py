@@ -378,8 +378,9 @@ async def updated_unit(user: User, unit_id: str):
     :return:
     """
     update_unit_model: UpdateUnit = UpdateUnit(**request.form)
+    _updated_unit: Unit | None = None
     if unit_id == update_unit_model.unit_id:
-        _updated_unit: Unit = await company_controller.update_unit(user_id=user.user_id, unit_data=update_unit_model)
+        _updated_unit = await company_controller.update_unit(user_id=user.user_id, unit_data=update_unit_model)
     else:
         _updated_unit = None
 
@@ -388,8 +389,7 @@ async def updated_unit(user: User, unit_id: str):
     else:
         flash(message="Unable to Update Unit", category="danger")
 
-    return redirect(url_for("buildings.get_unit",
-                            building_id=update_unit_model.property_id,
+    return redirect(url_for("buildings.get_unit", building_id=update_unit_model.property_id,
                             unit_id=update_unit_model.unit_id), code=302)
 
 
