@@ -30,6 +30,24 @@ from src.controller.lease_controller import InvoiceManager
 cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
 
 invoice_man = InvoiceManager(cache_path)
+def format_with_grouping(number):
+    parts = str(number).split(".")
+    whole_part = parts[0]
+
+    formatted_whole_part = ""
+    while whole_part:
+        formatted_whole_part = whole_part[-3:] + formatted_whole_part
+        whole_part = whole_part[:-3]
+        if whole_part:
+            formatted_whole_part = "," + formatted_whole_part
+
+    if len(parts) > 1:
+        decimal_part = parts[1]
+        formatted_number = f"{formatted_whole_part}.{decimal_part}"
+    else:
+        formatted_number = formatted_whole_part
+
+    return formatted_number
 
 def create_app(config):
     app: Flask = Flask(__name__)
@@ -74,6 +92,7 @@ def create_app(config):
         app.register_blueprint(tenants_route)
         app.register_blueprint(cron_route)
         app.register_blueprint(notices_route)
+        app.jinja_env.filters['currency'] = format_with_grouping
 
         bootstrapper()
 
