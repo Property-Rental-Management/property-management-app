@@ -407,19 +407,21 @@ async def unit_print_invoice(user: User):
     except ValidationError as e:
         building_id = request.form.get('building_id')
         unit_id = request.form.get('unit_id')
-        print(dict(**request.form))
+        print(f"ERROR WAS: {str(e)}")
         _vars = dict(building_id=building_id, unit_id=unit_id)
         flash(message="Please indicate what you want to print", category="danger")
         return redirect(url_for("buildings.get_unit", **_vars))
 
     invoice_to_print = await lease_agreement_controller.get_invoice(invoice_number=print_invoice_form.invoice_number)
     if invoice_to_print is None:
+        flash(message="Invoice not found", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
                                 unit_id=print_invoice_form.unit_id))
 
     context = {'invoice': invoice_to_print.dict()}
     building: Property = await company_controller.get_property(user=user, property_id=print_invoice_form.building_id)
     if building is None:
+        flash(message="Property not found", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
                                 unit_id=print_invoice_form.unit_id))
 
@@ -427,9 +429,12 @@ async def unit_print_invoice(user: User):
     bank_account = await company_controller.get_bank_accounts(user=user, company_id=building.company_id)
 
     if company is None:
+        flash(message="Company not found", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
                                 unit_id=print_invoice_form.unit_id))
     if bank_account is None:
+        flash(message="Bank Account not found - please add bank account details before printing invoices",
+              category="danger")
         return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
                                 unit_id=print_invoice_form.unit_id))
 

@@ -188,7 +188,7 @@ class CreateUnitCharge(BaseModel):
 class PrintInvoiceForm(BaseModel):
     building_id: str
     unit_id: str
-    invoice_number: list[str]
+    invoice_number: str
 
 
 # noinspection PyMethodParameters
