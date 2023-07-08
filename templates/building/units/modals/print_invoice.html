@@ -38,13 +38,16 @@
                                 <tr>
                                     <td>{{ invoice.invoice_number }}</td>
                                     <td>{{ invoice.customer.name }}</td>
-                                    <td>{{ invoice.date_issued }}</td>
+                                    <td class="{% if invoice.days_remaining < 0 %}text-danger{% else %}text-info{% endif %}">
+                                        {{ invoice.due_date }}
+                                    </td>
                                     <td>R {{ invoice.amount_payable|currency }}.00</td>
                                     <td>
                                         <input type="radio" name="invoice_number" value="{{ invoice.invoice_number }}">
                                     </td>
                                 </tr>
                             {% endfor %}
+
                             </tbody>
                         </table>
                     </div>
