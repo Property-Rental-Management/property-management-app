@@ -57,7 +57,7 @@
                                         <td>{{ invoice.invoice_number }}</td>
                                         <td>{{ invoice.customer.name }}</td>
                                         <td>{{ invoice.date_issued }}</td>
-                                        <td>{{ invoice.amount_payable|currency }}</td>
+                                        <td>R {{ invoice.amount_payable|currency }}.00</td>
                                         <td>
                                             <input type="checkbox" name="invoice_numbers[]"
                                                    value="{{ invoice.invoice_number }}">
@@ -70,7 +70,7 @@
 
                         </div>
                         {% if not historical_invoices %}
-                        <div class="card-footer">
+                            <div class="card-footer">
                             <span class="card-content text-danger">
                                 Please Note: That there are not invoices to send, at this time.
                             </span>
