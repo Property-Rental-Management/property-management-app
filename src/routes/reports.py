@@ -6,11 +6,13 @@ from src.database.models.companies import Company
 from src.database.models.invoices import Invoice
 from src.database.models.properties import Property
 from src.database.models.users import User
+from src.logger import init_logger
 from src.main import lease_agreement_controller, company_controller
 
 reports_route = Blueprint('reports', __name__)
 invoice_manager = InvoiceManager()
 
+report_logger = init_logger('REPORT LOGGER:')
 
 @reports_route.get('/admin/reports')
 @login_required
@@ -38,12 +40,14 @@ async def get_invoice(building_id: str, invoice_number: str):
               category="danger")
         return redirect(url_for('home.get_home'), code=302)
 
-    print(f"Invoice Number : {invoice_number}")
+    init_logger.info(f"Invoice Number : {invoice_number}")
     invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
     if invoice is None:
+        init_logger.info('did not find invoice')
         flash(message="Error Reading Invoice Issuer Data - Inform the building manager to resend the invoice",
               category="danger")
         return redirect(url_for('home.get_home'), code=302)
+
     building: Property = await company_controller.get_property_by_id_internal(property_id=building_id)
     company_id = building.company_id
     company: Company = await company_controller.get_company_internal(company_id=company_id)
