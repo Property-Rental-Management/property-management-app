@@ -39,7 +39,7 @@
                                       rows="5"
                             ></textarea>
                         </div>
-                        <div id="invoiceTableDiv">
+                        <div id="invoiceTableDiv" style="height: 200px; overflow-y: auto;">
                             <h5>Select an invoice:</h5>
                             <table id="invoiceTable" class="table table-striped">
                                 <thead>
@@ -56,7 +56,9 @@
                                     <tr>
                                         <td>{{ invoice.invoice_number }}</td>
                                         <td>{{ invoice.customer.name }}</td>
-                                        <td>{{ invoice.date_issued }}</td>
+                                        <td class="{% if invoice.days_remaining < 0 %}text-danger{% else %}text-info{% endif %}">
+                                            {{ invoice.due_date }}
+                                        </td>
                                         <td>R {{ invoice.amount_payable|currency }}.00</td>
                                         <td>
                                             <input type="checkbox" name="invoice_numbers[]"
