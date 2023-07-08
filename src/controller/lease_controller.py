@@ -1,3 +1,5 @@
+import os
+import pickle
 from datetime import datetime, date, timedelta
 
 from flask import Flask, url_for
@@ -238,11 +240,6 @@ class LeaseController(Controllers):
         with self.get_session() as session:
             invoice_list: list[InvoiceORM] = session.query(InvoiceORM).filter(InvoiceORM.tenant_id == tenant_id).all()
             return [Invoice(**_invoice.to_dict()) for _invoice in invoice_list if _invoice] if invoice_list else []
-
-
-import datetime
-import pickle
-import os
 
 
 class InvoiceManager:
