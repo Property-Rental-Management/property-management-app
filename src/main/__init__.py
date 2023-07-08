@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 
 from src.emailer import SendMail
@@ -25,7 +27,9 @@ from src.controller.lease_controller import LeaseController
 lease_agreement_controller = LeaseController()
 from src.controller.lease_controller import InvoiceManager
 
-invoice_man = InvoiceManager()
+cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
+
+invoice_man = InvoiceManager(cache_path)
 
 
 def create_app(config):

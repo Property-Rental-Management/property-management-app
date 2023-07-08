@@ -1,16 +1,15 @@
 from flask import Blueprint, render_template, flash, url_for, redirect
 
 from src.authentication import login_required
-from src.controller.lease_controller import InvoiceManager
 from src.database.models.companies import Company
 from src.database.models.invoices import Invoice
 from src.database.models.properties import Property
 from src.database.models.users import User
 from src.logger import init_logger
-from src.main import lease_agreement_controller, company_controller
+from src.main import lease_agreement_controller, company_controller, invoice_man
 
 reports_route = Blueprint('reports', __name__)
-invoice_manager = InvoiceManager()
+
 
 report_logger = init_logger('REPORT LOGGER:')
 
@@ -34,7 +33,7 @@ async def get_invoice(building_id: str, invoice_number: str):
     :param invoice_number:
     :return:
     """
-    invoice_number = await invoice_manager.get_invoice(invoice_number)
+    invoice_number = await invoice_man.get_invoice(invoice_number)
     if invoice_number is None:
         flash(message="Invoice not found - inform your building admin to resend the invoice",
               category="danger")

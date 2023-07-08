@@ -240,11 +240,17 @@ class LeaseController(Controllers):
             return [Invoice(**_invoice.to_dict()) for _invoice in invoice_list if _invoice] if invoice_list else []
 
 
+import datetime
+import pickle
+import os
+
+
 class InvoiceManager:
-    def __init__(self):
+    def __init__(self, cache_path):
         self._base_url = ""
         self._logger = init_logger()
-        self.invoices = {}
+        self._cache_path = cache_path
+        self.invoices = self._load_cache()
 
     def init_app(self, app: Flask):
         self._base_url = app.config['BASE_URL']
@@ -253,20 +259,32 @@ class InvoiceManager:
         expiration_date: datetime = datetime.now() + timedelta(days=1)
         self._logger.info(f"Invoice added will expire @: {expiration_date}")
         self.invoices[invoice_number] = expiration_date
+        self._save_cache()
         url = url_for('reports.get_invoice', invoice_number=invoice_number, building_id=building_id, _external=True)
         return url
 
     async def get_invoice(self, invoice_number: str) -> str | None:
         expiration_date = self.invoices.get(invoice_number)
-        self._logger.info(f"stored data : {self.invoices}")
-        self._logger.info(f"fetching invoice number : {invoice_number} and found date : {expiration_date}")
+        self._logger.info(f"stored data: {self.invoices}")
+        self._logger.info(f"fetching invoice number: {invoice_number} and found date: {expiration_date}")
         if expiration_date:
             if datetime.now() <= expiration_date:
                 self._logger.info(f"Retrieving invoice: {invoice_number}")
                 return invoice_number
             else:
                 self.invoices.pop(invoice_number)
+                self._save_cache()
                 self._logger.info(f"The invoice {invoice_number} has expired")
         else:
             self._logger.info(f"The invoice {invoice_number} does not exist")
         return None
+
+    def _load_cache(self):
+        if os.path.isfile(self._cache_path):
+            with open(self._cache_path, 'rb') as file:
+                return pickle.load(file)
+        return {}
+
+    def _save_cache(self):
+        with open(self._cache_path, 'wb') as file:
+            pickle.dump(self.invoices, file)
