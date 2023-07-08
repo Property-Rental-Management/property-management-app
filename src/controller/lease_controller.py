@@ -103,9 +103,7 @@ class LeaseController(Controllers):
         """
         with self.get_session() as session:
             try:
-                _property_id: str = unit_.property_id if unit_ and unit_.property_id else None
-                property_id: str = _property_id if _property_id is not None else invoice_charges[0].property_id \
-                    if invoice_charges else None
+                property_id: str = unit_.property_id
 
                 property_orm: PropertyORM = session.query(PropertyORM).filter(
                     PropertyORM.property_id == property_id).first()

@@ -66,12 +66,12 @@ async def create_invoice(user: User):
     if created_invoice:
         invoice_logger.info(f"Invoice created : {created_invoice.dict()}")
 
-    property_: Property = await company_controller.get_property(user=user, property_id=invoice_data.property_id)
+    property_: Property = await company_controller.get_property_by_id_internal(property_id=invoice_data.property_id)
     company_data: Company = await company_controller.get_company_internal(company_id=property_.company_id)
     if property_ and company_data:
         _title = f"{property_.name} - Invoice"
         flash(message="Successfully created Invoice", category="success")
-        bank_account = await company_controller.get_bank_accounts(user=user, company_id=company_data.company_id)
+        bank_account = await company_controller.get_bank_account_internal(company_id=company_data.company_id)
         if bank_account:
             bank_account_dict = bank_account.dict()
         else:
