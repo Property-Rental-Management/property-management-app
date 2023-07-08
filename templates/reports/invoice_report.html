@@ -134,8 +134,8 @@
                             <td class="payment">
                                 <h2>{{ invoice.currency }} {{ invoice.amount_payable|currency }}</h2>
                             </td>
-                                        </tr>
-                                    </table>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <!--End Table-->
@@ -144,9 +144,9 @@
                 <input type="hidden" name="hosted_button_id" value="QRZ7QTM9XRPJ6">
             </form>
             <div id="legalcopy">
-                <p class="font-weight-bold legal mb-3">
+                <h4 class="font-weight-bold legal mb-3">
                     {{ invoice.notes | safe }}
-                </p>
+                </h4>
             </div>
             <div id="legalcopy">
                 <h4>Banking Details</h4>
