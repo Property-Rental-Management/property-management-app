@@ -10,16 +10,20 @@
         <div id="invoice-top">
             <div class="invoice-logo"></div>
             <div class="invoice-info">
-                <h2>{{ company.company_name }}</h2>
-                <h3>{{ company.description }}</h3>
+                <h1>{{ company.company_name }}</h1>
+                <h2>{{ company.description }}</h2>
                 <p> {{ company.website }}<br/>
                     {{ company.contant_number }}
                 </p>
             </div>
             <!--End Info-->
             <div class="title">
-                <h4>Invoice {{ invoice.invoice_number }}</h4>
-                <p>Issued: {{ invoice.date_issued }}<br> Payment Due: {{ invoice.due_date }}
+                <h4 class="font-italic">Invoice #: {{ invoice.invoice_number }}</h4>
+                <p>
+                    <span class="font-weight-bold">Issued: <span
+                            class="font-italic">{{ invoice.date_issued }}</span></span>
+                    <br>
+                    <span class="font-weight-bold">Payment Due: <span class="font-italic">{{ invoice.due_date }}</span></span>
                 </p>
             </div>
             <!--End Title-->
