@@ -65,10 +65,10 @@
                                                     <p class="itemtext">{{ item.multiplier }}</p>
                                                 </td>
                                                 <td class="tableitem">
-                                                    <p class="itemtext">{{ item.amount }}</p>
+                                                    <p class="itemtext">{{ item.amount|currency }}</p>
                                                 </td>
                                                 <td class="tableitem">
-                                                    <p class="itemtext">{{ item.sub_total }}</p>
+                                                    <p class="itemtext">{{ item.sub_total|currency }}</p>
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -81,10 +81,10 @@
                                                     <p class="itemtext">1</p>
                                                 </td>
                                                 <td class="tableitem">
-                                                    <p class="itemtext">{{ invoice.rental_amount }}</p>
+                                                    <p class="itemtext">{{ invoice.rental_amount|currency }}</p>
                                                 </td>
                                                 <td class="tableitem">
-                                                    <p class="itemtext">{{ invoice.rental_amount }}</p>
+                                                    <p class="itemtext">{{ invoice.rental_amount|currency }}</p>
                                                 </td>
                                             </tr>
 
@@ -97,7 +97,7 @@
                                                 <h2>Total</h2>
                                             </td>
                                             <td class="payment">
-                                                <h2>{{ invoice.currency }} {{ invoice.total_amount }}</h2>
+                                                <h2>{{ invoice.currency }} {{ invoice.total_amount|currency }}</h2>
                                             </td>
                                         </tr>
                                         <tr class="tabletitle">
@@ -107,7 +107,7 @@
                                                 <h2>Total Taxes</h2>
                                             </td>
                                             <td class="payment">
-                                                <h2>{{ invoice.currency }} {{ invoice.total_taxes }}</h2>
+                                                <h2>{{ invoice.currency }} {{ invoice.total_taxes|currency }}</h2>
                                             </td>
                                         </tr>
                                         <tr class="tabletitle">
@@ -117,7 +117,7 @@
                                                 <h2>Amount Payable</h2>
                                             </td>
                                             <td class="payment">
-                                                <h2>{{ invoice.currency }} {{ invoice.amount_payable }}</h2>
+                                                <h2>{{ invoice.currency }} {{ invoice.amount_payable|currency }}</h2>
                                             </td>
                                         </tr>
                                     </table>
