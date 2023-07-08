@@ -100,25 +100,36 @@
                                                 <h2>{{ invoice.currency }} {{ invoice.total_amount|currency }}</h2>
                                             </td>
                                         </tr>
-                                        <tr class="tabletitle">
-                                            <td></td>
-                                            <td></td>
-                                            <td class="Rate">
-                                                <h2>Total Taxes</h2>
-                                            </td>
-                                            <td class="payment">
-                                                <h2>{{ invoice.currency }} {{ invoice.total_taxes|currency }}</h2>
-                                            </td>
-                                        </tr>
-                                        <tr class="tabletitle">
-                                            <td></td>
-                                            <td></td>
-                                            <td class="Rate">
-                                                <h2>Amount Payable</h2>
-                                            </td>
-                                            <td class="payment">
-                                                <h2>{{ invoice.currency }} {{ invoice.amount_payable|currency }}</h2>
-                                            </td>
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Total Taxes</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ invoice.total_taxes|currency }}</h2>
+                            </td>
+                        </tr>
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Discount</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ invoice.discount|currency }}</h2>
+                            </td>
+                        </tr>
+
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Amount Payable</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ invoice.amount_payable|currency }}</h2>
+                            </td>
                                         </tr>
                                     </table>
                 </div>
