@@ -131,9 +131,12 @@ class Invoice(BaseModel):
     @property
     def notes(self) -> str:
         _notes = f"""
-        <strong>Thank you for your business!</strong> Payment is expected within {self.days_remaining} days;
-        please process this invoice within that time.
-        There will be a 5% interest charge per month on late invoices.
+        
+        <p><strong>Thank you for your business!</strong></p> 
+
+        <p>Payment is expected within {self.days_remaining} days.</p>
+
+        <p>please process this invoice within that time. There will be a 5% interest charge on late invoices.</p>
         """
         return _notes
 
