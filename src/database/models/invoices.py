@@ -106,7 +106,7 @@ class Invoice(BaseModel):
         print(f"value = {value}")
         if isinstance(value, str):
             return value.split(",")
-        raise value
+        return value
 
     @property
     def total_amount(self) -> int:
