@@ -144,18 +144,18 @@ class Firewall:
         if 'Content-Length' in headers and int(headers['Content-Length']) > self._max_payload_size:
             # Request payload is too large,
             self._logger.info("Payload too long")
-            abort(401, 'Payload is suspicious')
+            abort(401, 'Payload is suspicious -- Content-Length')
 
         if body:
             _body = body.decode('utf-8')
             if contains_malicious_patterns(_input=_body):
                 self._logger.info("Payload regex failure")
-                abort(401, 'Payload is suspicious')
+                abort(401, 'Payload is suspicious -- Body Content Bad')
 
         path = str(request.path)
         if any((pattern.match(path) for pattern in self.compiled_bad_patterns)):
             self._logger.info("Attack patterns regex failure on path")
-            abort(401, 'Request path is malformed')
+            abort(401, 'Request path is malformed - Path Parameter is Malicious')
 
     @staticmethod
     def verify_client_secret_token():

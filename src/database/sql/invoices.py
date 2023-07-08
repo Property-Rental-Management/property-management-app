@@ -195,6 +195,7 @@ class UserChargesORM(Base):
 
     def to_dict(self) -> dict[str, str | date | int | bool]:
         """
+        **to_dict**
         Converts the instance attributes to a dictionary.
 
         :return: A dictionary representation of the instance.
