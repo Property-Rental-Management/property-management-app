@@ -23,7 +23,7 @@
                       <option value="">Select Billable Item</option>
                       {% for item in billable_items %}
                           <option value="{{ item.item_number }}">
-                              {{ item.description }}, <span class="font-weight-bold font-italic text-info">Charge Per Unit = {{ item.multiplier|currency }}</span>
+                              {{ item.description }}, <span class="font-weight-bold font-italic text-info">Charge Per Unit = R {{ item.multiplier|currency }}.00</span>
                           </option>
                       {% endfor %}
                   </select>
