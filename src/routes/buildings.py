@@ -407,6 +407,7 @@ async def unit_print_invoice(user: User):
     except ValidationError as e:
         building_id = request.form.get('building_id')
         unit_id = request.form.get('unit_id')
+        print(dict(**request.form))
         _vars = dict(building_id=building_id, unit_id=unit_id)
         flash(message="Please indicate what you want to print", category="danger")
         return redirect(url_for("buildings.get_unit", **_vars))
