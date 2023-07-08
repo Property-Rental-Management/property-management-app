@@ -1,4 +1,3 @@
-import locale
 import os
 
 from flask import Flask
@@ -31,8 +30,6 @@ from src.controller.lease_controller import InvoiceManager
 cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
 
 invoice_man = InvoiceManager(cache_path)
-locale.setlocale(locale.LC_ALL, 'en_ZA.UTF-8')
-
 
 def create_app(config):
     app: Flask = Flask(__name__)
