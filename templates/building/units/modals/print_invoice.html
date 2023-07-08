@@ -20,16 +20,15 @@
                 >
                     <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
                     <input type="hidden" name="building_id" value="{{ unit.property_id }}">
-
-                    <div class="form-group">
-                        <label for="invoice_option" class="font-weight-bold">Select an option:</label>
-                        <select id="invoice_option" name="invoice_option" class="form-control">
-                            <option value="current">Print Current Invoice</option>
-                            <option value="select">Select Invoice</option>
-                        </select>
-                    </div>
+                    {#                    <div class="form-group">#}
+                    {#                        <label for="invoice_option" class="font-weight-bold">Select an option:</label>#}
+                    {#                        <select id="invoice_option" name="invoice_option" class="form-control">#}
+                    {#                            <option value="current">Print Current Invoice</option>#}
+                    {#                            <option value="select">Select Invoice</option>#}
+                    {#                        </select>#}
+                    {#                    </div>#}
                     <div id="invoiceTableDiv">
-                        <h5>Select an invoice:</h5>
+                        <h5>Select an invoice to Print</h5>
                         <table id="invoiceTable" class="table table-striped">
                             <thead>
                             <tr>
@@ -48,7 +47,7 @@
                                     <td>{{ invoice.date_issued }}</td>
                                     <td>{{ invoice.amount_payable }}</td>
                                     <td>
-                                        <input type="radio" name="selected_invoice"
+                                        <input type="radio" name="invoice_number"
                                                value="{{ invoice.invoice_number }}">
                                     </td>
                                 </tr>
@@ -62,30 +61,30 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-sm btn-primary" disabled>
+                            <button type="button" class="btn btn-sm btn-primary" disabled>
                                 <i class="ti-printer"> </i>
                                 Print
-              </button>
-              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
-                  <i class="ti-close"> </i>
-                  Cancel
-              </button>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                <i class="ti-close"> </i>
+                                Cancel
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="ti-printer"> </i>
+                                Print
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                <i class="ti-close"> </i>
+                                Cancel
+                            </button>
+                        </div>
+                    {% endif %}
+                </form>
             </div>
-          {% else %}
-            <div class="form-group">
-              <button type="submit" class="btn btn-sm btn-primary">
-                  <i class="ti-printer"> </i>
-                  Print
-              </button>
-              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
-                  <i class="ti-close"> </i>
-                  Cancel
-              </button>
-            </div>
-          {% endif %}
-          </form>
         </div>
-      </div>
     </div>
   </div>
 </div>

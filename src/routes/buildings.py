@@ -411,10 +411,27 @@ async def unit_print_invoice(user: User):
         flash(message="Please indicate what you want to print", category="danger")
         return redirect(url_for("buildings.get_unit", **_vars))
 
-    invoices_to_print_ = []
-    if print_invoice_form.invoice_option == "select":
-        for _invoice_id in print_invoice_form.invoice_numbers:
-            invoice_to_print = await lease_agreement_controller.get_invoice(invoice_id=_invoice_id)
-            invoices_to_print_.append(invoice_to_print)
+    invoice_to_print = await lease_agreement_controller.get_invoice(invoice_number=print_invoice_form.invoice_number)
+    if invoice_to_print is None:
+        return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
+                                unit_id=print_invoice_form.unit_id))
 
-    return invoice_to_print
+    context = {'invoice': invoice_to_print.dict()}
+    building: Property = await company_controller.get_property(user=user, property_id=print_invoice_form.building_id)
+    if building is None:
+        return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
+                                unit_id=print_invoice_form.unit_id))
+
+    company: Company = await company_controller.get_company(user=user, company_id=building.company_id)
+    bank_account = await company_controller.get_bank_accounts(user=user, company_id=building.company_id)
+
+    if company is None:
+        return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
+                                unit_id=print_invoice_form.unit_id))
+    if bank_account is None:
+        return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
+                                unit_id=print_invoice_form.unit_id))
+
+    context['company'] = company.dict()
+    context['bank_account'] = bank_account.dict()
+    return render_template('reports/invoice_report.html', **context)
