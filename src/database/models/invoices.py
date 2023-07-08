@@ -95,24 +95,25 @@ class Invoice(BaseModel):
     tax_rate: int = Field(default=15)
     date_issued: date
     due_date: date
-    charge_ids: list[str]
+    charge_ids: list[str] | None
     invoice_items: list[InvoicedItems]
     invoice_sent: bool
     invoice_printed: bool
-    rental_amount: int
+    rental_amount: int | None
 
     @validator('charge_ids', pre=True)
     def validate_charge_ids(cls, value):
         print(f"value = {value}")
         if isinstance(value, str):
             return value.split(",")
-        elif isinstance(value, list):
-            return value
-        raise ValueError(f"invalid charge_ids {value}")
+        raise value
 
     @property
     def total_amount(self) -> int:
-        return sum(item.sub_total for item in self.invoice_items) + self.rental_amount
+        _total_amount = sum(item.sub_total for item in self.invoice_items)
+        if isinstance(self.rental_amount, int):
+            _total_amount += self.rental_amount
+        return _total_amount
 
     @property
     def total_taxes(self) -> int:
