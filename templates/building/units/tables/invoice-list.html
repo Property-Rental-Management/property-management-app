@@ -23,6 +23,7 @@
             <tr>
                 <th>Invoice #</th>
                 <th>Customer</th>
+                <th>Date Issued</th>
                 <th>Due Date</th>
                 <th>Amount</th>
             </tr>
@@ -32,6 +33,7 @@
                 <tr>
                     <td>{{ invoice.invoice_number }}</td>
                     <td>{{ invoice.customer.name }}</td>
+                    <td>{{ invoice.date_issued }}</td>
                     <td class="{% if invoice.days_remaining < 0 %}text-danger{% else %}text-info{% endif %}">
                         {{ invoice.due_date }}
                     </td>
