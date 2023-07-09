@@ -26,7 +26,7 @@
                 <th>Date Issued</th>
                 <th>Due Date</th>
                 <th>Amount Payable</th>
-                <th class="text-info"><i class="ti-credit-card"></i></th>
+                <th class="text-info"><i class="ti-credit-card"></i> Payment</th>
             </tr>
             </thead>
             <tbody>
@@ -45,7 +45,7 @@
                             <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}"/>
                             <div class="input-group input-group-rounded">
                                 <input type="number" placeholder="Paid Amount" value="{{ invoice.amount_payable }}"
-                                       name="paid_amount" class="form-control"/>
+                                       name="paid_amount" class="form-control col-lg-4 col-md-4"/>
                                 <span class="input-group-btn">
                                     <button class="btn btn-primary btn-group-right" type="submit"><i
                                             class="ti-credit-card"></i></button>
