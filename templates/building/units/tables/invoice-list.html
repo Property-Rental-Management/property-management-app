@@ -39,7 +39,15 @@
                         {{ invoice.due_date }}
                     </td>
                     <td>R {{ invoice.amount_payable|currency }}.00</td>
-                    <td><i class="ti-credit-card"> </i> Pay</td>
+                    <td>
+                        <form class="form-horizontal">
+                            <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}"/>
+                            <input type="number" name="paid_amount"/>
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="ti-credit-card"> </i> Pay Invoice
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
 
