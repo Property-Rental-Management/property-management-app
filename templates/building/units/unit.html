@@ -18,13 +18,21 @@
                 </span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#monthly-charges">
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#monthly-charges">
                 <span class="font-weight-bold">
                     Monthly Charges
                 </span>
-            </a>
-        </li>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#invoices">
+                <span class="font-weight-bold">
+                    Invoices
+                </span>
+                </a>
+            </li>
+
         {% else %}
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#book-unit">
@@ -58,18 +66,22 @@
             </div>
         </div>
         <div class="tab-pane fade" id="monthly-charges">
-                {% include "building/units/tables/applied_charges.html" %}
+            {% include "building/units/tables/applied_charges.html" %}
+        </div>
+        <div class="tab-pane fade" id="invoices">
+            {% include "building/units/tables/invoice-list.html" %}
         </div>
         <div class="tab-pane fade" id="book-unit">
             <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title font-weight-bold"> <i class="ti-save"> </i> Create Booking / Rental </h3>
-                <div>
-                <button id="add-unit-btn" class="btn btn-sm btn-primary mr-2" data-toggle="modal" data-target="#addTenantModal">
-                    <i class="ti-save"></i> Add Tenant
-                </button>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title font-weight-bold"><i class="ti-save"> </i> Create Booking / Rental </h3>
+                    <div>
+                        <button id="add-unit-btn" class="btn btn-sm btn-primary mr-2" data-toggle="modal"
+                                data-target="#addTenantModal">
+                            <i class="ti-save"></i> Add Tenant
+                        </button>
+                    </div>
                 </div>
-            </div>
             {% if not tenant %}
                 {% include "building/units/tables/add_tenant.html" %}
             {% endif %}
