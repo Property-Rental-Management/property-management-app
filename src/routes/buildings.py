@@ -174,11 +174,7 @@ async def get_unit(user: User, building_id: str, unit_id: str):
         flash(message="Could not find Unit with that ID", category="danger")
         redirect(url_for('buildings.get_building', building_id=building_id))
 
-    # Get a list of month names
-    month_names = list(calendar.month_name)[1:]
-
-    # Generate the month options data
-    month_options = [(month_number, month_name) for month_number, month_name in enumerate(month_names, start=1)]
+    month_options = await get_month_options()
 
     context.update({'unit': unit_data,
                     'billable_items': billable_dicts,
@@ -187,6 +183,14 @@ async def get_unit(user: User, building_id: str, unit_id: str):
                     'month_options': month_options})
 
     return render_template('building/units/unit.html', **context)
+
+
+async def get_month_options():
+    # Get a list of month names
+    month_names = list(calendar.month_name)[1:]
+    # Generate the month options data
+    month_options = [(month_number, month_name) for month_number, month_name in enumerate(month_names, start=1)]
+    return month_options
 
 
 async def build_charge_items(building_id, unit_id):

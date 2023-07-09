@@ -25,7 +25,7 @@ class InvoiceORM(Base):
     date_issued: date = Column(Date)
     due_date: date = Column(Date)
 
-    month: str = Column(String(NAME_LEN))
+    month: int = Column(Integer)
     rental_amount: int = Column(Integer)
     charge_ids: str = Column(Text)
     invoice_sent: bool = Column(Boolean, default=False)

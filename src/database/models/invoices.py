@@ -95,11 +95,12 @@ class Invoice(BaseModel):
     tax_rate: int = Field(default=15)
     date_issued: date
     due_date: date
+    month: int
+    rental_amount: int | None
     charge_ids: list[str] | None
     invoice_items: list[InvoicedItems]
     invoice_sent: bool
     invoice_printed: bool
-    rental_amount: int | None
 
     @validator('charge_ids', pre=True)
     def validate_charge_ids(cls, value):
@@ -156,6 +157,7 @@ class Invoice(BaseModel):
             'invoice_sent': self.invoice_sent,
             'invoice_printed': self.invoice_printed,
             'rental_amount': self.rental_amount,
+            'month': self.month,
             'total_amount': self.total_amount,
             'total_taxes': self.total_taxes,
             'amount_payable': self.amount_payable,
@@ -174,6 +176,7 @@ class UnitCharge(BaseModel):
     unit_id: str
     item_number: str
     amount: int
+    month: int
     date_of_entry: date
     is_invoiced: bool
 
@@ -185,6 +188,7 @@ class CreateUnitCharge(BaseModel):
     unit_id: str
     item_number: str
     amount: int
+    month: int
     date_of_entry: date = Field(default_factory=lambda: datetime.now().date())
     is_invoiced: bool = Field(default=False)
 
