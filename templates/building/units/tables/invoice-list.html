@@ -18,6 +18,29 @@
     </div>
 
     <div class="card-footer">
+        <table id="invoiceTable" class="table table-striped">
+            <thead>
+            <tr>
+                <th>Invoice #</th>
+                <th>Customer</th>
+                <th>Due Date</th>
+                <th>Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for invoice in historical_invoices %}
+                <tr>
+                    <td>{{ invoice.invoice_number }}</td>
+                    <td>{{ invoice.customer.name }}</td>
+                    <td class="{% if invoice.days_remaining < 0 %}text-danger{% else %}text-info{% endif %}">
+                        {{ invoice.due_date }}
+                    </td>
+                    <td>R {{ invoice.amount_payable|currency }}.00</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
     </div>
 </div>
 
