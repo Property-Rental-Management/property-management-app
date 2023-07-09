@@ -4,8 +4,8 @@ from pydantic import ValidationError
 
 from src.controller import error_handler, UnauthorizedError, Controllers
 from src.database.models.bank_accounts import BusinessBankAccount
-from src.database.models.companies import Company, UpdateCompany, TenantRelationCompany, CreateTenantCompany, \
-    UpdateTenantCompany
+from src.database.models.companies import (Company, UpdateCompany, TenantRelationCompany, CreateTenantCompany,
+                                           UpdateTenantCompany)
 from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge
 from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty
 from src.database.models.users import User
@@ -13,12 +13,13 @@ from src.database.sql.bank_account import BankAccountORM
 from src.database.sql.companies import CompanyORM, UserCompanyORM, TenantCompanyORM
 from src.database.sql.invoices import ItemsORM, UserChargesORM
 from src.database.sql.properties import PropertyORM, UnitORM
+from src.logger import init_logger
 
 
 class CompaniesController(Controllers):
     def __init__(self):
         super().__init__()
-        pass
+        self._logger = init_logger(self.__class__.__name__)
 
     @error_handler
     async def is_company_member(self, user_id: str, company_id: str, session):
