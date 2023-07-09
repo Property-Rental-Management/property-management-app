@@ -5,6 +5,10 @@ from pydantic import BaseModel, Field
 from src.database.tools import create_transaction_id
 
 
+def create_date_paid() -> date:
+    return datetime.now().date()
+
+
 class Payment(BaseModel):
     """
     Represents a payment transaction.
@@ -33,11 +37,16 @@ class CreatePayment(BaseModel):
     unit_id: str
     amount_paid: int
     date_paid: date = Field(default_factory=lambda: create_date_paid())
-    payment_method: str
+    payment_method: str | None
     is_successful: bool = Field(default=False)
-    month: int
-    comments: str
+    month: int | None
+    comments: str | None
 
 
-def create_date_paid() -> date:
-    return datetime.now().date()
+class UnitInvoicePaymentForm(BaseModel):
+    invoice_number: int
+    tenant_id: str
+    property_id: str
+    unit_id: str
+    amount_paid: int
+    payment_verified: bool = Field(default=False)

@@ -43,6 +43,9 @@
                         <form class="form-horizontal" method="POST"
                               action="{{ url_for('payments.create_unit_payment', invoice_number=invoice.invoice_number) }}">
                             <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}"/>
+                            <input type="hidden" name="tenant_id" value="{{ invoice.tenant_id }}">
+                            <input type="hidden" name="property_id" value="{{ invoice.property_id }}">
+                            <input type="hidden" name="unit_id" value="{{ invoice.unit_id }}">
                             <div class="input-group input-group-right">
                                 <input type="number"
                                        value="{{ invoice.amount_payable }}"
