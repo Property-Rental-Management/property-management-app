@@ -1,28 +1,28 @@
-
 <div class="card">
     <div class="card-header  d-flex justify-content-between align-items-center">
-        <h3 class="card-title font-weight-bold">Monthly Charges</h3>
+        <h3 class="card-title font-weight-bold">Monthly Bills</h3>
         <div>
-        <a class="btn btn-sm btn-warning font-weight-bold text-white" data-toggle="modal" data-target="#addBillModal">
-            <i class="ti-money"> </i>
-            Add Bill
-        </a>
+            <a class="btn btn-sm btn-warning font-weight-bold text-white" data-toggle="modal"
+               data-target="#addBillModal">
+                <i class="ti-money"> </i>
+                Add Bill
+            </a>
         </div>
     </div>
-
     <div class="card-footer">
         <span class="card-content font-weight-bold text-info">
             Use Add Bill to add rates and bills to a unit before invoices are created
         </span>
+
         <table class="table table-bordered table-striped">
             <thead>
-                <tr>
-                    <td>Description</td>
-                    <td>Rate</td>
-                    <td>Units</td>
-                    <td>Total</td>
-                    <td>Action</td>
-                </tr>
+            <tr>
+                <td>Description</td>
+                <td>Quantity</td>
+                <td>Amount</td>
+                <td>Total</td>
+                <td>Action</td>
+            </tr>
             </thead>
             <tbody>
             {% for charged_item in charged_items %}
@@ -43,6 +43,7 @@
             {% endfor %}
             </tbody>
         </table>
+
     </div>
 </div>
 
