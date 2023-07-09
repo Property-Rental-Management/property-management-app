@@ -43,12 +43,16 @@
                         <form class="form-horizontal" method="POST"
                               action="{{ url_for('payments.create_unit_payment', invoice_number=invoice.invoice_number) }}">
                             <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}"/>
-                            <div class="input-group input-group-rounded">
-                                <input type="number" placeholder="Paid Amount" value="{{ invoice.amount_payable }}"
-                                       name="paid_amount" class="form-control col-lg-4 col-md-4"/>
+                            <div class="input-group">
+                                <input type="number"
+                                       value="{{ invoice.amount_payable }}"
+                                       name="paid_amount"
+                                       class="form-control input-sm col-lg-6 col-md-6"/>
                                 <span class="input-group-btn">
-                                    <button class="btn btn-primary btn-group-right" type="submit"><i
-                                            class="ti-credit-card"></i></button>
+                                    <button class="btn btn-sm btn-primary btn-group-left"
+                                            type="submit">
+                                        <i class="ti-credit-card"></i>
+                                    </button>
                                 </span>
                             </div>
                         </form>
