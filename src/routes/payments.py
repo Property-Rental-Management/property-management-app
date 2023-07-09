@@ -54,6 +54,8 @@ async def create_unit_payment(user: User, invoice_number: int):
         unit_id=invoice_payment_form.unit_id,
         amount_paid=invoice_payment_form.amount_paid)
     payment_instance = CreatePayment(**new_payment_dict)
-    context = {'user': user.dict(), 'invoice': invoice.dict(), 'payment': payment_instance.dict()}
+    context = {'user': user.dict(),
+               'invoice': invoice.dict(),
+               'payment': payment_instance.dict()}
 
     return render_template('payments/verify_payment.html', **context)
