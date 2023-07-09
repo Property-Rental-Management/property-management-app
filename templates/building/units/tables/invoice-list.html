@@ -43,9 +43,8 @@
                         <form class="form-horizontal" method="POST"
                               action="{{ url_for('payments.create_unit_payment', invoice_number=invoice.invoice_number) }}">
                             <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}"/>
-                            <div class="form-group">
-                                <input type="number" name="paid_amount" class="form-control"/>
-                                <input type="submit" class="btn btn-sm btn-success" value="Pay Invoice"/>
+                            <div class="input-group input-group-rounded">
+                                <input type="number" placeholder="Paid Amount" name="paid_amount" class="form-control"/>
                             </div>
                         </form>
                     </td>
