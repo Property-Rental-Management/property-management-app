@@ -20,13 +20,16 @@
                 <input type="hidden" class="form-control" id="unit_id" name="unit_id" value="{{ unit.unit_id }}">
 
                 <div class="form-group">
+                    <label class="label">Select the Month for Bill</label>
                     <select class="form-control" id="month_billed" name="month">
+                        <option value="">Select Month</option>
                         {% for month_number, month_name in month_options %}
                             <option value="{{ month_number }}">{{ month_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="form-group">
+                    <label class="label"> Select Bill Type</label>
                     <select class="form-control" id="item_number" name="item_number">
                         <option value="">Select Billable Item</option>
                         {% for item in billable_items %}
