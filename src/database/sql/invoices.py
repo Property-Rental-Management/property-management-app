@@ -187,6 +187,7 @@ class UserChargesORM(Base):
     tenant_id: str = Column(String(ID_LEN))
     unit_id: str = Column(String(ID_LEN))
     item_number: str = Column(String(ID_LEN))
+    month: int = Column(Integer)
     amount: int = Column(Integer)
     date_of_entry: date = Column(Date)
     is_invoiced: bool = Column(Boolean, default=False)
@@ -209,6 +210,7 @@ class UserChargesORM(Base):
             "tenant_id": self.tenant_id,
             "unit_id": self.unit_id,
             "item_number": self.item_number,
+            "month": self.month,
             "amount": self.amount,
             "date_of_entry": self.date_of_entry,
             "is_invoiced": self.is_invoiced

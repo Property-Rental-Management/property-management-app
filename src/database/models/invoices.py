@@ -104,7 +104,6 @@ class Invoice(BaseModel):
 
     @validator('charge_ids', pre=True)
     def validate_charge_ids(cls, value):
-        print(f"value = {value}")
         if isinstance(value, str):
             return value.split(",")
         return value
