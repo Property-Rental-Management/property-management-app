@@ -461,16 +461,36 @@ async def do_send_invoice_email(user: User):
         invoice_email_form = await process_send_mail_form()
     except ValidationError as e:
         print(str(e))
-        return render_template(url_for('buildings.get_unit', building_id=invoice_email_form.building_id,
-                                       unit_id=invoice_email_form.unit_id))
-    hold_invoice = functools.partial(invoice_man.hold_invoice, building_id=invoice_email_form.building_id)
-    url_list = [await hold_invoice(invoice_number=invoice_number)
-                for invoice_number in invoice_email_form.invoice_numbers]
-    message = invoice_email_form.message
+        return redirect(url_for('buildings.get_unit', building_id=invoice_email_form.building_id,
+                                unit_id=invoice_email_form.unit_id), code=302)
 
+    invoice_link_func = functools.partial(invoice_man.create_invoice_link, building_id=invoice_email_form.building_id)
+    url_list = [await invoice_link_func(invoice_number=invoice_number)
+                for invoice_number in invoice_email_form.invoice_numbers]
+
+    message: str = invoice_email_form.message
+    to_: str = invoice_email_form.email
+    subject_: str = invoice_email_form.subject
+
+    message_ = await format_email_message(message, url_list)
+    new_mail = dict(to_=to_, subject_=subject_, html_=message_)
+    await send_mail.send_mail_resend(email=EmailModel(**new_mail))
+
+    flash(message="Email Sent with selected invoices", category="success")
+    return redirect(url_for('buildings.get_unit', building_id=invoice_email_form.building_id,
+                            unit_id=invoice_email_form.unit_id), code=302)
+
+
+async def format_email_message(message: str, url_list: list[str]):
+    """
+        **format_email_message**
+            formatting email message
+    :param message:
+    :param url_list:
+    :return:
+    """
     links = "\n".join(f"<li class='list-group-item'><a href='{url}'>{url}</a></li>" for url in url_list)
     formatted_links = f"<ul class='list-group'>{links}</ul>"
-
     message_ = f"""
     {message}
 
@@ -478,16 +498,7 @@ async def do_send_invoice_email(user: User):
 
     {formatted_links}
     """
-    to_ = invoice_email_form.email
-    subject_ = invoice_email_form.subject
-
-    new_mail = dict(to_=to_, subject_=subject_, html_=message_)
-
-    await send_mail.send_mail_resend(email=EmailModel(**new_mail))
-    # TODO - send the email with resend
-    flash(message="Email Sent with selected invoices", category="success")
-    return redirect(url_for('buildings.get_unit', building_id=invoice_email_form.building_id,
-                            unit_id=invoice_email_form.unit_id), code=302)
+    return message_
 
 
 async def process_send_mail_form() -> UnitEMailInvoiceForm:
