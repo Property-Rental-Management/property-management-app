@@ -17,10 +17,11 @@ async def get_payments(user: User):
 
 @payments_route.get('/admin/get-unit-payment/<string:invoice_number>')
 @login_required
-async def get_unit_payment(user: User):
+async def create_unit_payment(user: User, invoice_number: str):
     """
     **get_unit_payment**
         will return payment form for use in unit payments
+    :param invoice_number:
     :param user:
     :return:
     """
