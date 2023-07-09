@@ -365,7 +365,8 @@ async def create_billing_charge(user: User):
 
     _ = await company_controller.create_unit_bill_charge(charge_item=unit_charge_item)
     flash(message="Billing Charge Added to Unit", category="success")
-    return redirect(url_for("buildings.get_building", building_id=unit_charge_item.property_id), code=302)
+    return redirect(url_for("buildings.get_unit", building_id=unit_charge_item.property_id,
+                            unit_id=unit_charge_item.unit_id), code=302)
 
 
 @buildings_route.get('/admin/building/delete-charge/<string:charge_id>')
