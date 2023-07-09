@@ -26,6 +26,7 @@
                 <th>Date Issued</th>
                 <th>Due Date</th>
                 <th>Amount Payable</th>
+                <th class="text-info"><i class="ti-credit-card"></i></th>
             </tr>
             </thead>
             <tbody>
@@ -38,6 +39,7 @@
                         {{ invoice.due_date }}
                     </td>
                     <td>R {{ invoice.amount_payable|currency }}.00</td>
+                    <td>Pay</td>
                 </tr>
             {% endfor %}
 
