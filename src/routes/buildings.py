@@ -1,3 +1,4 @@
+import calendar
 import functools
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request
@@ -173,10 +174,17 @@ async def get_unit(user: User, building_id: str, unit_id: str):
         flash(message="Could not find Unit with that ID", category="danger")
         redirect(url_for('buildings.get_building', building_id=building_id))
 
+    # Get a list of month names
+    month_names = list(calendar.month_name)[1:]
+
+    # Generate the month options data
+    month_options = [(month_number, month_name) for month_number, month_name in enumerate(month_names, start=1)]
+
     context.update({'unit': unit_data,
                     'billable_items': billable_dicts,
                     'charged_items': charged_items_dicts,
-                    'historical_invoices': historical_invoices})
+                    'historical_invoices': historical_invoices,
+                    'month_options': month_options})
 
     return render_template('building/units/unit.html', **context)
 
