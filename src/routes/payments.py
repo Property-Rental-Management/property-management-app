@@ -66,7 +66,7 @@ async def create_unit_payment(user: User, invoice_number: int):
 @login_required
 async def do_verify_payment(user: User):
     """
-
+        **do_verify_payment*8
     :param user:
     :return:
     """
@@ -78,3 +78,8 @@ async def do_verify_payment(user: User):
         return redirect(url_for('payments.create_unit_payment', invoice_number=invoice_number), code=302)
 
     payment_logger.info(f"Payment Verification: {payment_verification}")
+    if not payment_verification.is_verified:
+        building_id = payment_verification.property_id
+        unit_id = payment_verification.unit_id
+        flash(message="Payment Rejected", category="danger")
+        return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
