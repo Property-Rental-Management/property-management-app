@@ -1,0 +1,183 @@
+{% extends "layouts/page.html" %}
+
+{% block content %}
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Payment Receipt</h5>
+            <p class="card-text">Invoice Number: {{ payment.invoice_number }}</p>
+            <p class="card-text">Tenant: {{ invoice.customer.name }}</p>
+            <p class="card-text">Property Name: {{ building.name }}</p>
+            <p class="card-text">Unit Number: {{ unit.unit_number }}</p>
+            <p class="card-text">Payment Method: {{ payment.payment_method }}</p>
+            <p class="card-text">Amount Paid: {{ payment.amount_paid }}</p>
+            <p class="card-text">Date Paid: {{ payment.date_paid }}</p>
+            <p class="card-text">Comments: {{ payment.comments }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+
+{% extends "layouts/invoice.html" %}
+{% block content %}
+    <div id="invoice" class="effect2 m-t-120">
+        <div id="invoice-top">
+            <div class="invoice-logo"></div>
+            <div class="invoice-info">
+                <h1>{{ company.company_name }}</h1>
+                <h2>{{ company.description }}</h2>
+                <p> {{ company.website }}<br/>
+                    {{ company.contant_number }}
+                </p>
+            </div>
+            <!--End Info-->
+            <div class="title">
+                <h4 class="font-italic">Invoice #: {{ invoice.invoice_number }}</h4>
+                <p>
+                    <span class="font-weight-bold">Issued: <span
+                            class="font-italic">{{ invoice.date_issued }}</span></span>
+                    <br>
+                    <span class="font-weight-bold">Payment Date: <span
+                            class="font-italic">{{ payment.payment.date_paid }}</span></span>
+                </p>
+            </div>
+            <!--End Title-->
+        </div>
+        <!--End InvoiceTop-->
+
+        <div id="invoice-mid">
+            <div class="clientlogo"></div>
+            <div class="invoice-info">
+                <h2>{{ invoice.customer.name }}</h2>
+                <p>{{ invoice.customer.email }}<br> {{ invoice.customer.cell }}  </p>
+            </div>
+            <div id="project">
+                <h2>Amount Paid: {{ payment.amount_paid|currency }}</h2>
+            </div>
+        </div>
+        <!--End Invoice Mid-->
+        <div id="invoice-bot">
+            <div id="invoice-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr class="tabletitle">
+                            <td class="table-item">
+                                <h2>Description</h2>
+                            </td>
+                            <td class="Hours">
+                                <h2>Quantity</h2>
+                            </td>
+                            <td class="Rate">
+                                <h2>Unit Price</h2>
+                            </td>
+                            <td class="subtotal">
+                                <h2>Sub-Total</h2>
+                            </td>
+                        </tr>
+                        {% for item in invoice.invoice_items %}
+                            <tr class="service">
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ item.description }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ item.multiplier|currency }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ invoice.currency }} {{ item.amount|currency }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ invoice.currency }} {{ item.sub_total|currency }}</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if invoice.rental_amount %}
+                            <tr class="service">
+                                <td class="tableitem">
+                                    <p class="itemtext">Rental</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">1</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ invoice.currency }} {{ invoice.rental_amount|currency }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext">{{ invoice.currency }} {{ invoice.rental_amount|currency }}</p>
+                                </td>
+                            </tr>
+
+                        {% endif %}
+
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Total</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ invoice.total_amount|currency }}</h2>
+                            </td>
+                        </tr>
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Total Taxes</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ invoice.total_taxes|currency }}</h2>
+                            </td>
+                        </tr>
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Discount</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ invoice.discount|currency }}</h2>
+                            </td>
+                        </tr>
+
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Amount Payable</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ invoice.amount_payable|currency }}</h2>
+                            </td>
+                        </tr>
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Amount Paid</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ payment.amount_paid|currency }}</h2>
+                            </td>
+                        </tr>
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Balance</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ invoice.currency }} {{ (invoice.amount_payable - payment.amount_paid)|currency }}</h2>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--End InvoiceBot-->
+    </div>
+
+{% endblock %}

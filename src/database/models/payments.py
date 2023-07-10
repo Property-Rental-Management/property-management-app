@@ -62,7 +62,7 @@ class PaymentVerificationForm(BaseModel):
     amount_paid: int
     date_paid: date
     comments: str
-    is_verified: bool
+    is_successful: bool
 
     @validator('amount_paid', pre=True)
     def validate_amount_paid(cls, value):
