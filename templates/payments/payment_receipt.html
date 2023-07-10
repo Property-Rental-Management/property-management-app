@@ -1,26 +1,3 @@
-{% extends "layouts/page.html" %}
-
-{% block content %}
-
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Payment Receipt</h5>
-            <p class="card-text">Invoice Number: {{ payment.invoice_number }}</p>
-            <p class="card-text">Tenant: {{ invoice.customer.name }}</p>
-            <p class="card-text">Property Name: {{ building.name }}</p>
-            <p class="card-text">Unit Number: {{ unit.unit_number }}</p>
-            <p class="card-text">Payment Method: {{ payment.payment_method }}</p>
-            <p class="card-text">Amount Paid: {{ payment.amount_paid }}</p>
-            <p class="card-text">Date Paid: {{ payment.date_paid }}</p>
-            <p class="card-text">Comments: {{ payment.comments }}</p>
-        </div>
-    </div>
-{% endblock %}
-
-
-
-
-
 {% extends "layouts/invoice.html" %}
 {% block content %}
     <div id="invoice" class="effect2 m-t-120">
