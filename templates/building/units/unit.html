@@ -66,10 +66,14 @@
             </div>
         </div>
         <div class="tab-pane fade" id="monthly-charges">
-            {% include "building/units/tables/applied_charges.html" %}
+            {% if unit and tenant %}
+                {% include "building/units/tables/applied_charges.html" %}
+            {% endif %}
         </div>
         <div class="tab-pane fade" id="invoices">
-            {% include "building/units/tables/invoice-list.html" %}
+            {% if tenant %}
+                {% include "building/units/tables/invoice-list.html" %}
+            {% endif %}
         </div>
         <div class="tab-pane fade" id="book-unit">
             <div class="card">
