@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, request, url_for, redirect, flash
 from pydantic import ValidationError
 
-from database.models.companies import Company
-from database.models.properties import Property
 from src.authentication import login_required
+from src.database.models.companies import Company
 from src.database.models.invoices import Invoice
 from src.database.models.payments import UnitInvoicePaymentForm, CreatePayment, PaymentVerificationForm, Payment
+from src.database.models.properties import Property
 from src.database.models.users import User
 from src.logger import init_logger
 from src.main import lease_agreement_controller, company_controller
