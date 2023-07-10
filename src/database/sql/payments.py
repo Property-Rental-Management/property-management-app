@@ -3,8 +3,8 @@ from datetime import date
 from sqlalchemy import Column, String, Date, Boolean, Integer, inspect
 from sqlalchemy.ext.declarative import declarative_base
 
-from database.sql import engine
 from src.database.constants import ID_LEN
+from src.database.sql import engine
 
 Base = declarative_base()
 
