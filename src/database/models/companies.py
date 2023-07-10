@@ -20,7 +20,7 @@ class Company(BaseModel):
 
     company_id: str
     company_name: str
-    description: str
+    description: str | None
 
     address_line_1: str | None
     address_line_2: str | None
