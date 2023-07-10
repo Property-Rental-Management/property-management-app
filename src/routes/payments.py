@@ -64,7 +64,7 @@ async def create_unit_payment(user: User, invoice_number: int):
     return render_template('payments/verify_payment.html', **context)
 
 
-@payments_route.post('/admin/verify-payments')
+@payments_route.post('/admin/payments/verification')
 @login_required
 async def do_verify_payment(user: User):
     """
@@ -72,12 +72,14 @@ async def do_verify_payment(user: User):
     :param user:
     :return:
     """
+    building_id = request.form.get('property_id')
+    unit_id = request.form.get('unit_id')
     try:
         payment_verification = PaymentVerificationForm(**request.form)
     except ValidationError as e:
         payment_logger.error(str(e))
         invoice_number: str = request.form.get('invoice_number')
-        return redirect(url_for('payments.create_unit_payment', invoice_number=invoice_number), code=302)
+        return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
 
     payment_logger.info(f"Payment Verification: {payment_verification}")
     payment_instance = await lease_agreement_controller.add_payment(Payment(**payment_verification.dict()))
