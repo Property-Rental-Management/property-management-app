@@ -1,5 +1,6 @@
 import uuid
 from datetime import date
+
 from pydantic import BaseModel, Field, validator
 
 
@@ -20,10 +21,10 @@ class Tenant(BaseModel):
     tenant_id: str
     address_id: str | None
     name: str
-    id_number: str
+    id_number: str | None
     company_id: str | None
-    email: str
-    cell: str
+    email: str | None
+    cell: str | None
     is_renting: bool
     lease_start_date: date | None
     lease_end_date: date | None
