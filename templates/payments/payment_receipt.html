@@ -98,27 +98,32 @@
                                 <h2>{{ invoice.currency }} {{ invoice.total_amount|currency }}</h2>
                             </td>
                         </tr>
-                        <tr class="tabletitle">
-                            <td></td>
-                            <td></td>
-                            <td class="Rate">
-                                <h2>Total Taxes</h2>
-                            </td>
-                            <td class="payment">
-                                <h2>{{ invoice.currency }} {{ invoice.total_taxes|currency }}</h2>
-                            </td>
-                        </tr>
-                        <tr class="tabletitle">
-                            <td></td>
-                            <td></td>
-                            <td class="Rate">
-                                <h2>Discount</h2>
-                            </td>
-                            <td class="payment">
-                                <h2>{{ invoice.currency }} {{ invoice.discount|currency }}</h2>
-                            </td>
-                        </tr>
 
+                        {% if invoice.total_taxes %}
+                            <tr class="tabletitle">
+                                <td></td>
+                                <td></td>
+                                <td class="Rate">
+                                    <h2>Total Taxes</h2>
+                                </td>
+                                <td class="payment">
+                                    <h2>{{ invoice.currency }} {{ invoice.total_taxes|currency }}</h2>
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        {% if invoice.discount %}
+                            <tr class="tabletitle">
+                                <td></td>
+                                <td></td>
+                                <td class="Rate">
+                                    <h2>Discount</h2>
+                                </td>
+                                <td class="payment">
+                                    <h2>{{ invoice.currency }} {{ invoice.discount|currency }}</h2>
+                                </td>
+                            </tr>
+                        {% endif %}
                         <tr class="tabletitle">
                             <td></td>
                             <td></td>
@@ -139,6 +144,7 @@
                                 <h2>{{ invoice.currency }} {{ payment.amount_paid|currency }}</h2>
                             </td>
                         </tr>
+                        {% if ((invoice.amount_payable - payment.amount_paid)) %}
                         <tr class="tabletitle">
                             <td></td>
                             <td></td>
@@ -149,6 +155,7 @@
                                 <h2>{{ invoice.currency }} {{ (invoice.amount_payable - payment.amount_paid)|currency }}</h2>
                             </td>
                         </tr>
+                        {% endif %}
 
                     </table>
                 </div>
