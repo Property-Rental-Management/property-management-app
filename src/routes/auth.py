@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
+
 from flask import Blueprint, render_template, request, make_response, flash, redirect, url_for, Response
 from pydantic import ValidationError
 
-from src.logger import init_logger
 from src.database.models.auth import Auth, RegisterUser
 from src.database.models.users import User, CreateUser, PasswordResetUser
+from src.logger import init_logger
 from src.main import user_controller
 
 auth_route = Blueprint('auth', __name__)
@@ -23,7 +24,8 @@ async def create_response(redirect_url, message=None, category=None) -> Response
 @auth_route.get('/admin/login')
 async def get_login():
     """
-
+    **get_login**
+        get login
     :return:
     """
     # TODO - CHECK IF USER IS ALREADY LOGGED IN
