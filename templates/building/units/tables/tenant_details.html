@@ -39,7 +39,7 @@
     <div class="card-header">
         <h3 class="card-title">Company Details</h3>
     </div>
-    {% if tenant and tenant.company_id %}
+    {% if tenant and tenant.company_id and company %}
         <ul class="list-group">
             <li class="list-group-item"><strong>Company Name:</strong> {% if company.company_name %}{{ company.company_name }}{% else %}N/A{% endif %}</li>
             <li class="list-group-item"><strong>Description:</strong> {% if company.description %}{{ company.description }}{% else %}N/A{% endif %}</li>
