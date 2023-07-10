@@ -78,7 +78,7 @@ async def do_verify_payment(user: User):
         payment_verification = PaymentVerificationForm(**request.form)
     except ValidationError as e:
         payment_logger.error(str(e))
-        invoice_number: str = request.form.get('invoice_number')
+        flash(message=f"Error in form : {str(e)}", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
 
     payment_logger.info(f"Payment Verification: {payment_verification}")
