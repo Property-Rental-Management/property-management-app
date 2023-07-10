@@ -9,9 +9,7 @@
             </h3>
         </div>
         <div class="row">
-            <div class="card-footer col-lg-6 col-md-6">
 
-            </div>
             <div class="card-footer col-lg-6 col-md-6">
                 <form enctype="application/x-www-form-urlencoded"
                       action="{{ url_for('payments.do_verify_payment') }}"
@@ -61,6 +59,70 @@
                     </a>
                 </div>
                 </form>
+            </div>
+
+            <div class="card-footer col-lg-6 col-md-6">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="ti-file"></i>
+                        Invoice</h3>
+                </div>
+                <div class="card-body">
+                    <h3>Invoice #: {{ invoice.invoice_number }} </h3>
+                    <ul class="list-group">
+                        <li><strong>Service Rendered:</strong>
+                            <span class="text-lg-right text-info">
+                            {{ invoice.service_name }}
+                        </span>
+                        </li>
+                        <li><strong>Description</strong>
+                            <textarea class="form-control" disabled>{{ invoice.description }}</textarea>
+                        </li>
+                        <li><strong>Tenant:</strong>
+                            <span class="text-lg-right text-info">
+                            {{ invoice.customer.name }}
+                        </span>
+                        </li>
+                        <li><strong>Date Issued:</strong>
+                            <span class="text-lg-right text-info">
+                            {{ invoice.date_issued }}
+                        </span>
+                        </li>
+                        <li><strong>Due Date:</strong>
+                            <span class="text-lg-right text-info">
+                            {{ invoice.due_date }}
+                        </span>
+                        </li>
+                        <li><strong>Month:</strong>
+                            <span class="text-lg-right text-info">
+                            {{ invoice.month }}
+                        </span>
+                        </li>
+                        <li><strong>Rental Amount:</strong>
+                            <span class="text-lg-right text-info">
+                        {{ invoice.currency }} {{ invoice.rental_amount|currency or 'N/A' }}.00
+                        </span>
+                        </li>
+                    </ul>
+                    <h4>Invoiced Items:</h4>
+                    <ul class="list-group">
+                        {% for item in invoice.invoice_items %}
+                            <li class="list-group-item">{{ item.description }}
+                                - {{ invoice.currency }} {{ item.sub_total|currency }}.00
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <ul class="list-group">
+                        <li><strong>Total Amount:</strong>{{ invoice.currency }} {{ invoice.total_amount|currency }}.00
+                        </li>
+                        <li><strong>Total Taxes:</strong>{{ invoice.currency }} {{ invoice.total_taxes|currency }}.00
+                        </li>
+                        <li><strong>Discount:</strong>{{ invoice.currency }} {{ invoice.discount|currency }}.00</li>
+                        <li><strong>Amount To
+                            Payable: </strong>{{ invoice.currency }} {{ invoice.amount_payable|currency }}.00
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
