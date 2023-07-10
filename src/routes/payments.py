@@ -3,7 +3,7 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.invoices import Invoice
-from src.database.models.payments import UnitInvoicePaymentForm, CreatePayment
+from src.database.models.payments import UnitInvoicePaymentForm, CreatePayment, Payment
 from src.database.models.users import User
 from src.logger import init_logger
 from src.main import lease_agreement_controller
@@ -54,6 +54,7 @@ async def create_unit_payment(user: User, invoice_number: int):
         unit_id=invoice_payment_form.unit_id,
         amount_paid=invoice_payment_form.amount_paid)
     payment_instance = CreatePayment(**new_payment_dict)
+
     context = {'user': user.dict(),
                'invoice': invoice.dict(),
                'payment': payment_instance.dict()}
@@ -61,7 +62,7 @@ async def create_unit_payment(user: User, invoice_number: int):
     return render_template('payments/verify_payment.html', **context)
 
 
-@payments_route.get('/admin/verify-payments')
+@payments_route.post('/admin/verify-payments')
 @login_required
 async def do_verify_payment(user: User):
     """
@@ -69,4 +70,12 @@ async def do_verify_payment(user: User):
     :param user:
     :return:
     """
-    pass
+    try:
+        payment_verification = Payment(**request.form)
+
+    except ValidationError as e:
+        payment_logger.error(str(e))
+        return redirect(url_for('payments.create_unit_payment', invoice_number=payment_verification.invoice_number),
+                        code=302)
+
+    payment_logger.info(f"Payment Verification: {payment_verification}")
