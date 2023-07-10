@@ -3,55 +3,60 @@
 {% block content %}
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Verify Payment</h3>
+            <h3 class="card-title">
+                <i class="ti-check-box"> </i>
+                Verify Payment
+            </h3>
         </div>
-        <form enctype="application/x-www-form-urlencoded"
-              action="{{ url_for('payments.do_verify_payment') }}"
-              method="POST"
-        >
+        <div class="card-footer">
+            <form enctype="application/x-www-form-urlencoded"
+                  action="{{ url_for('payments.do_verify_payment') }}"
+                  method="POST"
+            >
 
-            <div class="card-body">
-                <input type="hidden" name="transaction_id" value="{{ payment.transaction_id }}">
-                <input type="hidden" name="invoice_number" value="{{ payment.invoice_number }}">
-                <input type="hidden" name="tenant_id" value="{{ payment.tenant_id }}">
-                <input type="hidden" name="property_id" value="{{ payment.property_id }}">
-                <input type="hidden" name="unit_id" value="{{ payment.unit_id }}">
-                <div class="form-group">
-                    <label for="payment_method" class="font-weight-bold text-info">Payment Method:</label>
-                    <select class="form-control" id="payment_method" name="payment_method">
-                        <option value="credit_card">Credit Card</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="cash">Cash</option>
-                    </select>
+                <div class="card-body">
+                    <input type="hidden" name="transaction_id" value="{{ payment.transaction_id }}">
+                    <input type="hidden" name="invoice_number" value="{{ payment.invoice_number }}">
+                    <input type="hidden" name="tenant_id" value="{{ payment.tenant_id }}">
+                    <input type="hidden" name="property_id" value="{{ payment.property_id }}">
+                    <input type="hidden" name="unit_id" value="{{ payment.unit_id }}">
+                    <div class="form-group">
+                        <label for="payment_method" class="font-weight-bold text-info">Payment Method:</label>
+                        <select class="form-control" id="payment_method" name="payment_method">
+                            <option value="credit_card">Credit Card</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="cash">Cash</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount_paid" class="font-weight-bold text-info">Amount Paid:</label>
+                        <input type="number" class="form-control"
+                               id="amount_paid"
+                               value="{{ payment.amount_paid }}"
+                               name="amount_paid" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_paid" class="font-weight-bold text-info">Date Paid</label>
+                        <input type="date" class="form-control" id="date_paid"
+                               name="date_paid">
+                    </div>
+                    <div class="form-group">
+                        <label for="comments" class="font-weight-bold text-info">Comments:</label>
+                        <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="amount_paid" class="font-weight-bold text-info">Amount Paid:</label>
-                    <input type="number" class="form-control"
-                           id="amount_paid"
-                           value="{{ payment.amount_paid }}"
-                           name="amount_paid" required>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-sm btn-primary font-weight-bold">
+                        <i class="ti-file"> </i>
+                        Verify Payment
+                    </button>
+                    <a href="{{ url_for('buildings.get_unit', building_id=payment.property_id,unit_id=payment.unit_id) }}"
+                       type="reset" class="btn btn-sm btn-danger">
+                        <i class="ti-close"></i>
+                        Cancel
+                    </a>
                 </div>
-                <div class="form-group">
-                    <label for="date_paid" class="font-weight-bold text-info">Date Paid</label>
-                    <input type="date" class="form-control" id="date_paid"
-                           name="date_paid">
-                </div>
-                <div class="form-group">
-                    <label for="comments" class="font-weight-bold text-info">Comments:</label>
-                    <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
-                </div>
-            </div>
-            <div class="card-footer">
-                <button type="submit" class="btn btn-sm btn-primary font-weight-bold">
-                    <i class="ti-file"> </i>
-                    Verify Payment
-                </button>
-                <a href="{{ url_for('buildings.get_unit', building_id=payment.property_id, unit=payment.unit_id) }}"
-                   type="reset" class="btn btn-sm btn-danger">
-                    <i class="ti-close"></i>
-                    Cancel
-                </a>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 {% endblock %}
