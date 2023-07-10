@@ -5,18 +5,18 @@ from datetime import datetime, date, timedelta
 from flask import Flask, url_for
 from pydantic import ValidationError
 
-from database.models.payments import Payment
-from database.sql.payments import PaymentORM
 from src.controller import error_handler, Controllers
 from src.database.models.companies import Company
 from src.database.models.invoices import Invoice, UnitCharge
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
+from src.database.models.payments import Payment
 from src.database.models.properties import Unit, Property
 from src.database.models.tenants import Tenant
 from src.database.sql import Session
 from src.database.sql.companies import CompanyORM
 from src.database.sql.invoices import InvoiceORM, UserChargesORM
 from src.database.sql.lease import LeaseAgreementORM
+from src.database.sql.payments import PaymentORM
 from src.database.sql.properties import PropertyORM
 from src.database.sql.tenants import TenantORM
 from src.logger import init_logger
