@@ -84,6 +84,7 @@ class CompaniesController(Controllers):
 
     @error_handler
     async def create_company(self, company: Company, user: User) -> Company:
+
         # Perform necessary operations to create the company_id
         # For example, you can save the company_id data in a database
         # and associate it with the user
