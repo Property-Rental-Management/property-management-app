@@ -191,8 +191,16 @@ async def add_tenants_company(user: User):
     :param user:
     :return:
     """
-    tenant_company: CreateTenantCompany = CreateTenantCompany(**request.form)
-    tenant_company_relation: CreateTenantRelationCompany = CreateTenantRelationCompany(**tenant_company.dict())
+    building_id = request.form.get('building_id')
+    unit_id = request.form.get('unit_id')
+    try:
+        tenant_company: CreateTenantCompany = CreateTenantCompany(**request.form)
+        tenant_company_relation: CreateTenantRelationCompany = CreateTenantRelationCompany(**tenant_company.dict())
+    except ValidationError as e:
+        return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
+    if tenant_company.description is None:
+        tenant_company.description = "Tenant Company"
+
     new_company_data = await company_controller.create_company_internal(company=tenant_company)
     new_company_relation: TenantRelationCompany = await company_controller.create_company_tenant_relation_internal(
         company_relation=tenant_company_relation)
