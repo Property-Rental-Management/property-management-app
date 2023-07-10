@@ -13,25 +13,26 @@
             <div class="card-footer col-lg-6 col-md-6">
                 <form enctype="application/x-www-form-urlencoded"
                       action="{{ url_for('payments.do_verify_payment') }}"
-                  method="POST"
-            >
+                      method="POST"
+                >
 
-                <div class="card-body">
-                    <input type="hidden" name="transaction_id" value="{{ payment.transaction_id }}">
-                    <input type="hidden" name="invoice_number" value="{{ payment.invoice_number }}">
-                    <input type="hidden" name="tenant_id" value="{{ payment.tenant_id }}">
-                    <input type="hidden" name="property_id" value="{{ payment.property_id }}">
-                    <input type="hidden" name="unit_id" value="{{ payment.unit_id }}">
-                    <div class="form-group">
-                        <label for="payment_method" class="font-weight-bold text-info">Payment Method:</label>
-                        <select class="form-control" id="payment_method" name="payment_method">
-                            <option value="credit_card">Credit Card</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                            <option value="cash">Cash</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="amount_paid" class="font-weight-bold text-info">Amount Paid:</label>
+                    <div class="card-body">
+                        <input type="hidden" name="transaction_id" value="{{ payment.transaction_id }}">
+                        <input type="hidden" name="invoice_number" value="{{ payment.invoice_number }}">
+                        <input type="hidden" name="tenant_id" value="{{ payment.tenant_id }}">
+                        <input type="hidden" name="property_id" value="{{ payment.property_id }}">
+                        <input type="hidden" name="unit_id" value="{{ payment.unit_id }}">
+                        <input type="hidden" name="month" value="{{ payment.month }}">
+                        <div class="form-group">
+                            <label for="payment_method" class="font-weight-bold text-info">Payment Method:</label>
+                            <select class="form-control" id="payment_method" name="payment_method">
+                                <option value="credit_card">Credit Card</option>
+                                <option value="bank_transfer">Bank Transfer</option>
+                                <option value="cash">Cash</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount_paid" class="font-weight-bold text-info">Amount Paid:</label>
                         <input type="text" class="form-control"
                                id="amount_paid"
                                value="{{ payment.amount_paid|currency }}"
