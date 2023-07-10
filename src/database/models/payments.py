@@ -75,4 +75,5 @@ class PaymentVerificationForm(BaseModel):
     def validate_month(cls, value):
         if isinstance(value, str):
             return int(value)
-        return value
+        month = datetime.now().month
+        return month
