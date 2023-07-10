@@ -255,7 +255,6 @@ class LeaseController(Controllers):
         with self.get_session() as session:
             payment_instance = PaymentORM(**payment.dict())
             session.add(payment_instance)
-            session.commit()
             try:
                 payment_orm = Payment(**payment_instance.to_dict())
 
@@ -263,6 +262,7 @@ class LeaseController(Controllers):
                 payment_orm = None
                 self._logger.error(str(e))
 
+            session.commit()
             return payment_orm
 
 
