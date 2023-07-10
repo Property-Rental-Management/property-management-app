@@ -90,7 +90,7 @@ async def do_verify_payment(user: User):
 
     property_id = payment_verification.property_id
     invoice_number = payment_verification.invoice_number
-    invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
+    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
     building: Property = await company_controller.get_property_by_id_internal(property_id=property_id)
     company: Company = await company_controller.get_company_internal(company_id=building.company_id)
 
