@@ -6,7 +6,12 @@
             <h3 class="card-title">Verify Payment</h3>
         </div>
         <div class="card-body">
-            <form method="POST" action="#">
+            <form method="POST" action="{{ url_for('payments.do_verify_payment') }}">
+                <input type="hidden" name="transaction_id" value="{{ payment.transaction_id }}">
+                <input type="hidden" name="invoice_number" value="{{ payment.invoice_number }}">
+                <input type="hidden" name="tenant_id" value="{{ payment.tenant_id }}">
+                <input type="hidden" name="property_id" value="{{ payment.property_id }}">
+                <input type="hidden" name="unit_id" value="{{ payment.unit_id }}">
                 <div class="form-group">
                     <label for="payment_method">Payment Method:</label>
                     <select class="form-control" id="payment_method" name="payment_method">
@@ -15,12 +20,18 @@
                         <option value="cash">Cash</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label for="amount_paid">Amount Paid:</label>
                     <input type="number" class="form-control"
                            id="amount_paid"
                            value="{{ payment.amount_paid }}"
                            name="amount_paid" required>
+                </div>
+                <div class="form-group">
+                    <label class="date_paid">Date Paid</label>
+                    <input type="date" class="form-control" id="date_paid"
+                           name="date_paid">
                 </div>
                 <div class="form-group">
                     <label for="comments">Comments:</label>
@@ -30,7 +41,9 @@
             </form>
         </div>
         <div class="card-footer">
-            <!-- Additional footer content if needed -->
+            <span class="card-content">
+                Once verified a payment is assumed paid and collected.
+            </span>
         </div>
     </div>
 {% endblock %}

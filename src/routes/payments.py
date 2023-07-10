@@ -59,3 +59,14 @@ async def create_unit_payment(user: User, invoice_number: int):
                'payment': payment_instance.dict()}
 
     return render_template('payments/verify_payment.html', **context)
+
+
+@payments_route.get('/admin/verify-payments')
+@login_required
+async def do_verify_payment(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    pass
