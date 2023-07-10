@@ -74,6 +74,7 @@ class PaymentVerificationForm(BaseModel):
     @validator('month', pre=True)
     def validate_month(cls, value):
         if isinstance(value, str):
-            return int(value)
+            if value.isdecimal():
+                return int(value)
         month = datetime.now().month
         return month

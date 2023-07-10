@@ -54,7 +54,8 @@ async def create_unit_payment(user: User, invoice_number: int):
         tenant_id=invoice_payment_form.tenant_id,
         property_id=invoice_payment_form.property_id,
         unit_id=invoice_payment_form.unit_id,
-        amount_paid=invoice_payment_form.amount_paid)
+        amount_paid=invoice_payment_form.amount_paid,
+        month=invoice.month)
     payment_instance = CreatePayment(**new_payment_dict)
 
     context = {'user': user.dict(),
