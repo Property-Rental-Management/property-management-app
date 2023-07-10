@@ -5,11 +5,12 @@
         <div class="card-header">
             <h3 class="card-title">Verify Payment</h3>
         </div>
-        <div class="card-body">
-            <form enctype="application/x-www-form-urlencoded"
-                  action="{{ url_for('payments.do_verify_payment') }}"
-                  method="POST"
-            >
+        <form enctype="application/x-www-form-urlencoded"
+              action="{{ url_for('payments.do_verify_payment') }}"
+              method="POST"
+        >
+
+            <div class="card-body">
                 <input type="hidden" name="transaction_id" value="{{ payment.transaction_id }}">
                 <input type="hidden" name="invoice_number" value="{{ payment.invoice_number }}">
                 <input type="hidden" name="tenant_id" value="{{ payment.tenant_id }}">
@@ -39,18 +40,18 @@
                     <label for="comments" class="font-weight-bold text-info">Comments:</label>
                     <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">
-                    <span class="font-weight-bold text-info">
-                        <i class="ti-file"> </i>
-                        Verify Payment
-                    </span>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-sm btn-primary font-weight-bold">
+                    <i class="ti-file"> </i>
+                    Verify Payment
                 </button>
-            </form>
-        </div>
-        <div class="card-footer">
-            <span class="card-content">
-                Once verified a payment is assumed paid and collected.
-            </span>
-        </div>
+                <a href="{{ url_for('buildings.get_unit', building_id=payment.property_id, unit=payment.unit_id) }}"
+                   type="reset" class="btn btn-sm btn-danger">
+                    <i class="ti-close"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
     </div>
 {% endblock %}
