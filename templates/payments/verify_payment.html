@@ -13,7 +13,7 @@
                 <input type="hidden" name="property_id" value="{{ payment.property_id }}">
                 <input type="hidden" name="unit_id" value="{{ payment.unit_id }}">
                 <div class="form-group">
-                    <label for="payment_method">Payment Method:</label>
+                    <label for="payment_method" class="font-weight-bold text-info">Payment Method:</label>
                     <select class="form-control" id="payment_method" name="payment_method">
                         <option value="credit_card">Credit Card</option>
                         <option value="bank_transfer">Bank Transfer</option>
@@ -22,22 +22,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="amount_paid">Amount Paid:</label>
+                    <label for="amount_paid" class="font-weight-bold text-info">Amount Paid:</label>
                     <input type="number" class="form-control"
                            id="amount_paid"
                            value="{{ payment.amount_paid }}"
                            name="amount_paid" required>
                 </div>
                 <div class="form-group">
-                    <label class="date_paid">Date Paid</label>
+                    <label class="date_paid" class="font-weight-bold text-info">Date Paid</label>
                     <input type="date" class="form-control" id="date_paid"
                            name="date_paid">
                 </div>
                 <div class="form-group">
-                    <label for="comments">Comments:</label>
+                    <label for="comments" class="font-weight-bold text-info">Comments:</label>
                     <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Verify Payment</button>
+                <button type="submit" class="btn btn-primary">
+                    <span class="font-weight-bold text-info">
+                        <i class="ti-file"> </i>
+                        Verify Payment
+                    </span>
+                </button>
             </form>
         </div>
         <div class="card-footer">
