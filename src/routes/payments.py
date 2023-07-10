@@ -3,7 +3,7 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.invoices import Invoice
-from src.database.models.payments import UnitInvoicePaymentForm, CreatePayment, Payment
+from src.database.models.payments import UnitInvoicePaymentForm, CreatePayment, PaymentVerificationForm
 from src.database.models.users import User
 from src.logger import init_logger
 from src.main import lease_agreement_controller
@@ -71,11 +71,10 @@ async def do_verify_payment(user: User):
     :return:
     """
     try:
-        payment_verification = Payment(**request.form)
-
+        payment_verification = PaymentVerificationForm(**request.form)
     except ValidationError as e:
         payment_logger.error(str(e))
-        return redirect(url_for('payments.create_unit_payment', invoice_number=payment_verification.invoice_number),
-                        code=302)
+        invoice_number: str = request.form.get('invoice_number')
+        return redirect(url_for('payments.create_unit_payment', invoice_number=invoice_number), code=302)
 
     payment_logger.info(f"Payment Verification: {payment_verification}")

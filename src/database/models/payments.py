@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 from src.database.tools import create_transaction_id
 
@@ -50,3 +50,22 @@ class UnitInvoicePaymentForm(BaseModel):
     unit_id: str
     amount_paid: int
     payment_verified: bool = Field(default=False)
+
+
+class PaymentVerificationForm(BaseModel):
+    transaction_id: str
+    invoice_number: str
+    tenant_id: str
+    property_id: str
+    unit_id: str
+    payment_method: str
+    amount_paid: int
+    date_paid: date
+    comments: str
+    is_verified: bool
+
+    @validator('amount_paid', pre=True)
+    def validate_amount_paid(cls, value):
+        if isinstance(value, str):
+            value = int(value.replace(',', ''))
+        return value

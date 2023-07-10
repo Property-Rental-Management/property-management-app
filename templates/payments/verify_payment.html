@@ -43,21 +43,28 @@
                                name="date_paid">
                     </div>
                     <div class="form-group">
+                        <label for="is_verified"> Payment Verification</label>
+                        <select id="is_verified" name="is_verified" class="form-control">
+                            <option value="0">Payment Rejected</option>
+                            <option value="1">Payment Verified</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="comments" class="font-weight-bold text-info">Comments:</label>
                         <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-sm btn-primary font-weight-bold">
-                        <i class="ti-credit-card"> </i>
-                        Verify Payment
-                    </button>
-                    <a href="{{ url_for('buildings.get_unit', building_id=payment.property_id,unit_id=payment.unit_id) }}"
-                       type="reset" class="btn btn-sm btn-danger">
-                        <i class="ti-close"></i>
-                        Cancel
-                    </a>
-                </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-sm btn-primary font-weight-bold">
+                            <i class="ti-credit-card"> </i>
+                            Verify Payment
+                        </button>
+                        <a href="{{ url_for('buildings.get_unit', building_id=payment.property_id,unit_id=payment.unit_id) }}"
+                           type="reset" class="btn btn-sm btn-danger">
+                            <i class="ti-close"></i>
+                            Reject Payment
+                        </a href="{{ url_for('buildings.get_unit', building_id=payment.property_id,unit_id=payment.unit_id) }}">
+                    </div>
                 </form>
             </div>
 
@@ -145,6 +152,7 @@
                             </li>
                         </ul>
                     </div>
+
                 </div>
             </div>
         </div>
