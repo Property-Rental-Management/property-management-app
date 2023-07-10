@@ -256,7 +256,14 @@ class LeaseController(Controllers):
             payment_instance = PaymentORM(**payment.dict())
             session.add(payment_instance)
             session.commit()
-            return Payment(**payment_instance.to_dict())
+            try:
+                payment_orm = Payment(**payment_instance.to_dict())
+
+            except ValidationError as e:
+                payment_orm = None
+                self._logger.error(str(e))
+
+            return payment_orm
 
 
 class InvoiceManager:
