@@ -16,6 +16,7 @@ class UserController(Controllers):
 
     def __init__(self):
         super().__init__()
+
         self._time_limit = 360
         self._verification_tokens: dict[str, int | dict[str, str | int]] = {}
 
@@ -126,8 +127,15 @@ class UserController(Controllers):
 
             new_user: UserORM = UserORM(**user.to_dict())
             session.add(new_user)
+            new_user_dict = new_user.to_dict()
             session.commit()
-            return User(**new_user.to_dict())
+            try:
+                response = User(**new_user_dict)
+            except ValidationError as e:
+                self.logger.error(str(e))
+                return None
+
+            return response
 
     @error_handler
     async def put(self, user: User) -> dict[str, str] | None:
