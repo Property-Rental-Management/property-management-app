@@ -101,7 +101,7 @@ async def do_register():
     if user_exist:
         flash(message='User Already Exist please login', category='success')
         return await create_response(url_for('auth.get_login'))
-    print(f"registering user : {register_user}")
+    print(f"Registering user : {register_user}")
     user_data: CreateUser = CreateUser(**register_user.dict(exclude={'terms'}))
 
     _user_data: User | None = await user_controller.post(user=user_data)

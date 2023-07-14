@@ -217,6 +217,7 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
     :param unit_id:
     :return:
     """
+
     context = dict(user=user.dict())
     tenant_rental = Unit(**request.form)
     _updated_unit = await company_controller.update_unit(user_id=user.user_id, unit_data=tenant_rental)

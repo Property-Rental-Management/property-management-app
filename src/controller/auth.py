@@ -127,7 +127,7 @@ class UserController(Controllers):
             new_user: UserORM = UserORM(**user.to_dict())
             session.add(new_user)
             session.commit()
-            return User(**user_data.to_dict())
+            return User(**new_user.to_dict())
 
     @error_handler
     async def put(self, user: User) -> dict[str, str] | None:

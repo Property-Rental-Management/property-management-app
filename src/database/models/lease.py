@@ -1,5 +1,6 @@
-from datetime import date
 import uuid
+from datetime import date
+
 from pydantic import BaseModel, Field
 
 
@@ -25,9 +26,9 @@ class LeaseAgreement(BaseModel):
     start_date: date
     end_date: date
     rent_amount: int
-    deposit_amount: int
+    deposit_amount: int | None
     is_active: bool
-    payment_period: str
+    payment_period: str | None
 
     @property
     def days_left(self):
