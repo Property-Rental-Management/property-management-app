@@ -30,9 +30,8 @@ class LeaseController(Controllers):
     @error_handler
     async def get_all_active_lease_agreements(self) -> list[LeaseAgreement]:
         with self.get_session() as session:
-            lease_agreements: list[LeaseAgreementORM] = session.query(LeaseAgreementORM).filter(
-                LeaseAgreementORM.is_active == True).all()
-            return [LeaseAgreement(**lease.dict()) for lease in lease_agreements]
+            lease_agreements = session.query(LeaseAgreementORM).filter(LeaseAgreementORM.is_active == True).all()
+            return [LeaseAgreement(**lease.dict()) for lease in lease_agreements] if lease_agreements else []
 
     @error_handler
     async def create_lease_agreement(self, lease: CreateLeaseAgreement) -> LeaseAgreement | None:
@@ -81,7 +80,7 @@ class LeaseController(Controllers):
             return []
 
     @error_handler
-    async def get_invoice(self, invoice_number: str) -> Invoice:
+    async def get_invoice(self, invoice_number: str) -> Invoice | None:
         """
             **get_invoice**
         :param invoice_number:
@@ -91,7 +90,7 @@ class LeaseController(Controllers):
         with self.get_session() as session:
             invoice_orm: InvoiceORM = session.query(InvoiceORM).filter(
                 InvoiceORM.invoice_number == invoice_number).first()
-            return Invoice(**invoice_orm.to_dict())
+            return Invoice(**invoice_orm.to_dict()) if isinstance(invoice_orm, InvoiceORM) else None
 
     async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit,
                              include_rental: bool = False, due_after: int | None = None) -> Invoice | None:
@@ -119,7 +118,7 @@ class LeaseController(Controllers):
                 company: Company = Company(**company_orm.to_dict()) if company_orm else None
                 tenant: Tenant = Tenant(**tenant_orm.to_dict()) if tenant_orm else None
 
-                if (property_ is None) or (company is None) or (tenant is None):
+                if not (property_ and company and tenant):
                     self._logger.error(f"""                    
                     Error -- !                                        
                     Property : {property_}                    
@@ -136,10 +135,9 @@ class LeaseController(Controllers):
                     """)
 
                 service_name: str = f"{property_.name} Invoice" if property_.name else None
-                description: str = f"{company.company_name} Monthly Rental for a Unit on {property_.name}" \
-                    if company.company_name and property_.name else None
+                description: str = f"{company.company_name} Monthly Rental for a Unit on {property_.name}" if company.company_name and property_.name else None
 
-                if service_name is None or description is None:
+                if not (service_name and description):
                     self._logger.error(f"""
                     This should not happen : 
                     Service Name: {service_name} & Description: {description}""")
@@ -148,8 +146,8 @@ class LeaseController(Controllers):
                 date_issued: date = datetime.now().date()
                 due_date: date = await self.calculate_due_date(date_issued=date_issued, due_after=due_after)
 
-                list_charge_ids: list[str] = await self.get_charge_ids(invoice_charges=invoice_charges) \
-                    if invoice_charges else []
+                list_charge_ids: list[str] = await self.get_charge_ids(
+                    invoice_charges=invoice_charges) if invoice_charges else []
 
                 charge_ids = ",".join(list_charge_ids) if list_charge_ids else None
                 # TODO - should use Pydantic here to enable an extra layer of data verification before creating ORM

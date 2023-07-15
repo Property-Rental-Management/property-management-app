@@ -129,13 +129,7 @@ class UserController(Controllers):
             session.add(new_user)
             new_user_dict = new_user.to_dict()
             session.commit()
-            try:
-                response = User(**new_user_dict)
-            except ValidationError as e:
-                self.logger.error(str(e))
-                return None
-
-            return response
+            return User(**new_user_dict) if isinstance(new_user, UserORM) else None
 
     @error_handler
     async def put(self, user: User) -> dict[str, str] | None:

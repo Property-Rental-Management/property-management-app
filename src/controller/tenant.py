@@ -1,5 +1,3 @@
-from pydantic import ValidationError
-
 from src.controller import error_handler, Controllers
 from src.database.models.properties import Unit, Property
 from src.database.models.tenants import Tenant, QuotationForm, CreateTenant, TenantAddress, CreateTenantAddress
@@ -25,17 +23,9 @@ class TenantController(Controllers):
         :return:
         """
         with self.get_session() as session:
-
             tenants_list: list[TenantORM] = session.query(TenantORM).filter(TenantORM.company_id == company_id).all()
-            try:
-                _tenants_list = [Tenant(**tenant_orm.to_dict()) for tenant_orm
-                                 in tenants_list if isinstance(tenant_orm, TenantORM)] if tenants_list else []
-
-            except ValidationError as e:
-                self._logger.error(str(e))
-                pass
-
-            return _tenants_list
+            return [Tenant(**tenant_orm.to_dict()) for tenant_orm in tenants_list
+                    if isinstance(tenant_orm, TenantORM)] if tenants_list else []
 
     @error_handler
     async def get_tenant_by_cell(self, user: User, cell: str) -> Tenant | None:
@@ -47,11 +37,7 @@ class TenantController(Controllers):
         """
         with self.get_session() as session:
             tenant = session.query(TenantORM).filter(TenantORM.cell == cell).first()
-            try:
-                tenant_data = Tenant(**tenant.to_dict()) if isinstance(tenant, TenantORM) else None
-            except ValidationError as e:
-                self._logger.error(str(e))
-            return tenant_data
+            return Tenant(**tenant.to_dict()) if isinstance(tenant, TenantORM) else None
 
     @error_handler
     async def get_tenant_by_id(self, tenant_id: str) -> Tenant | None:
@@ -62,22 +48,13 @@ class TenantController(Controllers):
         """
         with self.get_session() as session:
             tenant = session.query(TenantORM).filter(TenantORM.tenant_id == tenant_id).first()
-            try:
-                tenant_data = Tenant(**tenant.to_dict()) if isinstance(tenant, TenantORM) else None
-            except ValidationError as e:
-                self._logger.error(str(e))
-
-            return tenant_data
+            return Tenant(**tenant.to_dict()) if isinstance(tenant, TenantORM) else None
 
     @error_handler
     async def get_un_booked_tenants(self) -> list[Tenant]:
         with self.get_session() as session:
             tenants_list: list[TenantORM] = session.query(TenantORM).filter(TenantORM.is_renting == False).all()
-            try:
-                tenant_list = [Tenant(**tenant.to_dict()) for tenant in tenants_list if tenant] if tenants_list else []
-            except ValidationError as e:
-                self._logger.error(str(e))
-            return tenant_list
+            return [Tenant(**tenant.to_dict()) for tenant in tenants_list if tenant] if tenants_list else []
 
     @error_handler
     async def create_quotation(self, user: User, quotation: QuotationForm) -> dict[str, Unit | Property]:
@@ -115,12 +92,7 @@ class TenantController(Controllers):
             tenant_orm: TenantORM = TenantORM(**tenant.dict())
             session.add(tenant_orm)
             session.commit()
-            try:
-                tenant_data = Tenant(**tenant_orm.to_dict()) if isinstance(tenant_orm, TenantORM) else None
-            except ValidationError as e:
-                self._logger.error(str(e))
-
-            return tenant_data
+            return Tenant(**tenant_orm.to_dict()) if isinstance(tenant_orm, TenantORM) else None
 
     @error_handler
     async def update_tenant(self, tenant: Tenant) -> Tenant | None:
@@ -136,11 +108,7 @@ class TenantController(Controllers):
                 # Commit the changes to the database
                 session.commit()
                 session.refresh(tenant_orm)
-                try:
-                    tenant_data = Tenant(**tenant_orm.to_dict()) if isinstance(tenant_orm, TenantORM) else None
-                except ValidationError as e:
-                    self._logger.error(str(e))
-            return tenant_data
+                return Tenant(**tenant_orm.to_dict()) if isinstance(tenant_orm, TenantORM) else None
 
     @error_handler
     async def get_tenant_address(self, address_id: str) -> TenantAddress:
@@ -152,14 +120,8 @@ class TenantController(Controllers):
         with self.get_session() as session:
             tenant_address_orm: TenantAddressORM = session.query(TenantAddressORM).filter(
                 TenantAddressORM.address_id == address_id).first()
-            try:
-                tenant_address: TenantAddress = TenantAddress(**tenant_address_orm.to_dict()) if isinstance(
-                    tenant_address_orm, TenantAddressORM) else None
-            except ValidationError as e:
-                self._logger.error(str(e))
-                return None
-
-            return tenant_address
+            return TenantAddress(**tenant_address_orm.to_dict()) if isinstance(
+                tenant_address_orm, TenantAddressORM) else None
 
     @error_handler
     async def create_tenant_address(self, tenant_id: str, tenant_address: CreateTenantAddress) -> TenantAddress | None:
