@@ -36,25 +36,29 @@ def error_handler(view_func):
         try:
             return await view_func(*args, **kwargs)
         except (OperationalError, ProgrammingError, IntegrityError, AttributeError) as e:
-            error_logger.error(str(e))
+            message: str = f"{view_func.__name__} : {str(e)}"
+            error_logger.error(message)
             flash(message="Error accessing database - please try again", category='danger')
             return None
         except UnauthorizedError as e:
-            error_logger.error(str(e))
+            message: str = f"{view_func.__name__} : {str(e)}"
+            error_logger.error(message)
             flash(message="You are not authorized to access this resource", category='danger')
             return redirect(url_for('home.get_home'), code=302)
         except ConnectionResetError as e:
-            error_logger.error(str(e))
-            flash(message="Ooh , took a nap, sorry lets do that again...", category='danger')
+            message: str = f"{view_func.__name__} : {str(e)}"
+            error_logger.error(message)
+            flash(message="Unable to connect to database please retry", category='danger')
             return None
 
         except ValidationError as e:
-            error_logger.error(str(e))
+            message: str = f"{view_func.__name__} : {str(e)}"
+            error_logger.error(message)
             return None
 
         except Exception as e:
-            _error = str(e)
-            error_logger.error(f" {view_func.__name__} : {_error}")
+            message: str = f"{view_func.__name__} : {str(e)}"
+            error_logger.error(message)
             flash(message="Ooh , some things broke, no worries, please continue...", category='danger')
             return None
 
