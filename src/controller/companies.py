@@ -251,7 +251,8 @@ class CompaniesController(Controllers):
                 session.merge(original_property_orm)
             # Commit the changes to the database
             session.commit()
-            return Property(**original_property_orm.to_dict()) if isinstance(original_property_orm, Property) else None
+            return Property(**original_property_orm.to_dict()) if isinstance(original_property_orm,
+                                                                             PropertyORM) else None
 
     @error_handler
     async def get_properties(self, user: User, company_id: str) -> list[Property] | None:
@@ -446,26 +447,24 @@ class CompaniesController(Controllers):
 
     @error_handler
     async def update_unit(self, user_id: str, unit_data: Unit) -> Unit | None:
-        """
-
-        :param user_id:
-        :param unit_data:
-        :return:
-        """
         with self.get_session() as session:
             unit_orm: UnitORM = session.query(UnitORM).filter(UnitORM.unit_id == unit_data.unit_id,
                                                               UnitORM.property_id == unit_data.property_id).first()
 
             if unit_orm:
-                # Update the fields in tenant_orm based on the values in tenant
-                for field in unit_data.__dict__:
-                    if field in unit_orm.__dict__ and unit_data.__dict__[field] is not None:
-                        setattr(unit_orm, field, unit_data.__dict__[field])
+                fields_to_update = [field for field in unit_orm.__dict__.keys() if not field.startswith("_")]
+
+                for field in fields_to_update:
+                    if getattr(unit_data, field, None) is not None:
+                        setattr(unit_orm, field, getattr(unit_data, field))
 
                 # Commit the changes to the database
                 session.merge(unit_orm)
                 session.commit()
-            return Unit(**unit_orm.to_dict()) if isinstance(unit_orm, UnitORM) else None
+
+                return Unit(**unit_orm.to_dict())
+
+            return None
 
     @error_handler
     async def create_billable_item(self, billable_item: CreateInvoicedItem) -> CreateInvoicedItem:

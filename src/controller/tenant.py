@@ -101,14 +101,18 @@ class TenantController(Controllers):
             tenant_orm: TenantORM = session.query(TenantORM).filter(TenantORM.tenant_id == tenant.tenant_id).first()
 
             if tenant_orm:
-                # Update the fields in tenant_orm based on the values in tenant
-                for field in tenant.__dict__:
-                    if field in tenant_orm.__dict__ and tenant.__dict__[field] is not None:
-                        setattr(tenant_orm, field, tenant.__dict__[field])
+                fields_to_update = [field for field in tenant_orm.__dict__.keys() if not field.startswith("_")]
+
+                for field in fields_to_update:
+                    if hasattr(tenant, field) and getattr(tenant, field) is not None:
+                        setattr(tenant_orm, field, getattr(tenant, field))
+
                 session.merge(tenant_orm)
-                # Commit the changes to the database
                 session.commit()
-                return Tenant(**tenant_orm.to_dict()) if isinstance(tenant_orm, TenantORM) else None
+
+                return Tenant(**tenant_orm.to_dict())
+
+        return None
 
     @error_handler
     async def get_tenant_address(self, address_id: str) -> TenantAddress:

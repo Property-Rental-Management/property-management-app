@@ -239,7 +239,7 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
         rental_amount=tenant_rental.rental_amount)
 
     rental_period: int = await convert_rental_period_to_days(rental_period=tenant_rental.rental_period,
-                                                             other=tenant_rental.other)
+                                                             other=tenant_rental.number_days)
 
     lease_dict: dict[str, str] = dict(property_id=tenant_rental.property_id,
                                       tenant_id=tenant_rental.tenant_id,
@@ -248,22 +248,25 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
                                       end_date=tenant_rental.lease_end_date,
                                       rent_amount=tenant_rental.rental_amount,
                                       deposit_amount=deposit_amount,
-                                      rental_period=rental_period,
+                                      payment_period=rental_period,
                                       is_active=True)
 
     try:
         lease_: CreateLeaseAgreement = CreateLeaseAgreement(**lease_dict)
         lease: LeaseAgreement = await lease_agreement_controller.create_lease_agreement(lease=lease_)
+
     except ValidationError as e:
         buildings_logger.error(f"Error creating Lease Agreement : {str(e)}")
         flash(message=f"Validation error : {str(e)}", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id))
+
     if lease:
-        context.update(dict())
+        context.update(dict(lease_agreement=lease.dict()))
+
     building_: Property = await company_controller.get_property_by_id_internal(property_id=building_id)
     building_.available_units -= 1
     updated_building: Property = await company_controller.update_property(user=user, property_details=building_)
-    print(f'Updated Building : {updated_building}')
+
     if updated_building:
         context.update(dict(building=updated_building.dict()))
 
@@ -532,6 +535,7 @@ async def process_send_mail_form() -> UnitEMailInvoiceForm:
     return UnitEMailInvoiceForm(**invoice_email_dict)
 
 
-async def convert_rental_period_to_days(rental_period: str, other: int) -> int:
+async def convert_rental_period_to_days(rental_period: str, other: str) -> int:
+    _other = int(other) if other.isdecimal() else 0
     rental_periods = {"daily": 1, "weekly": 7, "monthly": 30}
-    return rental_periods.get(rental_period, other)
+    return rental_periods.get(rental_period, _other)

@@ -96,15 +96,15 @@ class CreateUnitRental(BaseModel):
     property_id: str
     unit_id: str
     unit_number: str
-    is_occupied: bool = Field(default=False)
-    is_booked: bool = Field(default=False)
+    is_occupied: bool = Field(default=True)
+    is_booked: bool = Field(default=True)
     rental_amount: int
     lease_start_date: date | None = Field(default=None)
     lease_end_date: date | None = Field(default=None)
     unit_area: int
     has_reception: bool
     rental_period: str
-    other: str | None
+    number_days: str | None
 
 
 class AddUnit(BaseModel):
