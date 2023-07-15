@@ -1,5 +1,6 @@
 import calendar
 import functools
+from datetime import date
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from pydantic import ValidationError
@@ -228,14 +229,18 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
 
     building_ = await company_controller.get_property_by_id_internal(property_id=tenant_rental.property_id)
     if not building_:
+        message: str = "Unable to locate the building which should be rented"
+        flash(message=message, category="danger")
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id))
 
     tenant: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=tenant_rental.tenant_id)
-    tenant.is_renting = True
-    tenant.lease_start_date = tenant_rental.lease_start_date
-    tenant.lease_end_date = tenant_rental.lease_end_date
-    tenant.company_id = building_.company_id
-    updated_tenant = await tenant_controller.update_tenant(tenant=tenant)
+
+    args = dict(tenant=tenant, company_id=building_.company_id, start_date=tenant_rental.lease_start_date,
+                end_date=tenant_rental.lease_end_date)
+
+    tenant_: Tenant = await update_tenant_rental(**args)
+
+    updated_tenant: Tenant = await tenant_controller.update_tenant(tenant=tenant_)
 
     if updated_tenant:
         context.update(dict(tenant=updated_tenant.dict()))
@@ -246,23 +251,16 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
     rental_period: int = await convert_rental_period_to_days(rental_period=tenant_rental.rental_period,
                                                              other=tenant_rental.number_days)
 
-    lease_dict: dict[str, str] = dict(property_id=tenant_rental.property_id,
-                                      tenant_id=tenant_rental.tenant_id,
-                                      unit_id=tenant_rental.unit_id,
-                                      start_date=tenant_rental.lease_start_date,
-                                      end_date=tenant_rental.lease_end_date,
-                                      rent_amount=tenant_rental.rental_amount,
-                                      deposit_amount=deposit_amount,
-                                      payment_period=rental_period,
-                                      is_active=True)
+    lease_dict = await create_lease_dict(deposit_amount=deposit_amount, rental_period=rental_period,
+                                         tenant_rental=tenant_rental)
 
     try:
         lease_: CreateLeaseAgreement = CreateLeaseAgreement(**lease_dict)
         lease: LeaseAgreement = await lease_agreement_controller.create_lease_agreement(lease=lease_)
-
     except ValidationError as e:
-        buildings_logger.error(f"Error creating Lease Agreement : {str(e)}")
-        flash(message=f"Validation error : {str(e)}", category="danger")
+        message: str = f"Error creating Lease Agreement : {str(e)}"
+        buildings_logger.error(message)
+        flash(message=message, category="danger")
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id))
 
     if lease:
@@ -276,6 +274,41 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
 
     flash(message='Lease Agreement created Successfully', category="success")
     return render_template('tenants/official/tenant_rental_result.html', **context)
+
+
+async def create_lease_dict(deposit_amount: int, rental_period: int, tenant_rental: CreateUnitRental):
+    """
+        **create_lease_dict**
+    :param deposit_amount:
+    :param rental_period:
+    :param tenant_rental:
+    :return:
+    """
+    return dict(property_id=tenant_rental.property_id,
+                tenant_id=tenant_rental.tenant_id,
+                unit_id=tenant_rental.unit_id,
+                start_date=tenant_rental.lease_start_date,
+                end_date=tenant_rental.lease_end_date,
+                rent_amount=tenant_rental.rental_amount,
+                deposit_amount=deposit_amount,
+                payment_period=rental_period,
+                is_active=True)
+
+
+async def update_tenant_rental(tenant: Tenant, company_id: str, start_date: date, end_date: date) -> Tenant:
+    """
+
+    :param tenant:
+    :param company_id:
+    :param start_date:
+    :param end_date:
+    :return:
+    """
+    tenant.is_renting = True
+    tenant.lease_start_date = start_date
+    tenant.lease_end_date = end_date
+    tenant.company_id = company_id
+    return tenant
 
 
 @buildings_route.post('/admin/update-tenant-unit/<string:building_id>/unit/<string:unit_id>')
