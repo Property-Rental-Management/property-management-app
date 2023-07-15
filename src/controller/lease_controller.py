@@ -17,7 +17,7 @@ from src.database.sql.companies import CompanyORM
 from src.database.sql.invoices import InvoiceORM, UserChargesORM
 from src.database.sql.lease import LeaseAgreementORM
 from src.database.sql.payments import PaymentORM
-from src.database.sql.properties import PropertyORM
+from src.database.sql.properties import PropertyORM, UnitORM
 from src.database.sql.tenants import TenantORM
 from src.logger import init_logger
 
@@ -258,6 +258,16 @@ class LeaseController(Controllers):
 
             session.commit()
             return payment_orm
+
+    async def get_leased_unit_by_tenant_id(self, tenant_id: str):
+        """
+
+        :param tenant_id:
+        :return:
+        """
+        with self.get_session() as session:
+            unit_orm: UnitORM = session.query(UnitORM).filter(UnitORM.tenant_id == tenant_id).first()
+            return Unit(**unit_orm.to_dict())
 
 
 class InvoiceManager:

@@ -376,7 +376,6 @@ async def delete_billed_item(user: User, property_id: str, item_number: str):
     """
     **delete_billed_item**
 
-
     :param user:
     :param property_id:
     :param item_number:

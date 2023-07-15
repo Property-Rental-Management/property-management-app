@@ -3,13 +3,13 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.companies import Company
-from src.database.models.properties import Property
+from src.database.models.properties import Property, Unit
 from src.database.models.tenants import QuotationForm, Tenant, CreateTenant, TenantSendMail, TenantAddress, \
     CreateTenantAddress
 from src.database.models.users import User
 from src.emailer import EmailModel
 from src.logger import init_logger
-from src.main import tenant_controller, company_controller, send_mail
+from src.main import tenant_controller, company_controller, send_mail, lease_agreement_controller
 
 tenants_route = Blueprint('tenants', __name__)
 tenants_logger = init_logger('tenants_logger')
@@ -102,13 +102,20 @@ async def get_tenant(user: User, tenant_id: str):
     if tenant_data and tenant_data.address_id:
         tenant_address = await tenant_controller.get_tenant_address(address_id=tenant_data.address_id)
 
+    invoices = await lease_agreement_controller.get_invoices(tenant_id=tenant_id)
+
+    invoices_dicts = [invoice.dict() for invoice in invoices if invoice] if invoices else []
+    unit = await lease_agreement_controller.get_leased_unit_by_tenant_id(tenant_id=tenant_id)
+    unit_dicts = unit.dict() if isinstance(unit, Unit) else {}
     tenant_data_dict = tenant_data.dict() if isinstance(tenant_data, Tenant) else {}
     tenant_address_dict = tenant_address.dict() if isinstance(tenant_address, TenantAddress) else {}
     company_dict = company_data.dict() if isinstance(company_data, Company) else {}
 
     context.update({'tenant': tenant_data_dict,
                     'address': tenant_address_dict,
-                    'company': company_dict})
+                    'company': company_dict,
+                    'historical_invoices': invoices_dicts,
+                    'unit': unit_dicts})
 
     return render_template("tenants/tenant_details.html", **context)
 
