@@ -42,14 +42,10 @@ class LeaseController(Controllers):
         :return:
         """
         with self.get_session() as session:
-            try:
-                lease_orm: LeaseAgreementORM = LeaseAgreementORM(**lease.dict())
-                session.add(lease_orm)
-                session.commit()
-                return LeaseAgreement(**lease.dict())
-            except Exception as e:
-                self._logger.error(f"Error creating Lease Agreement:  {str(e)}")
-            return None
+            lease_orm: LeaseAgreementORM = LeaseAgreementORM(**lease.dict())
+            session.add(lease_orm)
+            session.commit()
+            return LeaseAgreement(**lease.dict())
 
     @staticmethod
     async def calculate_deposit_amount(rental_amount: int) -> int:

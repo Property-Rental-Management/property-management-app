@@ -10,7 +10,8 @@ from src.database.models.invoices import (CreateInvoicedItem, BillableItem, Crea
                                           PrintInvoiceForm, UnitEMailInvoiceForm)
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
 from src.database.models.notifications import NotificationsModel
-from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty, UpdateUnit
+from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty, UpdateUnit, \
+    CreateUnitRental
 from src.database.models.tenants import Tenant
 from src.database.models.users import User
 from src.emailer import EmailModel
@@ -219,7 +220,7 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
     """
 
     context = dict(user=user.dict())
-    tenant_rental = Unit(**request.form)
+    tenant_rental = CreateUnitRental(**request.form)
     _updated_unit = await company_controller.update_unit(user_id=user.user_id, unit_data=tenant_rental)
 
     if _updated_unit:
@@ -237,6 +238,9 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
     deposit_amount = await lease_agreement_controller.calculate_deposit_amount(
         rental_amount=tenant_rental.rental_amount)
 
+    rental_period: int = await convert_rental_period_to_days(rental_period=tenant_rental.rental_period,
+                                                             other=tenant_rental.other)
+
     lease_dict: dict[str, str] = dict(property_id=tenant_rental.property_id,
                                       tenant_id=tenant_rental.tenant_id,
                                       unit_id=tenant_rental.unit_id,
@@ -244,6 +248,7 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
                                       end_date=tenant_rental.lease_end_date,
                                       rent_amount=tenant_rental.rental_amount,
                                       deposit_amount=deposit_amount,
+                                      rental_period=rental_period,
                                       is_active=True)
 
     try:
@@ -525,3 +530,8 @@ async def process_send_mail_form() -> UnitEMailInvoiceForm:
     invoice_email_dict = dict(invoice_numbers=invoice_numbers, email=email, subject=subject,
                               message=message, building_id=building_id, unit_id=unit_id)
     return UnitEMailInvoiceForm(**invoice_email_dict)
+
+
+async def convert_rental_period_to_days(rental_period: str, other: int) -> int:
+    rental_periods = {"daily": 1, "weekly": 7, "monthly": 30}
+    return rental_periods.get(rental_period, other)

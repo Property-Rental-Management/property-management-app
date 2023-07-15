@@ -90,9 +90,10 @@ class TenantController(Controllers):
         """
         with self.get_session() as session:
             tenant_orm: TenantORM = TenantORM(**tenant.dict())
+            tenant_data = Tenant(**tenant_orm.to_dict()) if isinstance(tenant_orm, TenantORM) else None
             session.add(tenant_orm)
             session.commit()
-            return Tenant(**tenant_orm.to_dict()) if isinstance(tenant_orm, TenantORM) else None
+            return tenant_data
 
     @error_handler
     async def update_tenant(self, tenant: Tenant) -> Tenant | None:
@@ -107,7 +108,6 @@ class TenantController(Controllers):
                 session.merge(tenant_orm)
                 # Commit the changes to the database
                 session.commit()
-                session.refresh(tenant_orm)
                 return Tenant(**tenant_orm.to_dict()) if isinstance(tenant_orm, TenantORM) else None
 
     @error_handler

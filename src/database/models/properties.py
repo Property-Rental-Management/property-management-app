@@ -1,8 +1,7 @@
-from datetime import date
 import uuid
+from datetime import date
+
 from pydantic import BaseModel, Field, validator
-from typing import List
-from src.database.models.address import Address
 
 
 class Property(BaseModel):
@@ -90,6 +89,22 @@ class Unit(BaseModel):
         if not isinstance(value, bool):
             return False
         return value
+
+
+class CreateUnitRental(BaseModel):
+    tenant_id: str | None = Field(default=None)
+    property_id: str
+    unit_id: str
+    unit_number: str
+    is_occupied: bool = Field(default=False)
+    is_booked: bool = Field(default=False)
+    rental_amount: int
+    lease_start_date: date | None = Field(default=None)
+    lease_end_date: date | None = Field(default=None)
+    unit_area: int
+    has_reception: bool
+    rental_period: str
+    other: str | None
 
 
 class AddUnit(BaseModel):
