@@ -202,7 +202,7 @@ async def add_tenants_company(user: User):
     if tenant_company.description is None:
         tenant_company.description = "Tenant Company"
 
-    new_company_data = await company_controller.create_company_internal(company=tenant_company)
+    new_company_data = await company_controller.create_company_internal(company=Company(**tenant_company.dict()))
     new_company_relation: TenantRelationCompany = await company_controller.create_company_tenant_relation_internal(
         company_relation=tenant_company_relation)
 

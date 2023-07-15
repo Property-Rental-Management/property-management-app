@@ -79,6 +79,8 @@ class CreateCompany(BaseModel):
     contact_number: str
     website: str | None
 
+    class Config:
+        extra = Extra.ignore
 
 class CreateTenantCompany(BaseModel):
     """
