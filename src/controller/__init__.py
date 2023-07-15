@@ -1,6 +1,7 @@
 import functools
 
 from flask import redirect, url_for, flash
+from pydantic import ValidationError
 from sqlalchemy.exc import OperationalError, ProgrammingError, IntegrityError
 
 from src.database.sql import Session
@@ -46,6 +47,11 @@ def error_handler(view_func):
             error_logger.error(str(e))
             flash(message="Ooh , took a nap, sorry lets do that again...", category='danger')
             return None
+
+        except ValidationError as e:
+            error_logger.error(str(e))
+            return None
+
         except Exception as e:
             _error = str(e)
             error_logger.error(f" {view_func.__name__} : {_error}")
