@@ -259,7 +259,7 @@ class LeaseController(Controllers):
             session.commit()
             return payment_orm
 
-    async def get_leased_unit_by_tenant_id(self, tenant_id: str):
+    async def get_leased_unit_by_tenant_id(self, tenant_id: str) -> Unit | None:
         """
 
         :param tenant_id:
@@ -267,7 +267,7 @@ class LeaseController(Controllers):
         """
         with self.get_session() as session:
             unit_orm: UnitORM = session.query(UnitORM).filter(UnitORM.tenant_id == tenant_id).first()
-            return Unit(**unit_orm.to_dict())
+            return Unit(**unit_orm.to_dict()) if isinstance(unit_orm, UnitORM) else None
 
 
 class InvoiceManager:
