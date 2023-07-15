@@ -225,6 +225,7 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
 
     if _updated_unit:
         context.update(dict(unit=_updated_unit.dict()))
+
     building_ = await company_controller.get_property_by_id_internal(property_id=tenant_rental.property_id)
     if not building_:
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id))
