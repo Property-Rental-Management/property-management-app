@@ -13,7 +13,7 @@
             </div>
             <!--End Info-->
             <div class="title">
-                <h4 class="font-italic">Tax Invoice #: {{ invoice.invoice_number }}</h4>
+                <h4 class="font-italic">Receipt #: {{ invoice.invoice_number }}</h4>
                 <p>
                     <span class="font-weight-bold">Issued: <span
                             class="font-italic">{{ invoice.date_issued }}</span></span>
@@ -33,7 +33,8 @@
                 <p>{{ invoice.customer.email }}<br> {{ invoice.customer.cell }}  </p>
             </div>
             <div id="project">
-                <h2>Amount Paid: {{ payment.amount_paid|currency }}</h2>
+                <h2>Payment Receipt</h2>
+                <h3>Amount Paid: R {{ payment.amount_paid|currency }}.00</h3>
             </div>
         </div>
         <!--End Invoice Mid-->

@@ -1,5 +1,5 @@
-import functools
 from functools import wraps
+
 from aiocache import cached
 from flask import Flask, request, redirect, url_for, flash
 
@@ -34,7 +34,7 @@ def login_required(route_function):
             try:
                 if user:
                     return await route_function(user, *args, **kwargs)  # Inject user as a parameter
-                flash(message="User may not be authorized", category="danger")
+                flash(message="User may not be Authorized or Logged In", category="danger")
                 return redirect(url_for('home.get_home'))
             except TypeError as e:
                 flash(message='Error making request please try again later', category="danger")
