@@ -25,18 +25,20 @@ class CompaniesController(Controllers):
     async def is_company_member(self, user_id: str, company_id: str, session):
         result: UserCompanyORM = session.query(UserCompanyORM).filter(
             UserCompanyORM.user_id == user_id, UserCompanyORM.company_id == company_id).first()
-        return isinstance(result, UserCompanyORM)
+        return result and result.user_id == user_id
 
     @error_handler
     async def get_user_companies(self, user_id: str) -> list[Company]:
         with self.get_session() as session:
-            user_company_list = session.query(UserCompanyORM).filter(UserCompanyORM.user_id == user_id).all()
+            company_list: list[UserCompanyORM] = session.query(UserCompanyORM).filter(
+                UserCompanyORM.user_id == user_id).all()
 
             response = []
-            for user_company in user_company_list:
+            for user_company in company_list:
                 if isinstance(user_company, UserCompanyORM):
-                    company_orm = session.query(CompanyORM).filter(
+                    company_orm: CompanyORM = session.query(CompanyORM).filter(
                         CompanyORM.company_id == user_company.company_id).first()
+
                     if isinstance(company_orm, CompanyORM):
                         response.append(Company(**company_orm.to_dict()))
 
@@ -49,41 +51,42 @@ class CompaniesController(Controllers):
                                                                     user_id=user_id,
                                                                     session=session)
             if not _is_company_member:
-                raise UnauthorizedError('You are not authorized to access this company_id')
+                raise UnauthorizedError('You are not authorized to access this company')
 
             company_orm = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
             try:
                 company_data = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
             except ValidationError as e:
-                pass
+                self._logger.error(str(e))
+                return None
             return company_data
 
     @error_handler
     async def internal_company_id_to_user_id(self, company_id: str) -> UserCompanyORM:
         """
-
+            **internal_company_id_to_user_id**
         :param company_id:
         :return:
         """
         with self.get_session() as session:
-            user_company: UserCompanyORM = session.query(UserCompanyORM).filter(
-                UserCompanyORM.company_id == company_id).filter()
+            user_company = session.query(UserCompanyORM).filter(UserCompanyORM.company_id == company_id).filter()
             return user_company
 
     @error_handler
     async def get_company_internal(self, company_id: str) -> Company | None:
         with self.get_session() as session:
-            company_orm = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
+            company_orm: CompanyORM = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
 
             try:
                 company_data = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
             except ValidationError as e:
-                pass
+                self._logger.error(str(e))
+                return None
 
             return company_data
 
     @error_handler
-    async def create_company(self, company: Company, user: User) -> Company:
+    async def create_company(self, company: Company, user: User) -> Company | None:
 
         # Perform necessary operations to create the company_id
         # For example, you can save the company_id data in a database
@@ -91,20 +94,21 @@ class CompaniesController(Controllers):
         with self.get_session() as session:
             # TODO Check if payment is already made
             company_orm: CompanyORM = CompanyORM(**company.dict())
+
             try:
-                response = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
-            except ValidationError:
-                pass
+                company: Company = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
+            except ValidationError as e:
+                self._logger.error(str(e))
+                return None
 
-            user_company_data = dict(id=str(uuid.uuid4()), company_id=company_orm.company_id, user_id=user.user_id)
+            user_company_dict = dict(id=str(uuid.uuid4()), company_id=company_orm.company_id, user_id=user.user_id)
             session.add(company_orm)
-            session.add(UserCompanyORM(**user_company_data))
+            session.add(UserCompanyORM(**user_company_dict))
             session.commit()
-
-            return response
+            return company
 
     @error_handler
-    async def create_company_internal(self, company: CreateTenantCompany) -> Company:
+    async def create_company_internal(self, company: CreateTenantCompany) -> Company | None:
         """
         **create_company_internal**
 
@@ -112,11 +116,15 @@ class CompaniesController(Controllers):
         :return:
         """
         with self.get_session() as session:
-            _company = Company(**company.dict())
-            company_orm: CompanyORM = CompanyORM(**_company.dict())
+            company_orm: CompanyORM = CompanyORM(**company.dict())
             session.add(company_orm)
             session.commit()
-            return company
+            try:
+                response_company: Company = Company(**company_orm.to_dict())
+            except ValidationError as e:
+                self._logger.error(str(e))
+                return None
+            return response_company
 
     @error_handler
     async def create_company_tenant_relation_internal(self,
@@ -126,8 +134,8 @@ class CompaniesController(Controllers):
         :return:
         """
         with self.get_session() as session:
-            company_tenant_relation_orm: TenantCompanyORM = TenantCompanyORM(**company_relation.dict())
-            session.add(company_tenant_relation_orm)
+            tenant_relation_orm: TenantCompanyORM = TenantCompanyORM(**company_relation.dict())
+            session.add(tenant_relation_orm)
             session.commit()
             return company_relation
 

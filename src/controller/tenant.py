@@ -132,7 +132,7 @@ class TenantController(Controllers):
                 for field in tenant.__dict__:
                     if field in tenant_orm.__dict__ and tenant.__dict__[field] is not None:
                         setattr(tenant_orm, field, tenant.__dict__[field])
-                session.add(tenant_orm)
+                session.merge(tenant_orm)
                 # Commit the changes to the database
                 session.commit()
                 session.refresh(tenant_orm)

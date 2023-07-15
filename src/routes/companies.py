@@ -198,6 +198,7 @@ async def add_tenants_company(user: User):
         tenant_company_relation: CreateTenantRelationCompany = CreateTenantRelationCompany(**tenant_company.dict())
     except ValidationError as e:
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
+
     if tenant_company.description is None:
         tenant_company.description = "Tenant Company"
 
