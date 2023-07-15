@@ -30,7 +30,6 @@ def login_required(route_function):
         if auth_cookie:
             # Assuming you have a function to retrieve the user details based on the user_id
             user = await get_user_details(auth_cookie)
-
             try:
                 if user:
                     return await route_function(user, *args, **kwargs)  # Inject user as a parameter

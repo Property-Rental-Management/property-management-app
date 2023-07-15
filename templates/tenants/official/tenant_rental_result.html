@@ -4,19 +4,23 @@
     <!-- Add tabs navigation -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Rental Summary</h3>
+            <h3>Rental Summary</h3>
         </div>
         <div class="card-body">
-            <p><strong>Building</strong> {{ building.name }}</p>
-            <p><strong>Unit Number:</strong> {{ unit.unit_number }}</p>
-            <p><strong>Start Date:</strong> {{ lease_agreement.start_date }}</p>
-            <p><strong>End Date:</strong> {{ lease_agreement.end_date }}</p>
-            <p><strong>Rent Amount:</strong> {{ lease_agreement.rent_amount }}</p>
-            <p><strong>Deposit Amount:</strong>
-                {% if lease_agreement.deposit_amount %}{{ lease_agreement.deposit_amount }}{% else %}N/A{% endif %}</p>
-            <p><strong>Is Active:</strong> {{ lease_agreement.is_active }}</p>
-            <p><strong>Payment Period:</strong>
-                {% if lease_agreement.payment_period %}{{ lease_agreement.payment_period }}{% else %}N/A{% endif %}</p>
+            <div class="card-footer">
+                <p><strong>Building</strong> {{ building.name }}</p>
+                <p><strong>Unit Number:</strong> {{ unit.unit_number }}</p>
+                <p><strong>Start Date:</strong> {{ lease_agreement.start_date }}</p>
+                <p><strong>End Date:</strong> {{ lease_agreement.end_date }}</p>
+                <p><strong>Rent Amount:</strong>R {{ lease_agreement.rent_amount|currency }}.00</p>
+                <p><strong>Deposit Amount:</strong>
+                    {% if lease_agreement.deposit_amount %}R {{ lease_agreement.deposit_amount|currency }}.00{% else %}
+                        N/A{% endif %}</p>
+                <p><strong>Is Active:</strong> {{ lease_agreement.is_active }}</p>
+                <p><strong>Payment Period:</strong>
+                    {% if lease_agreement.payment_period %}{{ lease_agreement.payment_period }} Days {% else %}
+                        N/A{% endif %}</p>
+            </div>
         </div>
     </div>
 {% endblock %}
