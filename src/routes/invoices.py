@@ -93,7 +93,8 @@ async def create_invoice(user: User):
     invoice_charges: list[UnitCharge] = [charge for charge in unit_charges if
                                          charge.charge_id in invoice_data.charge_ids] if invoice_data.charge_ids else []
 
-    unit_ = await company_controller.get_unit(user=user, building_id=invoice_data.property_id,
+    unit_ = await company_controller.get_unit(user=user,
+                                              building_id=invoice_data.property_id,
                                               unit_id=invoice_data.unit_id)
     if not unit_:
         invoice_logger.info(f"Unit not found")

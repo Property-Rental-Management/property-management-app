@@ -121,7 +121,7 @@ class Invoice(BaseModel):
 
     @property
     def amount_payable(self) -> int:
-        return self.total_amount - self.discount - self.total_taxes
+        return (self.total_amount + self.total_taxes) - self.discount
 
     @property
     def days_remaining(self) -> int:
@@ -130,13 +130,10 @@ class Invoice(BaseModel):
 
     @property
     def notes(self) -> str:
-        _notes = f"""
-        
-        <p><strong>Thank you for your business!</strong></p> 
-
-        <p>Payment is expected within {self.days_remaining} days.</p>
-
-        <p>please process this invoice within that time. There will be a 5% interest charge on late invoices.</p>
+        _notes = f"""        
+        <span class="font-weight-bold text-dark"><strong>Thank you for your business!</strong>
+        Payment is expected within {self.days_remaining} days.
+        please process this invoice within that time. There will be a 5% interest charge on late invoices.</span>
         """
         return _notes
 

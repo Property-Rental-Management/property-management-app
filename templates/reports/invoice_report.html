@@ -1,5 +1,3 @@
-
-
 {% extends "layouts/invoice.html" %}
 {% block content %}
     <div id="invoice" class="effect2 m-t-120">
@@ -99,28 +97,17 @@
                                             <td class="payment">
                                                 <h2>{{ invoice.currency }} {{ invoice.total_amount|currency }}</h2>
                                             </td>
-                                        </tr>
+                        </tr>
                         <tr class="tabletitle">
                             <td></td>
                             <td></td>
                             <td class="Rate">
-                                <h2>Total Taxes</h2>
+                                <h2>Taxes</h2>
                             </td>
                             <td class="payment">
                                 <h2>{{ invoice.currency }} {{ invoice.total_taxes|currency }}</h2>
                             </td>
                         </tr>
-                        <tr class="tabletitle">
-                            <td></td>
-                            <td></td>
-                            <td class="Rate">
-                                <h2>Discount</h2>
-                            </td>
-                            <td class="payment">
-                                <h2>{{ invoice.currency }} {{ invoice.discount|currency }}</h2>
-                            </td>
-                        </tr>
-
                         <tr class="tabletitle">
                             <td></td>
                             <td></td>
@@ -147,11 +134,11 @@
             <div id="legalcopy">
                 <h4>Banking Details</h4>
                 <ul class="list-group">
-                    <li class="list-group-item  text-dark">Account Holder: {{ bank_account.account_holder }}</li>
-                    <li class="list-group-item  text-dark">Account Number: {{ bank_account.account_number }}</li>
-                    <li class="list-group-item  text-dark">Account Type: {{ bank_account.account_type }}</li>
-                    <li class="list-group-item  text-dark">Bank Name: {{ bank_account.bank_name }}</li>
-                    <li class="list-group-item  text-dark">Branch: {{ bank_account.branch }}</li>
+                    <li class="text-dark">Account Holder: {{ bank_account.account_holder }}</li>
+                    <li class="text-dark">Account Number: {{ bank_account.account_number }}</li>
+                    <li class="text-dark">Account Type: {{ bank_account.account_type }}</li>
+                    <li class="text-dark">Bank Name: {{ bank_account.bank_name }}</li>
+                    <li class="text-dark">Branch: {{ bank_account.branch }}</li>
                 </ul>
             </div>
         </div>

@@ -38,14 +38,14 @@ class InvoiceORM(Base):
             description,
             currency,
             discount,
-            tax_rate,
             date_issued,
             due_date,
             month,
             rental_amount,
             charge_ids,
             invoice_sent=False,
-            invoice_printed=False
+            invoice_printed=False,
+            tax_rate=15
     ):
         self.tenant_id = tenant_id
         self.service_name = service_name

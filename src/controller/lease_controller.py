@@ -152,7 +152,7 @@ class LeaseController(Controllers):
                 try:
                     invoice_orm: InvoiceORM = InvoiceORM(service_name=service_name, description=description,
                                                          currency="R", tenant_id=tenant.tenant_id, discount=0,
-                                                         tax_rate=0, date_issued=date_issued, due_date=due_date,
+                                                         tax_rate=15, date_issued=date_issued, due_date=due_date,
                                                          month=due_date.month, rental_amount=_rental_amount,
                                                          charge_ids=charge_ids, invoice_sent=False,
                                                          invoice_printed=False)
