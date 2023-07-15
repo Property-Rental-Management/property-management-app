@@ -24,6 +24,7 @@ class TenantController(Controllers):
         """
         with self.get_session() as session:
             tenants_list: list[TenantORM] = session.query(TenantORM).filter(TenantORM.company_id == company_id).all()
+            print(f'Tenants ORM: {tenants_list}')
             return [Tenant(**tenant_orm.to_dict()) for tenant_orm in tenants_list
                     if isinstance(tenant_orm, TenantORM)] if tenants_list else []
 

@@ -1,16 +1,18 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 from pydantic import ValidationError
 
-from src.emailer import EmailModel
-from src.database.models.properties import Property
+from src.authentication import login_required
 from src.database.models.companies import Company
+from src.database.models.properties import Property
 from src.database.models.tenants import QuotationForm, Tenant, CreateTenant, TenantSendMail, TenantAddress, \
     CreateTenantAddress
-from src.main import tenant_controller, company_controller, send_mail
-from src.authentication import login_required
 from src.database.models.users import User
+from src.emailer import EmailModel
+from src.logger import init_logger
+from src.main import tenant_controller, company_controller, send_mail
 
 tenants_route = Blueprint('tenants', __name__)
+tenants_logger = init_logger('tenants_logger')
 
 
 @tenants_route.get('/admin/tenants-list')
@@ -19,11 +21,14 @@ async def get_tenants(user: User):
     user_data = user.dict()
 
     companies: list[Company] = await company_controller.get_user_companies(user_id=user.user_id)
-
+    # tenants_logger.info(f'companies : {companies}')
     all_tenants = []
     for company in companies:
+        tenants_logger.info(f'Company : {company}')
+        tenants_logger.info(f'Company Isinstance: {isinstance(company, Company)}')
         if isinstance(company, Company):
             tenants_list = await tenant_controller.get_tenants_by_company_id(company_id=company.company_id)
+            tenants_logger.info(f"tenants : {tenants_list}")
 
         for tenant in tenants_list:
             tenant_dict = tenant.dict() if isinstance(tenant, Tenant) else None
@@ -122,7 +127,8 @@ async def create_tenant_address(user: User, tenant_id: str):
     except ValidationError as e:
         flash(message="Unable to create Tenant Address please fill in all required fields", category="danger")
         return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
-    tenant_address_: TenantAddress = await tenant_controller.create_tenant_address(tenant_id=tenant_id, tenant_address=tenant_address)
+    tenant_address_: TenantAddress = await tenant_controller.create_tenant_address(tenant_id=tenant_id,
+                                                                                   tenant_address=tenant_address)
     tenant: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=tenant_id)
     if tenant:
         tenant.address_id = tenant_address_.address_id
@@ -149,7 +155,7 @@ async def do_send_email(user: User, tenant_id: str):
         flash(message="Unable to send email please fill in all required fields", category="danger")
         return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
 
-    if not(send_email_data.message and send_email_data.subject):
+    if not (send_email_data.message and send_email_data.subject):
         flash(message="Unable to send email please fill in all required fields", category="danger")
         return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
 

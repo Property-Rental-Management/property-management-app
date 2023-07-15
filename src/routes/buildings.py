@@ -225,11 +225,15 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
 
     if _updated_unit:
         context.update(dict(unit=_updated_unit.dict()))
+    building_ = await company_controller.get_property_by_id_internal(property_id=tenant_rental.property_id)
+    if not building_:
+        return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id))
 
     tenant: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=tenant_rental.tenant_id)
     tenant.is_renting = True
     tenant.lease_start_date = tenant_rental.lease_start_date
     tenant.lease_end_date = tenant_rental.lease_end_date
+    tenant.company_id = building_.company_id
     updated_tenant = await tenant_controller.update_tenant(tenant=tenant)
 
     if updated_tenant:
@@ -263,7 +267,6 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
     if lease:
         context.update(dict(lease_agreement=lease.dict()))
 
-    building_: Property = await company_controller.get_property_by_id_internal(property_id=building_id)
     building_.available_units -= 1
     updated_building: Property = await company_controller.update_property(user=user, property_details=building_)
 
