@@ -1,4 +1,12 @@
+from enum import Enum
 from os import path
+
+
+# TODO create a class to contain this enum types for the entire project
+class PaymentMethod(Enum):
+    CREDIT_CARD = "credit_card"
+    CASH = "cash"
+    DIRECT_DEPOSIT = "direct_deposit"
 
 
 def static_folder() -> str:
@@ -48,3 +56,10 @@ def lease_formatter(value):
 
 def format_square_meters(value):
     return f"{value} m²"
+
+
+def format_payment_method(value):
+    if value in [method.value for method in PaymentMethod]:
+        return value.replace("_", " ").title()
+    else:
+        return "Unknown"

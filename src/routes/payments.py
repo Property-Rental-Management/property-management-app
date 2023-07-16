@@ -104,3 +104,39 @@ async def do_verify_payment(user: User):
                'company': company.dict()}
 
     return render_template("payments/payment_receipt.html", **context)
+
+
+@payments_route.post('/admin/payments/print-receipt')
+@login_required
+async def print_payment_receipt(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+
+    transaction_id = request.form.get('transaction_id')
+    tenant_id = request.form.get('tenant_id')
+    if not tenant_id:
+        flash(message="Error accessing tenant details", category="danger")
+        return redirect(url_for('home.get_home'), code=302)
+
+    if not transaction_id:
+        flash(message="Error accessing tenant details", category="danger")
+        return redirect(url_for('home.get_home'), code=302)
+
+    payment_instance: Payment = await lease_agreement_controller.load_payment(transaction_id=transaction_id)
+    if not (payment_instance and payment_instance.tenant_id == tenant_id):
+        flash(message="Error accessing tenant details", category="danger")
+        return redirect(url_for('home.get_home'), code=302)
+
+    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=payment_instance.invoice_number)
+    building = await company_controller.get_property_by_id_internal(payment_instance.property_id)
+    company = await company_controller.get_company_internal(company_id=building.company_id)
+
+    context = {'user': user.dict(),
+               'invoice': invoice.dict(),
+               'payment': payment_instance.dict(),
+               'company': company.dict()}
+
+    return render_template("payments/payment_receipt.html", **context)

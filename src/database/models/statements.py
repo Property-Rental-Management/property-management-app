@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import Self
 
 from pydantic import BaseModel, Field
 
@@ -45,3 +46,12 @@ class Statement(BaseModel):
     @property
     def balance(self) -> int:
         return self.total_invoiced - self.total_payments
+
+    def create_tenant_monthly_statements(self, year: int, month: int) -> list[Self]:
+        """
+
+        :param year:
+        :param month:
+        :return:
+        """
+        pass

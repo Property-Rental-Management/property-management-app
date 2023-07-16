@@ -294,6 +294,31 @@ class LeaseController(Controllers):
 
         return payments
 
+    @error_handler
+    async def load_tenant_payments(self, tenant_id: str) -> list[Payment]:
+        """
+        **load_tenant_payments**
+        Loads all payments made by the tenant.
+
+        :param tenant_id: The ID of the tenant.
+        :return: A list of payments made by the tenant.
+        """
+        with self.get_session() as session:
+            payment_list = session.query(PaymentORM).filter(PaymentORM.tenant_id == tenant_id).all()
+            return [Payment(**payment_obj.to_dict()) for payment_obj in payment_list
+                    if payment_obj] if payment_list else []
+
+    @error_handler
+    async def load_payment(self, transaction_id: str) -> Payment | None:
+        """
+        :param transaction_id:
+        :return:
+        """
+        with self.get_session() as session:
+            transaction = session.query(PaymentORM).filter(PaymentORM.transaction_id == transaction_id).first()
+            return Payment(**transaction.to_dict()) if transaction else None
+
+
 class InvoiceManager:
     def __init__(self, cache_path):
         self._base_url = ""

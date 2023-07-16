@@ -9,7 +9,8 @@ send_mail = SendMail()
 from src.controller.auth import UserController
 from src.controller.companies import CompaniesController
 from src.firewall import Firewall
-from src.utils import template_folder, static_folder, format_with_grouping, lease_formatter, format_square_meters
+from src.utils import template_folder, static_folder, format_with_grouping, lease_formatter, format_square_meters, \
+    format_payment_method
 from src.controller.encryptor import encryptor
 from src.controller.notifications_controller import NotificationsController
 
@@ -78,6 +79,7 @@ def create_app(config):
         app.jinja_env.filters['currency'] = format_with_grouping
         app.jinja_env.filters['lease_counter'] = lease_formatter
         app.jinja_env.filters['square_meters'] = format_square_meters
+        app.jinja_env.filters['payment_method'] = format_payment_method
 
         bootstrapper()
 
