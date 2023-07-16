@@ -24,14 +24,16 @@
                     <h3 class="card-title"><strong>{{ property.name }}</strong></h3>
                     <div>
 
-                        <a href="{{ url_for('companies.get_company', company_id=property.company_id) }}" class="btn btn-sm btn-warning">
-                            <i class="ti-desktop"> </i> Company
+                        <a href="{{ url_for('companies.get_company', company_id=property.company_id) }}"
+                           class="btn btn-sm btn-danger">
+                            <i class="ti-back-left"> </i> Back
                         </a>
                         <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addItemModal">
                             <i class="ti-money"> </i>
                             Billable Items
                         </button>
-                        <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#editPropertyDialog">
+                        <a href="#" class="btn btn-sm btn-success" data-toggle="modal"
+                           data-target="#editPropertyDialog">
                             <i class="ti-desktop"> </i> Edit
                         </a>
                     </div>

@@ -5,13 +5,16 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title"><i class="ti-briefcase"> </i> Company Details</h3>
             <div>
-                <a href="{{ url_for('companies.get_companies') }}" class="btn btn-sm btn-warning mr-2 mr-md-12 mb-2 mb-md-0">
-                    <i class="ti-briefcase"></i> Companies
+                <a href="{{ url_for('companies.get_companies') }}"
+                   class="btn btn-sm btn-danger mr-2 mr-md-12 mb-2 mb-md-0">
+                    <i class="ti-back-left"></i> Back
                 </a>
-                <a href="#" class="btn btn-sm btn-success mr-2 mr-md-12 mb-2 mb-md-0" data-toggle="modal" data-target="#companyDetailModal">
+                <a href="#" class="btn btn-sm btn-success mr-2 mr-md-12 mb-2 mb-md-0" data-toggle="modal"
+                   data-target="#companyDetailModal">
                     <i class="ti-desktop"></i> Edit
                 </a>
-                <a href="{{ url_for('companies.print_company', company_id=company.company_id) }}" class="btn btn-sm btn-default mr-2 mr-md-12 mb-2 mb-md-0">
+                <a href="{{ url_for('companies.print_company', company_id=company.company_id) }}"
+                   class="btn btn-sm btn-default mr-2 mr-md-12 mb-2 mb-md-0">
                     <i class="ti-printer"></i> Print
                 </a>
 

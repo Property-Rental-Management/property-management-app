@@ -42,7 +42,9 @@
             </a>
         </li>
         {% endif %}
+
     </ul>
+
     <div class="tab-content">
         <div class="tab-pane fade show active" id="unit-details">
             <div class="card">
@@ -52,9 +54,10 @@
                         Unit Details
                     </h3>
                     <div>
-                        <a href="{{ url_for('buildings.get_building', building_id=unit.property_id) }}" class="btn btn-sm btn-primary font-weight-bold text-white">
-                            <i class="ti-briefcase"> </i>
-                            Property Details
+                        <a href="{{ url_for('buildings.get_building', building_id=unit.property_id) }}"
+                           class="btn btn-sm btn-danger font-weight-bold text-white">
+                            <i class="ti-back-left"> </i>
+                            Back
                         </a>
                         <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editUnitModal">
                             <i class="ti-pencil"> </i>

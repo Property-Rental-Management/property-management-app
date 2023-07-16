@@ -7,9 +7,7 @@
                 <h1>{{ company.company_name }}</h1>
                 <h2>{{ company.description }}</h2>
                 <p> {{ company.website }}<br/>
-                    {{ company.contant_number }}
-
-                </p>
+                    {{ company.contant_number }}</p>
             </div>
             <!--End Info-->
             <div class="title">
@@ -156,8 +154,15 @@
                     </table>
                 </div>
             </div>
-        </div>
-        <!--End InvoiceBot-->
-    </div>
 
+        </div>
+        <hr/>
+        <!--End InvoiceBot-->
+        <button class="btn btn-sm btn-default" onclick="window.history.back();">
+        <span class="font-weight-bold">
+            <i class="ti-back-left"></i>
+            Back
+        </span>
+        </button>
+    </div>
 {% endblock %}
