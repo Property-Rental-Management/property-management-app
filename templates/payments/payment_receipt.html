@@ -136,6 +136,7 @@
                                 <h2>{{ invoice.currency }} {{ invoice.amount_payable|currency }}</h2>
                             </td>
                         </tr>
+                        <tr></tr>
                         <tr class="tabletitle">
                             <td></td>
                             <td></td>
@@ -146,6 +147,7 @@
                                 <h2>{{ invoice.currency }} {{ payment.amount_paid|currency }}</h2>
                             </td>
                         </tr>
+
                         {% if ((invoice.amount_payable - payment.amount_paid)) %}
                         <tr class="tabletitle">
                             <td></td>

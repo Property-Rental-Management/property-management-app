@@ -84,10 +84,10 @@
                             {{ invoice.service_name }}
                         </span>
                             </li>
-                            <li><strong>Description</strong>
-                                <textarea cols="8" rows="6" class="form-control"
-                                          disabled>{{ invoice.description }}</textarea>
-                            </li>
+                            {#                            <li><strong>Description</strong>#}
+                            {#                                <textarea cols="8" rows="6" class="form-control"#}
+                            {#                                          disabled>{{ invoice.description }}</textarea>#}
+                            {#                            </li>#}
                             <li><strong>Tenant:</strong>
                                 <span class="text-lg-right text-info">
                             {{ invoice.customer.name }}
@@ -125,6 +125,11 @@
                                     <span class="text-lg-right text-info">{{ invoice.currency }} {{ item.sub_total|currency }}.00</span>
                                 </li>
                             {% endfor %}
+                            {% if invoice.rental_amount %}
+                                <li class="list-group-item">
+                                    <span class="text-lg-right text-info">{{ invoice.currency }} {{ invoice.rental_amount|currency }}.00</span>
+                                </li>
+                            {% endif %}
                         </ul>
                     </div>
 
@@ -139,11 +144,6 @@
                             <li><strong>Total Taxes:</strong>
                                 <span class="text-lg-right text-info">
                                 {{ invoice.currency }} {{ invoice.total_taxes|currency }}.00
-                            </span>
-                            </li>
-                            <li><strong>Discount:</strong>
-                                <span class="text-lg-right text-info">
-                                {{ invoice.currency }} {{ invoice.discount|currency }}.00
                             </span>
                             </li>
                             <li><strong>Amount Payable: </strong>

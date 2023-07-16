@@ -11,20 +11,23 @@
                     <li class="label">Main</li>
                     <li><a href="{{ url_for('home.get_home') }}"><i class="ti-home"></i> Home</a></li>
                     <li><a class="sidebar-sub-toggle"><i class="ti-dashboard"></i> Dashboard <span
-                                class="sidebar-collapse-icon ti-angle-down"></span></a>
+                            class="sidebar-collapse-icon ti-angle-down"></span></a>
                         <ul>
-                            <li><a href="{{ url_for('companies.get_companies') }}"><i class="ti-desktop"></i> Companies</a></li>
-                            <li><a href="{{ url_for('tenants.get_tenants') }}"><i class="ti-face-smile"></i> Tenants</a></li>
+                            <li><a href="{{ url_for('companies.get_companies') }}"><i class="ti-desktop"></i> Companies</a>
+                            </li>
+                            <li><a href="{{ url_for('tenants.get_tenants') }}"><i class="ti-user"></i> Tenants</a></li>
+                            <li><a href="{{ url_for('reports.get_reports') }}"><i class="ti-files"></i> Reporting</a>
+                            </li>
                         </ul>
                     </li>
 
-{#                    <li class="label">Data</li>#}
-{#                    <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i> Admin<span#}
-{#                                class="sidebar-collapse-icon ti-angle-down"></span></a>#}
-{#                        <ul>#}
-{#                            <li><a href="{{ url_for('buildings.get_buildings') }}"><i class="ti-layers"></i> Buildings</a></li>#}
-{#                            <li><a href="#"><i class="ti-briefcase"></i> Rentals</a></li>#}
-{#                            <li><a href="#"><i class="ti-briefcase"></i> Bookings</a></li>#}
+                    {#                    <li class="label">Data</li>#}
+                    {#                    <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i> Admin<span#}
+                    {#                                class="sidebar-collapse-icon ti-angle-down"></span></a>#}
+                    {#                        <ul>#}
+                    {#                            <li><a href="{{ url_for('buildings.get_buildings') }}"><i class="ti-layers"></i> Buildings</a></li>#}
+                    {#                            <li><a href="#"><i class="ti-briefcase"></i> Rentals</a></li>#}
+                    {#                            <li><a href="#"><i class="ti-briefcase"></i> Bookings</a></li>#}
 {#                            <li><a href="{{ url_for('maintenance.get_maintenance') }}"><i class="ti-settings"></i> Maintenance</a></li>#}
 {#                            <li><a href="{{ url_for('reports.get_reports') }}"><i class="ti-file"></i> Reports</a></li>#}
 {#                        </ul>#}
