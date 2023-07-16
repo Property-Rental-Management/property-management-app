@@ -274,6 +274,25 @@ class LeaseController(Controllers):
             unit_orm: UnitORM = session.query(UnitORM).filter(UnitORM.tenant_id == tenant_id).first()
             return Unit(**unit_orm.to_dict()) if isinstance(unit_orm, UnitORM) else None
 
+    @error_handler
+    async def load_company_payments(self, company_id: str) -> list[Payment]:
+        """
+            **load_company_payments**
+                will load a list of payments for a single company
+        :param company_id:
+        :return:
+        """
+        with self.get_session() as session:
+            payments = []
+            property_list: list[PropertyORM] = session.query(PropertyORM).filter(
+                PropertyORM.company_id == company_id).all()
+            for property_obj in property_list:
+                payments_list = session.query(PaymentORM).filter(
+                    PaymentORM.property_id == property_obj.property_id).all()
+                for payment_obj in payments_list:
+                    payments.append(Payment(**payment_obj.to_dict()))
+
+        return payments
 
 class InvoiceManager:
     def __init__(self, cache_path):

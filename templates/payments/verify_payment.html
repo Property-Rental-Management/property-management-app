@@ -136,12 +136,12 @@
                     <div class="card-footer">
                         <ul class="list-group">
                             <h4>Totals:</h4>
-                            <li><strong>Total Amount:</strong>
+                            <li class="list-group-item"><strong>Total Amount:</strong>
                                 <span class="text-lg-right text-info">
                                 {{ invoice.currency }} {{ invoice.total_amount|currency }}.00
                             </span>
                             </li>
-                            <li><strong>Taxes:</strong>
+                            <li class="list-group-item"><strong>Taxes:</strong>
                                 <span class="text-lg-right text-info">
                                 {{ invoice.currency }} {{ invoice.total_taxes|currency }}.00
                             </span>
@@ -149,7 +149,7 @@
                             <li>
                                 <hr>
                             </li>
-                            <li><strong>Amount Payable: </strong>
+                            <li class="list-group-item"><strong>Amount Payable: </strong>
                                 <span class="text-lg-right text-info">
                                 {{ invoice.currency }} {{ invoice.amount_payable|currency }}.00
                             </span>

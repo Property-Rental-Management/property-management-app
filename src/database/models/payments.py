@@ -25,6 +25,14 @@ class Payment(BaseModel):
     month: int
     comments: str
 
+    @property
+    def year(self) -> int:
+        return self.date_paid.year
+
+    @property
+    def long_day(self) -> int:
+        return (self.date_paid.year * 365) + self.date_paid.toordinal()
+
 
 class CreatePayment(BaseModel):
     """
