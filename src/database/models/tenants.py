@@ -4,19 +4,7 @@ from datetime import date
 from pydantic import BaseModel, Field, validator
 
 
-class CustomBaseModel(BaseModel):
-    """
-    Custom base model subclassed from Pydantic's BaseModel.
-    """
-
-    def __getattribute__(self, item):
-        attr = super().__getattribute__(item)
-        if isinstance(attr, property):
-            return attr.fget(self)
-        return attr
-
-
-class Tenant(CustomBaseModel):
+class Tenant(BaseModel):
     """
     Represents a tenant.
 
@@ -65,6 +53,21 @@ class Tenant(CustomBaseModel):
         if self.lease_start_date and self.lease_end_date:
             return (self.lease_end_date - self.lease_start_date).days
         return None
+
+    def dict(self) -> dict[str, str | int | date]:
+        return {
+            "tenant_id": self.tenant_id,
+            "address_id": self.address_id,
+            "name": self.name,
+            "id_number": self.id_number,
+            "company_id": self.company_id,
+            "email": self.email,
+            "cell": self.cell,
+            "is_renting": self.is_renting,
+            "lease_start_date": self.lease_start_date,
+            "lease_end_date": self.lease_end_date,
+            "lease_period": self.lease_period
+        }
 
 
 class CreateTenant(BaseModel):

@@ -32,6 +32,9 @@
                     {% if tenant.lease_start_date %}{{ tenant.lease_start_date }}{% else %}N/A{% endif %}</li>
                 <li class="list-group-item"><strong>Lease End Date:</strong>
                     {% if tenant.lease_end_date %}{{ tenant.lease_end_date }}{% else %}N/A{% endif %}</li>
+                <li class="list-group-item"><strong>Lease Period:</strong>
+                    {% if tenant.lease_perid %}{{ tenant.lease_period|lease_counter }}{% else %}N/A{% endif %}
+                </li>
             </ul>
         {% else %}
             <span>could not load tenant data</span>
@@ -41,7 +44,7 @@
         <div class="card-header">
             <h3 class="card-title">Company Details</h3>
         </div>
-    {% if tenant and tenant.company_id and company %}
+        {% if tenant and tenant.company_id and company %}
         <ul class="list-group">
             <li class="list-group-item"><strong>Company Name:</strong> {% if company.company_name %}{{ company.company_name }}{% else %}N/A{% endif %}</li>
             <li class="list-group-item"><strong>Description:</strong> {% if company.description %}{{ company.description }}{% else %}N/A{% endif %}</li>
