@@ -3,28 +3,35 @@
 {% block content %}
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">invoice Editor</h3>
+            <h3 class="card-title font-weight-bold text-info">Invoice Editor</h3>
         </div>
 
         <div class="card-footer">
             <form class="form-horizontal" method="POST" action="{{ url_for('invoices.update_invoice') }}">
                 <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}">
-                <input type="tenant_id" name="tenant_id" value="{{ invoice.tenant_id }}">
+                <input type="hidden" name="tenant_id" value="{{ invoice.tenant_id }}">
 
                 <div class="form-group">
-                    <label for="service_name">Service Name</label>
+                    <label for="service_name" class="label font-weight-bold">Service Name</label>
                     <input type="text" class="form-control" id="service_name" name="service_name"
                            value="{{ invoice.service_name }}">
                 </div>
                 <div class="form-group">
-                    <label for="description">Description</label>
+                    <label for="description" class="label font-weight-bold">Description</label>
                     <textarea class="form-control" id="description"
                               name="description">{{ invoice.description }}</textarea>
                 </div>
                 <div class="form-group">
-                    <label for="currency">Currency</label>
+                    <label for="currency" class="label font-weight-bold">Currency</label>
                     <input type="text" class="form-control" id="currency" name="currency"
                            value="{{ invoice.currency }}">
+                </div>
+                <div class="form-group">
+                    <label for="tax_rate" class="label font-weight-bold">Tax Rate</label>
+                    <select class="form-control" name="tax_rate">
+                        <option value="0">No Vat</option>
+                        <option value="15">15% Vat</option>
+                    </select>
                 </div>
                 <!-- Add more form fields for other attributes of the Invoice model -->
                 <button type="submit" class="btn btn-sm btn-danger">
