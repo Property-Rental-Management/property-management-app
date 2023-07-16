@@ -4,7 +4,19 @@ from datetime import date
 from pydantic import BaseModel, Field, validator
 
 
-class Tenant(BaseModel):
+class CustomBaseModel(BaseModel):
+    """
+    Custom base model subclassed from Pydantic's BaseModel.
+    """
+
+    def __getattribute__(self, item):
+        attr = super().__getattribute__(item)
+        if isinstance(attr, property):
+            return attr.fget(self)
+        return attr
+
+
+class Tenant(CustomBaseModel):
     """
     Represents a tenant.
 
@@ -38,10 +50,21 @@ class Tenant(BaseModel):
 
     @classmethod
     @validator("lease_end_date", pre=True)
-    def validate_lease_end_date(cls, value):
+    def validate_lease_end_date(cls, value, values):
         if not isinstance(value, date):
             return None
+
+        start_date = values.get("lease_start_date")
+        if start_date and value < start_date:
+            raise ValueError("Lease end date cannot be less than lease start date")
+
         return value
+
+    @property
+    def lease_period(self):
+        if self.lease_start_date and self.lease_end_date:
+            return (self.lease_end_date - self.lease_start_date).days
+        return None
 
 
 class CreateTenant(BaseModel):

@@ -24,8 +24,6 @@
             <ul class="list-group">
                 <li class="list-group-item"><strong>Name:</strong> {{ tenant.name }}</li>
                 <li class="list-group-item"><strong>ID Number:</strong> {{ tenant.id_number }}</li>
-                <li class="list-group-item"><strong>Company ID:</strong>
-                    {% if tenant.company_id %}{{ tenant.company_id }}{% else %}N/A{% endif %}</li>
                 <li class="list-group-item"><strong>Email:</strong> {{ tenant.email }}</li>
                 <li class="list-group-item"><strong>Cell:</strong> {{ tenant.cell }}</li>
                 <li class="list-group-item"><strong>Is Renting:</strong> {% if tenant.is_renting %}Yes{% else %}

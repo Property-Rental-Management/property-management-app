@@ -105,9 +105,10 @@ class CompaniesController(Controllers):
         """
         with self.get_session() as session:
             company_orm: CompanyORM = CompanyORM(**company.dict())
+            result = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
             session.add(company_orm)
             session.commit()
-            return Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
+            return result
 
     @error_handler
     async def create_company_tenant_relation_internal(self,
