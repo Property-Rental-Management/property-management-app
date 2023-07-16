@@ -58,6 +58,7 @@ class LeaseController(Controllers):
         """
         return rental_amount * 2
 
+    @error_handler
     async def get_agreements_by_payment_terms(self, payment_terms: str = "monthly") -> list[LeaseAgreement]:
         """
         **get_agreements_by_payment_terms**
@@ -70,7 +71,9 @@ class LeaseController(Controllers):
             try:
                 lease_orm_list: list[LeaseAgreementORM] = session.query(LeaseAgreementORM).filter(
                     LeaseAgreementORM.is_active == True, LeaseAgreementORM.payment_period == payment_terms).all()
+
                 return [LeaseAgreement(**lease.dict()) for lease in lease_orm_list if lease] if lease_orm_list else []
+
             except Exception as e:
                 self._logger.error(f"Error creating Lease Agreement:  {str(e)}")
             return []
@@ -88,6 +91,7 @@ class LeaseController(Controllers):
                 InvoiceORM.invoice_number == invoice_number).first()
             return Invoice(**invoice_orm.to_dict()) if isinstance(invoice_orm, InvoiceORM) else None
 
+    @error_handler
     async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit,
                              include_rental: bool = False, due_after: int | None = None) -> Invoice | None:
         """
@@ -186,6 +190,7 @@ class LeaseController(Controllers):
             return None
 
     @staticmethod
+    @error_handler
     async def calculate_due_date(date_issued: date, due_after: int | None) -> date:
         """
             **calculate_due_date**
@@ -207,6 +212,7 @@ class LeaseController(Controllers):
         return due_date
 
     @staticmethod
+    @error_handler
     async def get_charge_ids(invoice_charges: list[UnitCharge]) -> list[str]:
         """
             **get_charge_ids**
@@ -217,6 +223,7 @@ class LeaseController(Controllers):
         return [charge.charge_id for charge in invoice_charges if charge] if invoice_charges else []
 
     @staticmethod
+    @error_handler
     async def mark_charges_as_invoiced(session: Session, charge_ids: list[str]):
         """
 
@@ -230,7 +237,9 @@ class LeaseController(Controllers):
                 user_charge.is_invoiced = True
                 session.merge(user_charge)
                 session.commit()
+        return None
 
+    @error_handler
     async def get_invoices(self, tenant_id: str) -> list[Invoice]:
         """
             **get_invoices**
@@ -240,6 +249,7 @@ class LeaseController(Controllers):
             invoice_list: list[InvoiceORM] = session.query(InvoiceORM).filter(InvoiceORM.tenant_id == tenant_id).all()
             return [Invoice(**_invoice.to_dict()) for _invoice in invoice_list if _invoice] if invoice_list else []
 
+    @error_handler
     async def add_payment(self, payment: Payment):
         """
 
@@ -249,16 +259,11 @@ class LeaseController(Controllers):
         with self.get_session() as session:
             payment_instance = PaymentORM(**payment.dict())
             session.add(payment_instance)
-            try:
-                payment_orm = Payment(**payment_instance.to_dict())
-
-            except ValidationError as e:
-                payment_orm = None
-                self._logger.error(str(e))
-
+            payment_data = Payment(**payment_instance.to_dict())
             session.commit()
-            return payment_orm
+            return payment_data
 
+    @error_handler
     async def get_leased_unit_by_tenant_id(self, tenant_id: str) -> Unit | None:
         """
 

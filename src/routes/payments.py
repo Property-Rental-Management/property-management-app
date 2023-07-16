@@ -78,8 +78,9 @@ async def do_verify_payment(user: User):
     try:
         payment_verification = PaymentVerificationForm(**request.form)
     except ValidationError as e:
-        payment_logger.error(str(e))
-        flash(message=f"Error in form : {str(e)}", category="danger")
+        message: str = f"Error in form : {str(e)}"
+        payment_logger.error(message)
+        flash(message=message, category="danger")
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
 
     payment_logger.info(f"Payment Verification: {payment_verification}")
@@ -97,7 +98,9 @@ async def do_verify_payment(user: User):
     building: Property = await company_controller.get_property_by_id_internal(property_id=property_id)
     company: Company = await company_controller.get_company_internal(company_id=building.company_id)
 
-    context = {'user': user.dict(), 'invoice': invoice.dict(),
-               'payment': payment_instance.dict(), 'company': company.dict()}
+    context = {'user': user.dict(),
+               'invoice': invoice.dict(),
+               'payment': payment_instance.dict(),
+               'company': company.dict()}
 
     return render_template("payments/payment_receipt.html", **context)
