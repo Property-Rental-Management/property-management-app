@@ -4,87 +4,96 @@
 {% endblock %}
 
 {% block content %}
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#property-details"><strong>Property Details</strong></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#units-list"><strong>Units List</strong></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#billable"><strong>Billable Items</strong></a>
-        </li>
-    </ul>
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#property-details"><strong>Property
+                        Details</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#units-list"><strong>Units List</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#billable"><strong>Billable Items</strong></a>
+                </li>
+            </ul>
+            <div>
+                <button class="btn btn-sm btn-danger" onclick="window.history.back();">
+                <span class="font-weight-bold">
+                    <i class="ti-back-left"></i>
+                    Back
+                </span>
+                </button>
+            </div>
 
-    <div class="tab-content">
-        <!-- Property Details -->
-        <div id="property-details" class="tab-pane fade show active">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title"><strong>{{ property.name }}</strong></h3>
-                    <div>
+        </div>
+        <div class="tab-content">
+            <!-- Property Details -->
+            <div id="property-details" class="tab-pane fade show active">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="card-title"><strong>{{ property.name }}</strong></h3>
+                        <div>
 
-                        <a href="{{ url_for('companies.get_company', company_id=property.company_id) }}"
-                           class="btn btn-sm btn-danger">
-                            <i class="ti-back-left"> </i> Back
-                        </a>
-                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addItemModal">
-                            <i class="ti-money"> </i>
-                            Billable Items
-                        </button>
-                        <a href="#" class="btn btn-sm btn-success" data-toggle="modal"
-                           data-target="#editPropertyDialog">
-                            <i class="ti-desktop"> </i> Edit
-                        </a>
+                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addItemModal">
+                                <i class="ti-money"> </i>
+                                Billable Items
+                            </button>
+                            <a href="#" class="btn btn-sm btn-success" data-toggle="modal"
+                               data-target="#editPropertyDialog">
+                                <i class="ti-desktop"> </i> Edit
+                            </a>
+                        </div>
                     </div>
-                </div>
 
-                {% include "building/tables/property_description.html" %}
+                    {% include "building/tables/property_description.html" %}
 
                     <!-- include the building / Property Editor form here -->
                     {% if property_editor %}
                         {% include 'building/edit_building.html' %}
                     {% endif %}
-            </div>
-        </div>
-
-        <!-- Units List -->
-        <div id="units-list" class="tab-pane fade">
-            <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title"><span class="font-weight-bold">{{ property.name }}</span></h3>
-                <div>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPropertyUnitModal">
-                        Add Property Unit
-                    </button>
                 </div>
             </div>
-            </div>
-            {% include "building/tables/unit_list.html" %}
-        </div>
 
-        <div id="billable" class="tab-pane fade">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title"> Billable Items</h3>
-                    <div>
-                        <button class="btn btn-sm btn-primary"
-                                data-toggle="modal"
-                                data-target="#addItemModal">
-                            <i class="ti-save"> </i>
-                            Add
-                        </button>
+            <!-- Units List -->
+            <div id="units-list" class="tab-pane fade">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="card-title"><span class="font-weight-bold">{{ property.name }}</span></h3>
+                        <div>
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#addPropertyUnitModal">
+                                Add Property Unit
+                            </button>
+                        </div>
                     </div>
-
                 </div>
-                {% include "building/tables/billable_items.html" %}
+                {% include "building/tables/unit_list.html" %}
+            </div>
+
+            <div id="billable" class="tab-pane fade">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="card-title"> Billable Items</h3>
+                        <div>
+                            <button class="btn btn-sm btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#addItemModal">
+                                <i class="ti-save"> </i>
+                                Add
+                            </button>
+                        </div>
+
+                    </div>
+                    {% include "building/tables/billable_items.html" %}
+                </div>
             </div>
         </div>
     </div>
-
-{# tab includes #}
-{% include "building/modals/add_unit.html" %}
-{% include "building/modals/edit_property.html" %}
-{% include "building/modals/charged_items.html" %}
+    {# tab includes #}
+    {% include "building/modals/add_unit.html" %}
+    {% include "building/modals/edit_property.html" %}
+    {% include "building/modals/charged_items.html" %}
 
 {% endblock %}
