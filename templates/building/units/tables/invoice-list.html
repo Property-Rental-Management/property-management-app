@@ -26,7 +26,7 @@
                 <th>Date Issued</th>
                 <th>Due Date</th>
                 <th>Amount Payable</th>
-                <th class="text-info"><i class="ti-credit-card"></i> Payment</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -42,24 +42,19 @@
                     <td>
                         <form class="form-horizontal" method="POST"
                               action="{{ url_for('payments.create_unit_payment', invoice_number=invoice.invoice_number) }}">
+                            <input type="hidden" value="{{ invoice.amount_payable }}" name="amount_paid"/>
                             <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}"/>
                             <input type="hidden" name="tenant_id" value="{{ unit.tenant_id }}">
                             <input type="hidden" name="property_id" value="{{ unit.property_id }}">
                             <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
-                            <div class="input-group input-group-right">
-                                <input type="number"
-                                       value="{{ invoice.amount_payable }}"
-                                       name="amount_paid"
-                                       class="form-control input-lg col-lg-6 col-md-6"/>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-sm btn-primary btn-group-right"
-                                            type="submit"
-                                            title="Click to pay invoice"
-                                    >
-                                        <i class="ti-credit-card"></i>
-                                    </button>
-                                </span>
-                            </div>
+
+                            <button class="btn btn-sm btn-primary"
+                                    type="submit"
+                                    title="Click to pay invoice"
+                            >
+                                <i class="ti-credit-card"></i>
+                            </button>
+
                         </form>
                     </td>
                 </tr>
