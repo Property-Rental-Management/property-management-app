@@ -2,30 +2,41 @@
 <span class="card-content font-weight-bold font-italic text-info">
     Click on Unit to create a Booking - or Manage Unit
 </span>
-<div class="card-footer">
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Unit Number</th>
-            <th>Is Occupied</th>
-            <th>Rental Amount</th>
-            <th class="d-none d-sm-table-cell">Leased</th>
-            <th class="d-none d-sm-table-cell">Unit Area</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for unit in units %}
+    <div class="card-footer">
+        <table class="table table-striped table-bordered">
+            <thead>
             <tr>
-                <td><a href="{{ url_for('buildings.get_unit', building_id=unit.property_id, unit_id=unit.unit_id) }}" class="alert-link">
-                    Unit Num : {{ unit.unit_number }}
-                </a></td>
-                <td>{{ unit.is_occupied }}</td>
-                <td>{{ unit.rental_amount }}</td>
-                <td>{{ True if unit.tenant_id else False }}</td>
-                <td class="d-none d-sm-table-cell">{{ unit.unit_area }}</td>
+                <th class="font-weight-bold text-info"><i class="ti-list"></i> Unit</th>
+                <th class="font-weight-bold text-info"><i class="ti-money"></i> Rental Amount</th>
+                <th class="d-none d-sm-table-cell font-weight-bold text-info"><i class="ti-calendar"></i> Lease Period
+                </th>
+                <th class="d-none d-sm-table-cell font-weight-bold text-info"><i class="ti-layout"></i> Unit Area</th>
             </tr>
-        {% endfor %}
-    </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+            {% for unit in units %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('buildings.get_unit', building_id=unit.property_id, unit_id=unit.unit_id) }}"
+                           class="text-info alert-link"
+                        >
+                            {{ unit.unit_number }}
+                        </a>
+                    </td>
+                    <td>
+                        R {{ unit.rental_amount|currency }}.00
+                    </td>
+
+                    <td class="d-none d-sm-table-cell">
+                        {{ unit.lease_period|lease_counter }}
+                    </td>
+                    <td class="d-none d-sm-table-cell">
+                        {{ unit.unit_area|square_meters }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
 </div>

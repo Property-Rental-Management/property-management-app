@@ -90,6 +90,28 @@ class Unit(BaseModel):
             return False
         return value
 
+    @property
+    def lease_period(self):
+        if self.lease_start_date and self.lease_end_date:
+            return (self.lease_end_date - self.lease_start_date).days
+        return None
+
+    def dict(self):
+        return {
+            "tenant_id": self.tenant_id,
+            "property_id": self.property_id,
+            "unit_id": self.unit_id,
+            "unit_number": self.unit_number,
+            "is_occupied": self.is_occupied,
+            "is_booked": self.is_booked,
+            "rental_amount": self.rental_amount,
+            "lease_start_date": self.lease_start_date,
+            "lease_end_date": self.lease_end_date,
+            "lease_period": self.lease_period,
+            "unit_area": self.unit_area,
+            "has_reception": self.has_reception,
+        }
+
 
 class CreateUnitRental(BaseModel):
     tenant_id: str | None = Field(default=None)

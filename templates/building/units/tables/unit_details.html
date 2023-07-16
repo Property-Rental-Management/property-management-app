@@ -33,32 +33,43 @@
                 Rental Amount:
             </div>
             <div class="col-6 text-left font-weight-bold font-italic text-info">
-                R {{ unit.rental_amount }}
+                R {{ unit.rental_amount|currency }}.00
             </div>
         </div>
     </li>
 
     {% if unit.tenant_id %}
         <li class="list-group-item">
-        <div class="row">
-            <div class="col-lg-3 col-sm-6 text-left font-weight-bold">
-                Lease Start Date:
-            </div>
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 text-left font-weight-bold">
+                    Lease Start Date:
+                </div>
             <div class="col-6 text-left font-weight-bold font-italic text-info">
                 {{ unit.lease_start_date }}
             </div>
         </div>
         </li>
         <li class="list-group-item">
-        <div class="row">
-            <div class="col-lg-3 col-sm-6 text-left font-weight-bold">
-                Lease End Date:
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 text-left font-weight-bold">
+                    Lease End Date:
+                </div>
+                <div class="col-6 text-left font-weight-bold font-italic text-info">
+                    {{ unit.lease_end_date }}
+                </div>
             </div>
-            <div class="col-6 text-left font-weight-bold font-italic text-info">
-                {{ unit.lease_end_date }}
-            </div>
-        </div>
         </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 text-left font-weight-bold">
+                    Lease Period:
+                </div>
+                <div class="col-6 text-left font-weight-bold font-italic text-info">
+                    {{ unit.lease_period|lease_counter }}
+                </div>
+            </div>
+        </li>
+
     {% endif %}
 
     <li class="list-group-item">
@@ -67,7 +78,7 @@
                 Unit Area:
             </div>
             <div class="col-6 text-left font-weight-bold font-italic text-info">
-                {{ unit.unit_area }} sq Metres
+                {{ unit.unit_area|square_meters }}
             </div>
         </div>
     </li>

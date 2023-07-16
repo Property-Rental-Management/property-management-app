@@ -27,3 +27,24 @@ def format_with_grouping(number):
         formatted_number = formatted_whole_part
 
     return formatted_number
+
+
+def lease_formatter(value):
+    if value is None:
+        return None
+
+    if value < 60:
+        return f"{value} days"
+    elif 2 <= value // 30 <= 24:
+        months = value // 30
+        days = value % 30
+        return f"{months} months and {days} days"
+    else:
+        years = value // 365
+        months = (value % 365) // 30
+        days = (value % 365) % 30
+        return f"{years} years, {months} months, and {days} days"
+
+
+def format_square_meters(value):
+    return f"{value} m²"

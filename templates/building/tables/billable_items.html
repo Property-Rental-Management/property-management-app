@@ -15,17 +15,22 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Insert table rows dynamically based on data from the database -->
-            {% for item in billable_items %}
+        <!-- Insert table rows dynamically based on data from the database -->
+        {% for item in billable_items %}
             <tr>
-                <td><a href="{{ url_for('buildings.get_billed_item', property_id=item.property_id, item_number=item.item_number) }}">{{ item.description }}</a></td>
+                <td>
+                    <a href="{{ url_for('buildings.get_billed_item', property_id=item.property_id, item_number=item.item_number) }}">{{ item.description }}</a>
+                </td>
                 <td>{{ item.multiplier }}</td>
-                <td><a href="{{ url_for('buildings.delete_billed_item', property_id=item.property_id, item_number=item.item_number) }}" class="btn btn-danger btn-sm">
-                    <i class="ti-cut"> </i>
-                    Remove
-                </a></td>
+                <td>
+                    <a href="{{ url_for('buildings.delete_billed_item', property_id=item.property_id, item_number=item.item_number) }}"
+                       class="btn btn-sm btn-danger"
+                    >
+                        <i class="ti-cut"> </i>
+                    </a>
+                </td>
             </tr>
-            {% endfor %}
+        {% endfor %}
         </tbody>
     </table>
 </div>

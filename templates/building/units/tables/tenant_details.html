@@ -20,25 +20,29 @@
     <div class="card-header">
         <h3 class="card-title">Personal Details</h3>
     </div>
-    {% if tenant %}
-    <ul class="list-group">
-        <li class="list-group-item"><strong>Name:</strong> {{ tenant.name }}</li>
-        <li class="list-group-item"><strong>ID Number:</strong> {{ tenant.id_number }}</li>
-        <li class="list-group-item"><strong>Company ID:</strong> {% if tenant.company_id %}{{ tenant.company_id }}{% else %}N/A{% endif %}</li>
-        <li class="list-group-item"><strong>Email:</strong> {{ tenant.email }}</li>
-        <li class="list-group-item"><strong>Cell:</strong> {{ tenant.cell }}</li>
-        <li class="list-group-item"><strong>Is Renting:</strong> {% if tenant.is_renting %}Yes{% else %}No{% endif %}</li>
-        <li class="list-group-item"><strong>Lease Start Date:</strong> {% if tenant.lease_start_date %}{{ tenant.lease_start_date }}{% else %}N/A{% endif %}</li>
-        <li class="list-group-item"><strong>Lease End Date:</strong> {% if tenant.lease_end_date %}{{ tenant.lease_end_date }}{% else %}N/A{% endif %}</li>
-    </ul>
-    {% else %}
-        <span>could not load tenant data</span>
-    {% endif %}
+        {% if tenant %}
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Name:</strong> {{ tenant.name }}</li>
+                <li class="list-group-item"><strong>ID Number:</strong> {{ tenant.id_number }}</li>
+                <li class="list-group-item"><strong>Company ID:</strong>
+                    {% if tenant.company_id %}{{ tenant.company_id }}{% else %}N/A{% endif %}</li>
+                <li class="list-group-item"><strong>Email:</strong> {{ tenant.email }}</li>
+                <li class="list-group-item"><strong>Cell:</strong> {{ tenant.cell }}</li>
+                <li class="list-group-item"><strong>Is Renting:</strong> {% if tenant.is_renting %}Yes{% else %}
+                    No{% endif %}</li>
+                <li class="list-group-item"><strong>Lease Period:</strong>
+                    {% if tenant.lease_start_date %}{{ tenant.lease_start_date }}{% else %}N/A{% endif %}</li>
+                <li class="list-group-item"><strong>Lease End Date:</strong>
+                    {% if tenant.lease_end_date %}{{ tenant.lease_end_date }}{% else %}N/A{% endif %}</li>
+            </ul>
+        {% else %}
+            <span>could not load tenant data</span>
+        {% endif %}
     </div>
     <div class="card-body col-lg-6 col-md-6 col-sm-12">
-    <div class="card-header">
-        <h3 class="card-title">Company Details</h3>
-    </div>
+        <div class="card-header">
+            <h3 class="card-title">Company Details</h3>
+        </div>
     {% if tenant and tenant.company_id and company %}
         <ul class="list-group">
             <li class="list-group-item"><strong>Company Name:</strong> {% if company.company_name %}{{ company.company_name }}{% else %}N/A{% endif %}</li>
