@@ -1,17 +1,28 @@
+from datetime import date
+
 from flask import Blueprint, render_template, request, url_for, redirect, flash
 from pydantic import ValidationError
 
 from src.authentication import login_required
-from src.database.models.companies import Company
 from src.database.models.invoices import Invoice
 from src.database.models.payments import UnitInvoicePaymentForm, CreatePayment, PaymentVerificationForm, Payment
-from src.database.models.properties import Property
 from src.database.models.users import User
 from src.logger import init_logger
 from src.main import lease_agreement_controller, company_controller
 
 payments_route = Blueprint('payments', __name__)
 payment_logger = init_logger("PAYMENT Router")
+
+
+async def get_payment_context(user: User, payment_instance: Payment) -> dict[str, dict[str, int | str | date]]:
+    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=payment_instance.invoice_number)
+    building = await company_controller.get_property_by_id_internal(payment_instance.property_id)
+    company = await company_controller.get_company_internal(company_id=building.company_id)
+
+    return {'user': user.dict(),
+            'invoice': invoice.dict(),
+            'payment': payment_instance.dict(),
+            'company': company.dict()}
 
 
 @payments_route.get('/admin/payments')
@@ -68,11 +79,6 @@ async def create_unit_payment(user: User, invoice_number: int):
 @payments_route.post('/admin/payments/verification')
 @login_required
 async def do_verify_payment(user: User):
-    """
-        **do_verify_payment*8
-    :param user:
-    :return:
-    """
     building_id = request.form.get('property_id')
     unit_id = request.form.get('unit_id')
     try:
@@ -92,16 +98,7 @@ async def do_verify_payment(user: User):
         flash(message="Payment Not Verified", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
 
-    property_id = payment_verification.property_id
-    invoice_number = payment_verification.invoice_number
-    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
-    building: Property = await company_controller.get_property_by_id_internal(property_id=property_id)
-    company: Company = await company_controller.get_company_internal(company_id=building.company_id)
-
-    context = {'user': user.dict(),
-               'invoice': invoice.dict(),
-               'payment': payment_instance.dict(),
-               'company': company.dict()}
+    context = await get_payment_context(user, payment_instance)
 
     return render_template("payments/payment_receipt.html", **context)
 
@@ -109,19 +106,9 @@ async def do_verify_payment(user: User):
 @payments_route.post('/admin/payments/print-receipt')
 @login_required
 async def print_payment_receipt(user: User):
-    """
-
-    :param user:
-    :return:
-    """
-
     transaction_id = request.form.get('transaction_id')
     tenant_id = request.form.get('tenant_id')
-    if not tenant_id:
-        flash(message="Error accessing tenant details", category="danger")
-        return redirect(url_for('home.get_home'), code=302)
-
-    if not transaction_id:
+    if not tenant_id or not transaction_id:
         flash(message="Error accessing tenant details", category="danger")
         return redirect(url_for('home.get_home'), code=302)
 
@@ -130,13 +117,6 @@ async def print_payment_receipt(user: User):
         flash(message="Error accessing tenant details", category="danger")
         return redirect(url_for('home.get_home'), code=302)
 
-    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=payment_instance.invoice_number)
-    building = await company_controller.get_property_by_id_internal(payment_instance.property_id)
-    company = await company_controller.get_company_internal(company_id=building.company_id)
-
-    context = {'user': user.dict(),
-               'invoice': invoice.dict(),
-               'payment': payment_instance.dict(),
-               'company': company.dict()}
+    context = await get_payment_context(user, payment_instance)
 
     return render_template("payments/payment_receipt.html", **context)
