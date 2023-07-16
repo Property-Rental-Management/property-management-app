@@ -26,7 +26,7 @@ class CashFlowModel(BaseModel):
 
         for payment in self.payments:
             if payment.is_successful:
-                month = payment.month
+                month = payment.date_paid.month
                 amount_paid = payment.amount_paid
                 property_id = payment.property_id
                 tenant_id = payment.tenant_id
