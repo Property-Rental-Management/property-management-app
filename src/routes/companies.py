@@ -197,6 +197,8 @@ async def add_tenants_company(user: User):
         tenant_company: CreateTenantCompany = CreateTenantCompany(**request.form)
         tenant_company_relation: CreateTenantRelationCompany = CreateTenantRelationCompany(**tenant_company.dict())
     except ValidationError as e:
+        companies_logger.error(f"Error creating Tenant Company: {str(e)}")
+        flash(message="Unable to add company to tenant - please check your input fields", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
 
     if tenant_company.description is None:
@@ -210,6 +212,7 @@ async def add_tenants_company(user: User):
     tenant_data.company_id = tenant_company.company_id
     updated_tenant = await tenant_controller.update_tenant(tenant=tenant_data)
 
+    flash(message="successfully created tenant company", category="success")
     return redirect(url_for('buildings.get_unit', building_id=tenant_company.building_id,
                             unit_id=tenant_company.unit_id), code=302)
 

@@ -21,7 +21,7 @@
                 <td>Quantity</td>
                 <td>Amount</td>
                 <td>Total</td>
-                <td class="text-danger"><i class="ti-settings"> </i></td>
+                <td class="text-danger">Actions</td>
             </tr>
             </thead>
             <tbody>
@@ -29,14 +29,13 @@
                 <tr>
                     <td>{{ charged_item.item.description }}</td>
                     <td>{{ charged_item.item.multiplier }}</td>
-                    <td>{{ charged_item.amount|currency }}</td>
-                    <td>R {{ (charged_item.item.multiplier * charged_item.amount)|currency }}</td>
+                    <td>R {{ charged_item.amount|currency }}.00</td>
+                    <td>R {{ (charged_item.item.multiplier * charged_item.amount)|currency }}.00</td>
                     <td>
                         <a class="btn btn-sm btn-danger"
                            href="{{ url_for('buildings.delete_charge', charge_id=charged_item.charge_id) }}"
                         >
                             <i class="ti-cut"> </i>
-                            Remove
                         </a>
                     </td>
                 </tr>
