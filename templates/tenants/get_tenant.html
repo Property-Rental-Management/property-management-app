@@ -52,7 +52,7 @@
                         </td>
                         <td>{{ tenant.email }}</td>
                         <td>{{ tenant.cell }}</td>
-                        <td>{{ tenant.is_renting }}</td>
+                        <td>{{ tenant.lease_period|lease_counter }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
