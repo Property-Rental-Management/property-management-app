@@ -33,7 +33,7 @@
                 <li class="list-group-item"><strong>Lease End Date:</strong>
                     {% if tenant.lease_end_date %}{{ tenant.lease_end_date }}{% else %}N/A{% endif %}</li>
                 <li class="list-group-item"><strong>Lease Period:</strong>
-                    {% if tenant.lease_perid %}{{ tenant.lease_period|lease_counter }}{% else %}N/A{% endif %}
+                    {% if tenant.lease_period %}{{ tenant.lease_period|lease_counter }}{% else %}N/A{% endif %}
                 </li>
             </ul>
         {% else %}

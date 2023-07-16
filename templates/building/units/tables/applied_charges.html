@@ -28,7 +28,7 @@
             {% for charged_item in charged_items %}
                 <tr>
                     <td>{{ charged_item.item.description }}</td>
-                    <td>{{ charged_item.item.multiplier }}</td>
+                    <td>{{ charged_item.item.multiplier }} X</td>
                     <td>R {{ charged_item.amount|currency }}.00</td>
                     <td>R {{ (charged_item.item.multiplier * charged_item.amount)|currency }}.00</td>
                     <td>
