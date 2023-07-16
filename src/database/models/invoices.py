@@ -240,3 +240,11 @@ class UnitCreateInvoiceForm(BaseModel):
 
     class Config:
         extra = Extra.ignore
+
+
+class UnitPaymentForm(BaseModel):
+    amount_paid: float
+    invoice_number: str
+    tenant_id: str
+    property_id: str
+    unit_id: str

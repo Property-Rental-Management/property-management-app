@@ -3,7 +3,7 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.companies import Company
-from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice
+from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice, UnitPaymentForm
 from src.database.models.properties import Property
 from src.database.models.users import User
 from src.logger import init_logger
@@ -11,6 +11,13 @@ from src.main import company_controller, lease_agreement_controller, invoice_man
 
 invoices_route = Blueprint('invoices', __name__)
 invoice_logger = init_logger('invoice_logger')
+
+
+async def redirect_to_unit(message_dict: dict[str, str]):
+    _vars = dict(building_id=request.form.get('property_id'), unit_id=request.form.get('unit_id'))
+    print(vars)
+    flash(**message_dict)
+    return redirect(url_for('buildings.get_unit', **_vars), code=302)
 
 
 @invoices_route.get('/admin/invoices')
@@ -141,8 +148,34 @@ async def create_invoice(user: User):
     return render_template('reports/invoice_report.html', **context)
 
 
-async def redirect_to_unit(message_dict: dict[str, str]):
-    _vars = dict(building_id=request.form.get('property_id'), unit_id=request.form.get('unit_id'))
-    print(vars)
-    flash(**message_dict)
-    return redirect(url_for('buildings.get_unit', **_vars), code=302)
+@invoices_route.post('/admin/invoice/edit-invoice')
+@login_required
+async def edit_invoice(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    try:
+        invoice_data: UnitPaymentForm = UnitPaymentForm(**request.form)
+        invoice_logger.info(invoice_data.dict())
+    except ValidationError as e:
+        invoice_logger.error(str(e))
+        invoice_logger.error(dict(**request.form))
+        message_dict = dict(message="Unable to to locate the invoice", category="danger")
+        return await redirect_to_unit(message_dict)
+
+    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_data.invoice_number)
+    context = dict(invoice=invoice.dict())
+    return render_template("invoices/modals/edit_invoice.html", **context)
+
+
+@invoices_route.post('/admin/invoice/update-invoice')
+@login_required
+async def update_invoice(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    pass

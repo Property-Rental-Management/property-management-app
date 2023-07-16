@@ -40,22 +40,7 @@
                     </td>
                     <td>R {{ invoice.amount_payable|currency }}.00</td>
                     <td>
-                        <form class="form-horizontal" method="POST"
-                              action="{{ url_for('payments.create_unit_payment', invoice_number=invoice.invoice_number) }}">
-                            <input type="hidden" value="{{ invoice.amount_payable }}" name="amount_paid"/>
-                            <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}"/>
-                            <input type="hidden" name="tenant_id" value="{{ unit.tenant_id }}">
-                            <input type="hidden" name="property_id" value="{{ unit.property_id }}">
-                            <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
-
-                            <button class="btn btn-sm btn-primary"
-                                    type="submit"
-                                    title="Click to pay invoice"
-                            >
-                                <i class="ti-credit-card"></i>
-                            </button>
-
-                        </form>
+                        {% include "invoices/invoice_list_form.html" %}
                     </td>
                 </tr>
             {% endfor %}

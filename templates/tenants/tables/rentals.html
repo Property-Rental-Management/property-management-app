@@ -5,6 +5,13 @@
             Tenant - Invoices
         </span>
         <div>
+            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#printReceiptModal">
+                <span class="font-weight-bold">
+                    <i class="ti-printer"> </i>
+                    Email Receipts
+                </span>
+            </button>
+
             <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#printReceiptModal">
                 <span class="font-weight-bold">
                     <i class="ti-printer"> </i>
@@ -22,6 +29,7 @@
                 <td><i class="ti-money"></i> Amount</td>
                 <td><i class="ti-calendar"></i> Date Paid</td>
                 <td><i class="ti-credit-card"></i> Method</td>
+                <td>Action</td>
             </tr>
             </thead>
             <tbody>
@@ -31,6 +39,11 @@
                     <td>R {{ receipt.amount_paid|currency }}.00</td>
                     <td>{{ receipt.date_paid }}</td>
                     <td>{{ receipt.payment_method|payment_method }}</td>
+                    <td>
+                        <button class="btn btn-sm  btn-primary" title="Edit Receipt">
+                            <i class="ti-pencil"> </i>
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

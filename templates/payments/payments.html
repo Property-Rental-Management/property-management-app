@@ -31,16 +31,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for payment in payments %}
-                            <tr>
-                                <td>{{ payment.id }}</td>
-                                <td>{{ payment.tenant_name }} ({{ payment.building }} - {{ payment.office_number }})</td>
-                                <td>{{ payment.building }}</td>
-                                <td>{{ payment.office_number }}</td>
-                                <td>{{ payment.amount }}</td>
-                                <td>{{ payment.date }}</td>
-                            </tr>
-                        {% endfor %}
+                    {% for payment in payments %}
+                        <tr>
+                            <td>
+                                {{ payment.id }}
+                            </td>
+                            <td>{{ payment.tenant_name }} ({{ payment.building }} - {{ payment.office_number }})</td>
+                            <td>{{ payment.building }}</td>
+                            <td>{{ payment.office_number }}</td>
+                            <td>{{ payment.amount }}</td>
+                            <td>{{ payment.date }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
