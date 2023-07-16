@@ -141,10 +141,13 @@
                                 {{ invoice.currency }} {{ invoice.total_amount|currency }}.00
                             </span>
                             </li>
-                            <li><strong>Total Taxes:</strong>
+                            <li><strong>Taxes:</strong>
                                 <span class="text-lg-right text-info">
                                 {{ invoice.currency }} {{ invoice.total_taxes|currency }}.00
                             </span>
+                            </li>
+                            <li>
+                                <hr>
                             </li>
                             <li><strong>Amount Payable: </strong>
                                 <span class="text-lg-right text-info">
