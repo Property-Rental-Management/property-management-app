@@ -182,7 +182,7 @@ async def update_invoice(user: User):
     building_id = request.form.get('building_id')
     invoice_number = request.form.get('invoice_number')
     try:
-        invoice_update_model = InvoiceUpdateModel(**request.form)
+        update_model = InvoiceUpdateModel(**request.form)
     except ValidationError as e:
         invoice_logger.error(str(e))
         return redirect(url_for('invoices.get_invoice',
@@ -190,16 +190,23 @@ async def update_invoice(user: User):
                                 invoice_number=invoice_number), code=302)
 
     invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
-    await _update_invoice(invoice, invoice_update_model)
-    _ = await lease_agreement_controller.update_invoice(invoice=invoice)
+    invoice_ = await _update_invoice(invoice=invoice, update_model=update_model)
+    _ = await lease_agreement_controller.update_invoice(invoice=invoice_)
 
     return redirect(url_for('invoices.get_invoice',
                             building_id=building_id,
                             invoice_number=invoice_number), code=302)
 
 
-async def _update_invoice(invoice, invoice_update_model):
-    invoice.service_name = invoice_update_model.service_name
-    invoice.description = invoice_update_model.description
-    invoice.currency = invoice_update_model.currency
-    invoice.tax_rate = invoice_update_model.tax_rate
+async def _update_invoice(invoice, update_model) -> Invoice:
+    """
+        **_update_invoice**
+    :param invoice:
+    :param update_model:
+    :return:
+    """
+    invoice.service_name = update_model.service_name
+    invoice.description = update_model.description
+    invoice.currency = update_model.currency
+    invoice.tax_rate = update_model.tax_rate
+    return invoice
