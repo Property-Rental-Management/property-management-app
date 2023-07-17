@@ -20,6 +20,30 @@ async def redirect_to_unit(message_dict: dict[str, str]):
     return redirect(url_for('buildings.get_unit', **_vars), code=302)
 
 
+async def sub_invoice_context(user: User, invoice: Invoice, building_id: str):
+    """
+
+    :param user:
+    :param invoice:
+    :param building_id:
+    :return:
+    """
+    building: Property = await company_controller.get_property_by_id_internal(property_id=building_id)
+    company_id = building.company_id
+    company: Company = await company_controller.get_company_internal(company_id=company_id)
+    bank_account = await company_controller.get_bank_account_internal(company_id=company_id)
+    if company is None:
+        flash(message="Error Reading Invoice Issuer Data", category="danger")
+        return redirect(url_for('home.get_home'), code=302)
+
+    if bank_account is None:
+        flash(message="Error Reading Invoice Issuer Data", category="danger")
+        return redirect(url_for('home.get_home'), code=302)
+
+    return {'user': user.dict(), 'invoice': invoice.dict(), 'company': company.dict(),
+            'bank_account': bank_account.dict()}
+
+
 @invoices_route.get('/admin/invoices')
 @login_required
 async def get_invoices(user: User):
@@ -30,12 +54,14 @@ async def get_invoices(user: User):
 
 
 @invoices_route.get('/reports/invoice/<string:building_id>/<string:invoice_number>')
-async def get_invoice(building_id: str, invoice_number: str):
+@login_required
+async def get_invoice(user: User, building_id: str, invoice_number: str):
     """
         **get_invoice**
             why is
             used for temporarily holding invoice links for invoices sent as emails
             the links should expire after one day
+    :param user:
     :param building_id:
     :param invoice_number:
     :return:
@@ -55,19 +81,27 @@ async def get_invoice(building_id: str, invoice_number: str):
               category="danger")
         return redirect(url_for('home.get_home'), code=302)
 
-    building: Property = await company_controller.get_property_by_id_internal(property_id=building_id)
-    company_id = building.company_id
-    company: Company = await company_controller.get_company_internal(company_id=company_id)
-    bank_account = await company_controller.get_bank_account_internal(company_id=company_id)
-    if company is None:
-        flash(message="Error Reading Invoice Issuer Data", category="danger")
-        return redirect(url_for('home.get_home'), code=302)
+    context = await sub_invoice_context(user=user, invoice=invoice, building_id=building_id)
+    return render_template("reports/invoice_report.html", **context)
 
-    if bank_account is None:
-        flash(message="Error Reading Invoice Issuer Data", category="danger")
-        return redirect(url_for('home.get_home'), code=302)
 
-    context = {'invoice': invoice.dict(), 'company': company.dict(), 'bank_account': bank_account.dict()}
+@invoices_route.route('/admin/invoice/<string:building_id>/<string:invoice_number>')
+@login_required
+async def get_admin_invoice(user: User, building_id: str, invoice_number: str):
+    """
+
+    :param user:
+    :param invoice_number:
+    :param building_id:
+    :return:
+    """
+    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
+    if not invoice:
+        message_dict = dict(message="Unable to create invoice please input all required fields", category="danger")
+        return await redirect_to_unit(message_dict)
+
+    context = await sub_invoice_context(user=user, invoice=invoice, building_id=building_id)
+
     return render_template("reports/invoice_report.html", **context)
 
 
@@ -166,6 +200,9 @@ async def edit_invoice(user: User):
         return await redirect_to_unit(message_dict)
 
     invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_data.invoice_number)
+    if not invoice:
+        message_dict = dict(message="Unable to to locate the invoice", category="danger")
+        return await redirect_to_unit(message_dict)
 
     context = dict(invoice=invoice.dict(), property_id=invoice_data.property_id)
     return render_template("invoices/modals/edit_invoice.html", **context)
@@ -180,7 +217,7 @@ async def update_invoice(user: User):
     :return:
     """
     building_id = request.form.get('building_id')
-    invoice_number = request.form.get('invoice_number')
+    invoice_number = int(request.form.get('invoice_number'))
 
     try:
         update_model = InvoiceUpdateModel(**request.form)
@@ -194,7 +231,7 @@ async def update_invoice(user: User):
     invoice_ = await _update_invoice(invoice=invoice, update_model=update_model)
     _ = await lease_agreement_controller.update_invoice(invoice=invoice_)
 
-    return redirect(url_for('invoices.get_invoice',
+    return redirect(url_for('invoices.get_admin_invoice',
                             building_id=building_id,
                             invoice_number=invoice_number), code=302)
 

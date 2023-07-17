@@ -243,8 +243,8 @@ class UnitCreateInvoiceForm(BaseModel):
 
 
 class UnitPaymentForm(BaseModel):
-    amount_paid: float
-    invoice_number: str
+    invoice_number: int
+    amount_paid: int
     tenant_id: str
     property_id: str
     unit_id: str
@@ -252,7 +252,7 @@ class UnitPaymentForm(BaseModel):
 
 class InvoiceUpdateModel(BaseModel):
     building_id: str
-    invoice_number: str
+    invoice_number: int
     tenant_id: str
     service_name: str
     description: str

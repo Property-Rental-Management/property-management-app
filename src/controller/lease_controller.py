@@ -87,8 +87,7 @@ class LeaseController(Controllers):
         :return:
         """
         with self.get_session() as session:
-            invoice_orm: InvoiceORM = session.query(InvoiceORM).filter(
-                InvoiceORM.invoice_number == invoice_number).first()
+            invoice_orm = session.query(InvoiceORM).filter(InvoiceORM.invoice_number == invoice_number).first()
             return Invoice(**invoice_orm.to_dict()) if isinstance(invoice_orm, InvoiceORM) else None
 
     @error_handler
