@@ -14,13 +14,16 @@
             </div>
         </div>
         <div class="card-footer">
-
-            <form action="/payment/{{ payment.transaction_id }}/edit" method="POST">
+            <form action="{{ url_for('payments.do_update_payment', transaction_id=payment.transaction_id) }}"
+                  method="POST"
+                  enctype="application/x-www-form-urlencoded"
+            >
                 <input type="hidden" name="transaction_id" value="{{ payment.transaction_id }}">
                 <input type="hidden" name="invoice_number" value="{{ payment.invoice_number }}">
                 <input type="hidden" name="tenant_id" value="{{ payment.tenant_id }}">
                 <input type="hidden" name="property_id" value="{{ payment.property_id }}">
                 <input type="hidden" name="unit_id" value="{{ payment.unit_id }}">
+
                 <div class="form-group">
                     <label for="amount_paid">Amount Paid:</label>
                     <input class="form-control" type="number" id="amount_paid" name="amount_paid"
@@ -33,8 +36,15 @@
                 </div>
                 <div class="form-group">
                     <label for="payment_method">Payment Method:</label>
-                    <input class="form-control" type="text" id="payment_method" name="payment_method"
-                           value="{{ payment.payment_method }}" required>
+                    <select class="form-control" name="payment_method">
+                        <option value="credit_card" {% if payment.payment_method == 'credit_card' %}selected{% endif %}>
+                            Credit Card
+                        </option>
+                        <option value="bank_transfer"
+                                {% if payment.payment_method == 'bank_transfer' %}selected{% endif %}>Bank Transfer
+                        </option>
+                        <option value="cash" {% if payment.payment_method == 'cash' %}selected{% endif %}>Cash</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="is_successful">Is Successful:</label>

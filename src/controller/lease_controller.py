@@ -9,7 +9,7 @@ from src.controller import error_handler, Controllers
 from src.database.models.companies import Company
 from src.database.models.invoices import Invoice, UnitCharge
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
-from src.database.models.payments import Payment
+from src.database.models.payments import Payment, UpdatePayment
 from src.database.models.properties import Unit, Property
 from src.database.models.tenants import Tenant
 from src.database.sql import Session
@@ -342,6 +342,25 @@ class LeaseController(Controllers):
         with self.get_session() as session:
             transaction = session.query(PaymentORM).filter(PaymentORM.transaction_id == transaction_id).first()
             return Payment(**transaction.to_dict()) if transaction else None
+
+    async def update_payment(self, payment_instance: UpdatePayment):
+        """
+
+        :param payment_instance:
+        :return:
+        """
+        with self.get_session() as session:
+            transaction_id: str = payment_instance.transaction_id
+            transaction: PaymentORM = session.query(PaymentORM).filter(
+                PaymentORM.transaction_id == transaction_id).first()
+
+            transaction.amount_paid = payment_instance.amount_paid
+            transaction.date_paid = payment_instance.date_paid
+            transaction.payment_method = payment_instance.payment_method
+            transaction.is_successful = payment_instance.is_successful
+            transaction.comments = payment_instance.comments
+            session.merge(transaction)
+            return Payment(**transaction.to_dict())
 
 
 class InvoiceManager:

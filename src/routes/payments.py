@@ -5,7 +5,8 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.invoices import Invoice
-from src.database.models.payments import UnitInvoicePaymentForm, CreatePayment, PaymentVerificationForm, Payment
+from src.database.models.payments import UnitInvoicePaymentForm, CreatePayment, PaymentVerificationForm, Payment, \
+    UpdatePayment
 from src.database.models.users import User
 from src.logger import init_logger
 from src.main import lease_agreement_controller, company_controller
@@ -139,3 +140,27 @@ async def edit_payment(user: User, transaction_id: str):
     context = await get_payment_context(user, payment_instance)
 
     return render_template("payments/edit_payment.html", **context)
+
+
+@payments_route.post('/admin/edit-payment/<string:transaction_id>')
+@login_required
+async def do_update_payment(user: User, transaction_id: str):
+    """
+
+    :param user:
+    :param transaction_id:
+    :return:
+    """
+    try:
+        updated_payment: UpdatePayment = UpdatePayment(**request.form)
+        payment_logger.info(f"Updated Payment: {updated_payment}")
+    except ValidationError as e:
+        payment_logger.error(str(e))
+        flash(message="Error accessing tenant details", category="danger")
+        return redirect(url_for('home.get_home'), code=302)
+
+    payment_instance = await lease_agreement_controller.update_payment(payment_instance=updated_payment)
+
+    context = await get_payment_context(user=user, payment_instance=payment_instance)
+
+    return render_template("payments/payment_receipt.html", **context)

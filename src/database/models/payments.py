@@ -51,6 +51,19 @@ class CreatePayment(BaseModel):
     comments: str | None
 
 
+class UpdatePayment(BaseModel):
+    transaction_id: str
+    invoice_number: int
+    tenant_id: str
+    property_id: str
+    unit_id: str
+    amount_paid: int
+    date_paid: str
+    payment_method: str
+    is_successful: bool
+    comments: str
+
+
 class UnitInvoicePaymentForm(BaseModel):
     invoice_number: int
     tenant_id: str
