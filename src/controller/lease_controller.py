@@ -343,6 +343,7 @@ class LeaseController(Controllers):
             transaction = session.query(PaymentORM).filter(PaymentORM.transaction_id == transaction_id).first()
             return Payment(**transaction.to_dict()) if transaction else None
 
+    @error_handler
     async def update_payment(self, payment_instance: UpdatePayment):
         """
 
@@ -361,6 +362,16 @@ class LeaseController(Controllers):
             transaction.comments = payment_instance.comments
             session.merge(transaction)
             return Payment(**transaction.to_dict())
+
+    @error_handler
+    async def load_tenant_statements(self, tenant_id: str):
+        """
+
+        :param tenant_id:
+        :return:
+        """
+        with self.get_session() as session:
+            pass
 
 
 class InvoiceManager:

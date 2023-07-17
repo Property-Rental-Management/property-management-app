@@ -112,12 +112,17 @@ async def get_tenant(user: User, tenant_id: str):
     company_dict = company_data.dict() if isinstance(company_data, Company) else {}
     tenant_payments = await lease_agreement_controller.load_tenant_payments(tenant_id=tenant_id)
     payment_dicts = [payment.dict() for payment in tenant_payments if payment] if tenant_payments else []
+    statements_list = await lease_agreement_controller.load_tenant_statements(tenant_id=tenant_id)
+
+    statements_dicts = [statement.dict() for statement in statements_list if statement] if statements_list else []
+
     context.update({'tenant': tenant_data_dict,
                     'address': tenant_address_dict,
                     'company': company_dict,
                     'historical_invoices': invoices_dicts,
                     'unit': unit_dicts,
-                    'payment_receipts': payment_dicts})
+                    'payment_receipts': payment_dicts,
+                    'statements': statements_dicts})
 
     return render_template("tenants/tenant_details.html", **context)
 
