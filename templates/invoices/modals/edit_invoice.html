@@ -18,6 +18,7 @@
             <form class="form-horizontal" method="POST" action="{{ url_for('invoices.update_invoice') }}">
                 <input type="hidden" name="invoice_number" value="{{ invoice.invoice_number }}">
                 <input type="hidden" name="tenant_id" value="{{ invoice.tenant_id }}">
+                <input type="hidden" name="building_id" value="{{ property_id }}">
 
                 <div class="form-group">
                     <label for="service_name" class="label font-weight-bold">Service Name</label>

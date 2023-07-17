@@ -92,6 +92,32 @@ class LeaseController(Controllers):
             return Invoice(**invoice_orm.to_dict()) if isinstance(invoice_orm, InvoiceORM) else None
 
     @error_handler
+    async def update_invoice(self, invoice: Invoice):
+        """
+
+        :param invoice:
+        :return:
+        """
+        with self.get_session() as session:
+            invoice_orm: InvoiceORM = session.query(InvoiceORM).filter(
+                InvoiceORM.invoice_number == invoice.invoice_number).first()
+
+            if invoice_orm:
+                # Update the attributes of the InvoiceORM instance
+                invoice_orm.service_name = invoice.service_name
+                invoice_orm.description = invoice.description
+                invoice_orm.currency = invoice.currency
+                invoice_orm.tax_rate = invoice.tax_rate
+
+                # Commit the changes to the database
+                session.commit()
+
+                # Return the updated invoice
+                return Invoice(**invoice_orm.to_dict())
+
+            return None
+
+    @error_handler
     async def create_invoice(self, invoice_charges: list[UnitCharge], unit_: Unit,
                              include_rental: bool = False, due_after: int | None = None) -> Invoice | None:
         """

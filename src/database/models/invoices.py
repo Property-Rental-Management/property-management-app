@@ -248,3 +248,13 @@ class UnitPaymentForm(BaseModel):
     tenant_id: str
     property_id: str
     unit_id: str
+
+
+class InvoiceUpdateModel(BaseModel):
+    building_id: str
+    invoice_number: str
+    tenant_id: str
+    service_name: str
+    description: str
+    currency: str
+    tax_rate: int

@@ -3,7 +3,7 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.companies import Company
-from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice, UnitPaymentForm
+from src.database.models.invoices import UnitCreateInvoiceForm, UnitCharge, Invoice, UnitPaymentForm, InvoiceUpdateModel
 from src.database.models.properties import Property
 from src.database.models.users import User
 from src.logger import init_logger
@@ -166,7 +166,8 @@ async def edit_invoice(user: User):
         return await redirect_to_unit(message_dict)
 
     invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_data.invoice_number)
-    context = dict(invoice=invoice.dict())
+
+    context = dict(invoice=invoice.dict(), property_id=invoice_data.property_id)
     return render_template("invoices/modals/edit_invoice.html", **context)
 
 
@@ -178,4 +179,27 @@ async def update_invoice(user: User):
     :param user:
     :return:
     """
-    pass
+    building_id = request.form.get('building_id')
+    invoice_number = request.form.get('invoice_number')
+    try:
+        invoice_update_model = InvoiceUpdateModel(**request.form)
+    except ValidationError as e:
+        invoice_logger.error(str(e))
+        return redirect(url_for('invoices.get_invoice',
+                                building_id=building_id,
+                                invoice_number=invoice_number), code=302)
+
+    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
+    await _update_invoice(invoice, invoice_update_model)
+    _ = await lease_agreement_controller.update_invoice(invoice=invoice)
+
+    return redirect(url_for('invoices.get_invoice',
+                            building_id=building_id,
+                            invoice_number=invoice_number), code=302)
+
+
+async def _update_invoice(invoice, invoice_update_model):
+    invoice.service_name = invoice_update_model.service_name
+    invoice.description = invoice_update_model.description
+    invoice.currency = invoice_update_model.currency
+    invoice.tax_rate = invoice_update_model.tax_rate
