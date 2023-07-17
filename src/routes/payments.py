@@ -146,7 +146,8 @@ async def edit_payment(user: User, transaction_id: str):
 @login_required
 async def do_update_payment(user: User, transaction_id: str):
     """
-
+        **do_update_payment**
+            will update payment record and then load payment receipt
     :param user:
     :param transaction_id:
     :return:
