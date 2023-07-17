@@ -36,14 +36,15 @@
                             <select class="form-control" id="payment_method" name="payment_method">
                                 <option value="credit_card">Credit Card</option>
                                 <option value="bank_transfer">Bank Transfer</option>
+                                <option value="direct_deposit">Direct Deposit</option>
                                 <option value="cash">Cash</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="amount_paid" class="font-weight-bold text-info">Amount Paid:</label>
-                        <input type="text" class="form-control"
-                               id="amount_paid"
-                               value="{{ payment.amount_paid|currency }}"
+                            <input type="text" class="form-control"
+                                   id="amount_paid"
+                                   value="{{ payment.amount_paid|currency }}"
                                name="amount_paid" required>
                     </div>
                     <div class="form-group">

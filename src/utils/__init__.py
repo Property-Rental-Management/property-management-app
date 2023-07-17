@@ -7,6 +7,16 @@ class PaymentMethod(Enum):
     CREDIT_CARD = "credit_card"
     CASH = "cash"
     DIRECT_DEPOSIT = "direct_deposit"
+    BANK_TRANSFER = "bank_transfer"
+
+
+def get_payment_methods() -> list[str]:
+    """
+    Get a list of payment methods.
+
+    :return: A list of payment methods.
+    """
+    return [method.value for method in PaymentMethod]
 
 
 def static_folder() -> str:

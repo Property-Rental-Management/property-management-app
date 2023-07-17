@@ -43,6 +43,10 @@
                         <option value="bank_transfer"
                                 {% if payment.payment_method == 'bank_transfer' %}selected{% endif %}>Bank Transfer
                         </option>
+                        <option value="direct_deposit"
+                                {% if payment.payment_method == 'direct_deposit' %}selected{% endif %}>Direct Deposit
+                        </option>
+
                         <option value="cash" {% if payment.payment_method == 'cash' %}selected{% endif %}>Cash</option>
                     </select>
                 </div>
