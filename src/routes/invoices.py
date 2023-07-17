@@ -66,8 +66,8 @@ async def get_invoice(user: User, building_id: str, invoice_number: str):
     :param invoice_number:
     :return:
     """
-    # TODO move this to invoices
-    invoice_number = await invoice_man.get_invoice(invoice_number)
+
+    invoice_number = await invoice_man.verify_invoice_number(invoice_number)
     if invoice_number is None:
         flash(message="Invoice not found - inform your building admin to resend the invoice",
               category="danger")
@@ -199,7 +199,8 @@ async def edit_invoice(user: User):
         message_dict = dict(message="Unable to to locate the invoice", category="danger")
         return await redirect_to_unit(message_dict)
 
-    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_data.invoice_number)
+    invoice: Invoice = await lease_agreement_controller.get_invoice(
+        invoice_number=invoice_data.invoice_number)
     if not invoice:
         message_dict = dict(message="Unable to to locate the invoice", category="danger")
         return await redirect_to_unit(message_dict)

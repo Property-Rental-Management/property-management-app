@@ -368,7 +368,7 @@ class InvoiceManager:
         url = url_for('invoices.get_invoice', invoice_number=invoice_number, building_id=building_id, _external=True)
         return url
 
-    async def get_invoice(self, invoice_number: str) -> str | None:
+    async def verify_invoice_number(self, invoice_number: str) -> str | None:
         expiration_date = self.invoices.get(invoice_number)
         self._logger.info(f"stored data: {self.invoices}")
         self._logger.info(f"fetching invoice number: {invoice_number} and found date: {expiration_date}")

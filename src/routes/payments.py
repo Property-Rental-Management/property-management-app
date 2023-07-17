@@ -15,7 +15,8 @@ payment_logger = init_logger("PAYMENT Router")
 
 
 async def get_payment_context(user: User, payment_instance: Payment) -> dict[str, dict[str, int | str | date]]:
-    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=payment_instance.invoice_number)
+    invoice: Invoice = await lease_agreement_controller.verify_invoice_number(
+        invoice_number=payment_instance.invoice_number)
     building = await company_controller.get_property_by_id_internal(payment_instance.property_id)
     company = await company_controller.get_company_internal(company_id=building.company_id)
 
@@ -59,7 +60,7 @@ async def create_unit_payment(user: User, invoice_number: int):
 
     payment_logger.info(invoice_payment_form)
 
-    invoice: Invoice = await lease_agreement_controller.get_invoice(invoice_number=invoice_number)
+    invoice: Invoice = await lease_agreement_controller.verify_invoice_number(invoice_number=invoice_number)
     new_payment_dict = dict(
         invoice_number=invoice_number,
         tenant_id=invoice_payment_form.tenant_id,

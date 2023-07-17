@@ -475,7 +475,8 @@ async def unit_print_invoice(user: User):
         flash(message="Please indicate what you want to print", category="danger")
         return redirect(url_for("buildings.get_unit", **_vars))
 
-    invoice_to_print = await lease_agreement_controller.get_invoice(invoice_number=print_invoice_form.invoice_number)
+    invoice_to_print = await lease_agreement_controller.verify_invoice_number(
+        invoice_number=print_invoice_form.invoice_number)
     if invoice_to_print is None:
         flash(message="Invoice not found", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
