@@ -120,3 +120,22 @@ async def print_payment_receipt(user: User):
     context = await get_payment_context(user, payment_instance)
 
     return render_template("payments/payment_receipt.html", **context)
+
+
+@payments_route.get('/admin/edit-payment/<string:transaction_id>')
+@login_required
+async def edit_payment(user: User, transaction_id: str):
+    """
+
+    :param user:
+    :param payment_id:
+    :return:
+    """
+    payment_instance = await lease_agreement_controller.load_payment(transaction_id=transaction_id)
+    if not payment_instance:
+        flash(message="Error accessing tenant details", category="danger")
+        return redirect(url_for('home.get_home'), code=302)
+
+    context = await get_payment_context(user, payment_instance)
+
+    return render_template("payments/edit_payment.html", **context)
