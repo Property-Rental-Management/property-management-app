@@ -181,6 +181,7 @@ async def update_invoice(user: User):
     """
     building_id = request.form.get('building_id')
     invoice_number = request.form.get('invoice_number')
+
     try:
         update_model = InvoiceUpdateModel(**request.form)
     except ValidationError as e:
