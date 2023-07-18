@@ -4,6 +4,65 @@
 
 {% block content %}
     <div class="card">
-        Reports
+        <div class="card-header">
+            <h3 class="card-title">Business Reports</h3>
+        </div>
+
+        <div class="card-body">
+            <section id="main-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">Select Company to view Reports</h3>
+                            </div>
+                            <div class="bootstrap-data-table-panel">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <table id="bootstrap-data-table-export"
+                                           class="table table-responsive-md table-responsive-lg table-striped table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Company Name</th>
+                                            <th>Address</th>
+                                            <th class="d-none d-sm-table-cell">City</th>
+                                            <th class="d-none d-sm-table-cell">Code</th>
+                                            <th class="d-none d-sm-table-cell">Province</th>
+                                            <th class="d-none d-sm-table-cell">Country</th>
+                                            <th class="d-none d-sm-table-cell"><i class="ti-check-box"> </i></th>
+                                        </tr>
+                                        </thead>
+                                        {% if companies %}
+                                            <tbody>
+
+                                            {% for company in companies %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{{ url_for('companies.get_company', company_id=company.company_id) }}"
+                                                           class="text text-info font-weight-bold"> {{ company.company_name or '' }} </a>
+                                                    </td>
+                                                    <td>{{ company.address_line_1 or '' }}</td>
+                                                    <td class="d-none d-sm-table-cell">{{ company.city or '' }}</td>
+                                                    <td class="d-none d-sm-table-cell">{{ company.postal_code or '' }}</td>
+                                                    <td class="d-none d-sm-table-cell">{{ company.province or '' }}</td>
+                                                    <td class="d-none d-sm-table-cell">{{ company.country or '' }}</td>
+                                                    <td class="d-none d-sm-table-cell"><a
+                                                            href="{{ url_for('companies.get_company', company_id=company.company_id) }}">
+                                                        Open</a></td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+
+                                        {% else %}
+                                            <span class="font-weight-bold alert">Please Add your Company In order to begin...</span>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 {% endblock %}
