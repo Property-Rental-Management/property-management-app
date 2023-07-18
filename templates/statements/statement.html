@@ -119,11 +119,26 @@
                         </div>
                         <div class="card-footer">
                             <table class="table table-striped">
-                                <tr class="table-title">
-                                    <td>Total Invoiced</td>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><h2>Balance Brought Forward</h2></td>
+                                    <td>
+                                        <h2>R 0.00</h2>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><h2>Total Invoiced</h2></td>
                                     <td>
                                         <h2>{{ statement.total_invoiced }}</h2>
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
                                     <td>
                                         <h2>Total Payments</h2>
                                     </td>
@@ -131,8 +146,7 @@
                                         <h2>{{ statement.total_payments|currency }}</h2>
                                     </td>
                                 </tr>
-
-                                <tr class="table-title">
+                                <tr>
                                     <td></td>
                                     <td></td>
                                     <td>
@@ -143,7 +157,6 @@
                                     </td>
                                 </tr>
                             </table>
-
                         </div>
                     </div>
                 </div>
