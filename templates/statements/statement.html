@@ -47,7 +47,6 @@
                             <td><h2>Description</h2></td>
                             <td><h2>Invoiced Amount</h2></td>
                             <td><h2>Payments</h2></td>
-                            <td><h2>Balance</h2></td>
                         </tr>
                         </thead>
                             {% for invoice in statement.invoices %}
@@ -57,7 +56,7 @@
                                     <td>{{ invoice.service_name }}</td>
                                     <td>R {{ invoice.amount_payable|currency }}.00</td>
                                     <td></td>
-                                    <td>R {{ invoice.amount_payable|currency }}.00</td>
+
                                 </tr>
                             {% endfor %}
                             {% for payment in statement.payments %}
@@ -67,7 +66,6 @@
                                     <td>{{ payment.payment_method|payment_method }}- {{ payment.comments }}</td>
                                     <td></td>
                                     <td>R {{ payment.amount_paid|currency }}.00</td>
-                                    <td></td>
                                 </tr>
                             {% endfor %}
                     </table>
@@ -82,7 +80,9 @@
                                     <td></td>
                                     <td><h2>Statement Period</h2></td>
                                     <td>
-                                        <h2>{{ statement.period }}</h2>
+                                        {% if statement.period %}
+                                            <h2>{{ statement.period[0] }} - {{ statement.period[1] }}</h2>
+                                        {% endif %}
                                     </td>
                                 </tr>
 
