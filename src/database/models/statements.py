@@ -8,6 +8,7 @@ from src.database.models.companies import Company
 from src.database.models.invoices import Invoice, Customer
 from src.database.models.payments import Payment
 from src.database.models.properties import Property
+from src.database.models.tenants import Tenant
 
 
 class CreateStatement(BaseModel):
@@ -92,6 +93,13 @@ class CreateStatement(BaseModel):
         self.payments = [payment for payment in payments
                          if (payment.date_paid.month == month and payment.date_paid.year == year)]
 
+    async def load_customer(self):
+        from src.main import tenant_controller
+        self.customer = None
+        if self.tenant_id:
+            tenant: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=self.tenant_id)
+            self.customer = Customer(**tenant.dict())
+
     async def create_month_statement(self, year: int, month: int) -> Self:
         """
             **will create statement only for the stated month
@@ -104,15 +112,13 @@ class CreateStatement(BaseModel):
 
         await self.load_invoices(month=month, year=year)
         await self.load_payments(month=month, year=year)
-        print(self.invoices)
+        await self.load_customer()
+
         if self.payments:
             payment: Payment = self.payments[0]
             property_id = payment.property_id
             await self.load_company(property_id=property_id)
             # Generate a statement for the specified year and month
-        if self.invoices:
-            customer: Customer = self.invoices[0]
-            self.customer = customer
         return self
 
     async def create_all_statements(self, start_year: int, end_year: int):

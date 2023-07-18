@@ -42,6 +42,7 @@ async def create_statement(user: User):
     statement_instance: CreateStatement = CreateStatement(tenant_id=statement.tenant_id, statement_period=period)
     year, month = statement.start_date.year, statement.start_date.month
     new_statement = await statement_instance.create_month_statement(year=year, month=month)
+
     statement_logger.info(new_statement.dict())
     context = dict(statement=new_statement.dict())
     return render_template("statements/statement.html", **context)
