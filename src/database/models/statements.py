@@ -1,13 +1,13 @@
 import uuid
 from datetime import date
-from typing import Self
 
 from pydantic import BaseModel, Field
+from typing_extensions import Self
 
-from database.models.companies import Company
-from database.models.properties import Property
+from src.database.models.companies import Company
 from src.database.models.invoices import Invoice
 from src.database.models.payments import Payment
+from src.database.models.properties import Property
 
 
 class CreateStatement(BaseModel):
@@ -31,7 +31,7 @@ class CreateStatement(BaseModel):
     tenant_id: str | None
     year: int | None
     month: int | None
-    statement_period: tuple[date, date]
+    statement_period: tuple[date, date] | None
     company: Company | None
     invoices: list[Invoice] | None
     payments: list[Payment] | None
@@ -103,7 +103,7 @@ class CreateStatement(BaseModel):
 
         await self.load_invoices(month=month, year=year)
         await self.load_payments(month=month, year=year)
-
+        print(self.invoices)
         if self.payments:
             payment: Payment = self.payments[0]
             property_id = payment.property_id
@@ -117,8 +117,8 @@ class CreateStatement(BaseModel):
 
         for year in range(start_year, end_year + 1):
             for month in range(1, 13):
-                await self.create_month_statement(year, month)
-                statements.append(self.dict())
+                statement = await self.create_month_statement(year, month)
+                statements.append(statement)
 
         return statements
 
@@ -136,3 +136,9 @@ class CreateStatement(BaseModel):
             'total_payments': self.total_payments,
             'balance': self.balance
         }
+
+
+class StatementForm(BaseModel):
+    tenant_id: str
+    start_date: date
+    end_date: date

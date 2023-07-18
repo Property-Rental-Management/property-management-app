@@ -1,0 +1,153 @@
+{% extends "layouts/invoice.html" %}
+{% block content %}
+
+    <div id="invoice" class="effect2 m-t-120">
+        <div id="invoice-top">
+            <div class="invoice-logo"></div>
+            <div class="invoice-info">
+                <h1>{{ statement.company.company_name }}</h1>
+                <p>{{ statement.company.description }}</p>
+                <p>{{ statement.company.address_line_1 }}</p>
+            </div>
+            <!--End Info-->
+            <div class="title">
+                <h4 class="font-italic">Statement of Accounts</h4>
+                <p><span class="font-weight-bold">Statement Date: <span
+                        class="font-italic">{{ statement.statement_date }}</span></span></p>
+                <p>Contact: {{ statement.company.contact_number }}</p>
+                <p>Website: {{ statement.company.website }}</p>
+                <p>Email: {{ statement.company.email }}</p>
+            </div>
+            <!--End Title-->
+        </div>
+        <!--End InvoiceTop-->
+
+        <div id="invoice-mid">
+            <div class="clientlogo"></div>
+            <div class="invoice-info">
+                <h2>Customer Information</h2>
+                <p>{{ statement.company.company_name }}</p>
+                <p>Email: {{ statement.company.contact_email }}</p>
+                <p>Phone: {{ statement.company.contact_number }}</p>
+                <p>
+                    Address: {{ statement.company.address_line_1 }}, {{ statement.company.address_line_2 }}, {{ statement.company.city }}, {{ statement.company.province }}, {{ statement.company.postal_code }}, {{ statement.company.country }}</p>
+            </div>
+        </div>
+
+        <!--End Invoice Mid-->
+        <div id="invoice-bot">
+            <div id="invoice-table">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+
+                            <td>
+                                <h2>Date</h2>
+                            </td>
+                            <td>
+                                <h2>Invoice #</h2>
+                            </td>
+                            <td>
+                                <h2>Description</h2>
+                            </td>
+
+                            <td>
+                                <h2>Amount</h2>
+                            </td>
+                            <td>
+                                <h2>Payments</h2>
+                            </td>
+                            <td>
+                                <h2>Balance</h2>
+                            </td>
+                        </tr>
+                        </thead>
+                        {% if statement.invoices %}
+                            {% for invoice in statement.invoices %}
+                                <tr>
+                                    <td>
+                                        <p class="item-text">{{ invoice.due_date }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text">{{ invoice.invoice_number }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text">{{ invoice.service_name }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text">R {{ invoice.amount_payable|currency }}.00</p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text"></p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text">R {{ invoice.amount_payable|currency }}.00</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        {% if statement.payments %}
+                            {% for payment in statement.payments %}
+                                <tr>
+                                    <td>
+                                        <p class="item-text">{{ payment.date_paid }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text">{{ payment.invoice_number }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text">{{ payment.payment_method|payment_method }}
+                                            - {{ payment.comments }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text"></p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text">
+                                        <p class="item-text">R {{ payment.amount_paid|currency }}.00</p>
+                                    </td>
+                                    <td>
+                                        <p class="item-text"></p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Total Payments</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ statement.total_payments|currency }}</h2>
+                            </td>
+                        </tr>
+
+                        <tr class="tabletitle">
+                            <td></td>
+                            <td></td>
+                            <td class="Rate">
+                                <h2>Balance</h2>
+                            </td>
+                            <td class="payment">
+                                <h2>{{ statement.balance|currency }}</h2>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <hr/>
+        <!--End InvoiceBot-->
+        <button class="btn btn-sm btn-default" onclick="window.history.back();">
+        <span class="font-weight-bold">
+            <i class="ti-back-left"></i>
+            Back
+        </span>
+        </button>
+    </div>
+
+{% endblock %}

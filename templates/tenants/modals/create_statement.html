@@ -1,0 +1,42 @@
+<!-- Make Payment Modal -->
+<div class="modal fade" id="createStatement" tabindex="-1" role="dialog" aria-labelledby="createStatementLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createStatementLabel">Create Statement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" action="{{ url_for('statements.create_statement') }}"
+                      method="POST" , enctype="application/x-www-form-urlencoded"
+                >
+                    <input type="hidden" name="tenant_id" value="{{ tenant.tenant_id }}"/>
+
+                    <div class="form-group">
+                        <label>Statement Period</label>
+
+                        <div class="input-group">
+                            <label for="start_date" class="label">Start Date</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="end_date" class="label">End Date</label>
+                            <input type="date" id="end_date" name="end_date" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="ti-save"></i>
+                            Create
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
