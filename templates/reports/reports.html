@@ -37,7 +37,7 @@
                                             {% for company in companies %}
                                                 <tr>
                                                     <td>
-                                                        <a href="{{ url_for('companies.get_company', company_id=company.company_id) }}"
+                                                        <a href="{{ url_for('reports.report', company_id=company.company_id) }}"
                                                            class="text text-info font-weight-bold"> {{ company.company_name or '' }} </a>
                                                     </td>
                                                     <td>{{ company.address_line_1 or '' }}</td>
