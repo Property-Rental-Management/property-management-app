@@ -52,7 +52,7 @@
                             </td>
 
                             <td>
-                                <h2>Amount</h2>
+                                <h2>Invoiced Amount</h2>
                             </td>
                             <td>
                                 <h2>Payments</h2>
@@ -112,29 +112,40 @@
                                 </tr>
                             {% endfor %}
                         {% endif %}
-                        <tr class="tabletitle">
-                            <td></td>
-                            <td></td>
-                            <td class="Rate">
-                                <h2>Total Payments</h2>
-                            </td>
-                            <td class="payment">
-                                <h2>{{ statement.total_payments|currency }}</h2>
-                            </td>
-                        </tr>
-
-                        <tr class="tabletitle">
-                            <td></td>
-                            <td></td>
-                            <td class="Rate">
-                                <h2>Balance</h2>
-                            </td>
-                            <td class="payment">
-                                <h2>{{ statement.balance|currency }}</h2>
-                            </td>
-                        </tr>
-
                     </table>
+                    <div class="card">
+                        <div class="card-header">
+                            <h1 class="card-title">Account Summary</h1>
+                        </div>
+                        <div class="card-footer">
+                            <table class="table table-striped">
+                                <tr class="table-title">
+                                    <td>Total Invoiced</td>
+                                    <td>
+                                        <h2>{{ statement.total_invoiced }}</h2>
+                                    </td>
+                                    <td>
+                                        <h2>Total Payments</h2>
+                                    </td>
+                                    <td>
+                                        <h2>{{ statement.total_payments|currency }}</h2>
+                                    </td>
+                                </tr>
+
+                                <tr class="table-title">
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <h2>Balance</h2>
+                                    </td>
+                                    <td>
+                                        <h2>{{ statement.balance|currency }}</h2>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
                 </div>
             </div>
 
