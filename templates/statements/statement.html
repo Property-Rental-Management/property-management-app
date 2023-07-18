@@ -71,52 +71,61 @@
                                 </tr>
                             {% endfor %}
                     </table>
-                    <div class="card">
-                        <div class="card-header">
-                            <h1 class="card-title">Account Summary</h1>
-                        </div>
-                        <div class="card-footer">
-                            <table class="table table-striped">
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td><h2>Balance Brought Forward</h2></td>
-                                    <td>
-                                        <h2>R 0.00</h2>
-                                    </td>
-                                </tr>
+                </div>
+            </div>
+            <div class="card col-lg-9 col-md-9">
+                <div class="card-header">
+                    <h1 class="card-title">Account Summary</h1>
+                </div>
+                <div class="card-footer">
+                    <table class="table table-striped table-responsive">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><h2>Statement Period</h2></td>
+                            <td>
+                                <h2>{{ statement.period }}</h2>
+                            </td>
+                        </tr>
 
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td><h2>Total Invoiced</h2></td>
-                                    <td>
-                                        <h2>R {{ statement.total_invoiced|currency }}.00</h2>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <h2>Total Payments</h2>
-                                    </td>
-                                    <td>
-                                        <h2>R {{ statement.total_payments|currency }}.00</h2>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <h2>Balance</h2>
-                                    </td>
-                                    <td>
-                                        <h2>R {{ statement.balance|currency }}.00</h2>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><h2>Balance Brought Forward</h2></td>
+                            <td>
+                                <h2>R 0.00</h2>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><h2>Total Invoiced</h2></td>
+                            <td>
+                                <h2>R {{ statement.total_invoiced|currency }}.00</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <h2>Total Payments</h2>
+                            </td>
+                            <td>
+                                <h2>R {{ statement.total_payments|currency }}.00</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <h2>Balance</h2>
+                            </td>
+                            <td>
+                                <h2>R {{ statement.balance|currency }}.00</h2>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
 
