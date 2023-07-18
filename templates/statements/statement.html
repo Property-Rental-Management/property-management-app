@@ -80,8 +80,9 @@
                                     <td></td>
                                     <td><h2>Statement Period</h2></td>
                                     <td>
-                                        {% if statement.period %}
-                                            <h2>{{ statement.period[0] }} - {{ statement.period[1] }}</h2>
+                                        {% if statement.statement_period %}
+                                            <h2>{{ statement.statement_period[0] }}
+                                                - {{ statement.statement_period[1] }}</h2>
                                         {% endif %}
                                     </td>
                                 </tr>
