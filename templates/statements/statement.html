@@ -12,16 +12,18 @@
             <!--End Info-->
             <div class="title">
                 <h4 class="font-italic">Statement of Accounts</h4>
-                <p><span class="font-weight-bold">Statement Date: <span
-                        class="font-italic">{{ statement.statement_date }}</span></span></p>
-                <p>Contact: {{ statement.company.contact_number }}</p>
-                <p>Website: {{ statement.company.website }}</p>
-                <p>Email: {{ statement.company.email }}</p>
+                <ol>
+                    <li><span class="font-weight-bold">Statement Date: <span
+                            class="font-italic">{{ statement.statement_date }}</span></span></li>
+                    <li>Contact: {{ statement.company.contact_number }}</li>
+                    <li>Website: {{ statement.company.website }}</li>
+                    <li>Email: {{ statement.company.email }}</li>
+                </ol>
             </div>
             <!--End Title-->
         </div>
         <!--End InvoiceTop-->
-
+        <hr>
         <div id="invoice-mid">
             <div class="invoice-info">
                 <h2>Billed to</h2>
@@ -40,75 +42,35 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-
-                            <td>
-                                <h2>Date</h2>
-                            </td>
-                            <td>
-                                <h2>Invoice #</h2>
-                            </td>
-                            <td>
-                                <h2>Description</h2>
-                            </td>
-
-                            <td>
-                                <h2>Invoiced Amount</h2>
-                            </td>
-                            <td>
-                                <h2>Payments</h2>
-                            </td>
-                            <td>
-                                <h2>Balance</h2>
-                            </td>
+                            <td><h2>Date</h2></td>
+                            <td><h2>Invoice #</h2></td>
+                            <td><h2>Description</h2></td>
+                            <td><h2>Invoiced Amount</h2></td>
+                            <td><h2>Payments</h2></td>
+                            <td><h2>Balance</h2></td>
                         </tr>
                         </thead>
                         {% if statement.invoices %}
                             {% for invoice in statement.invoices %}
                                 <tr>
-                                    <td>
-                                        <p class="item-text">{{ invoice.due_date }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text">{{ invoice.invoice_number }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text">{{ invoice.service_name }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text">R {{ invoice.amount_payable|currency }}.00</p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text"></p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text">R {{ invoice.amount_payable|currency }}.00</p>
-                                    </td>
+                                    <td>{{ invoice.due_date }}</td>
+                                    <td>{{ invoice.invoice_number }}</td>
+                                    <td>{{ invoice.service_name }}</td>
+                                    <td>R {{ invoice.amount_payable|currency }}.00</td>
+                                    <td></td>
+                                    <td>R {{ invoice.amount_payable|currency }}.00</td>
                                 </tr>
                             {% endfor %}
                         {% endif %}
                         {% if statement.payments %}
                             {% for payment in statement.payments %}
                                 <tr>
-                                    <td>
-                                        <p class="item-text">{{ payment.date_paid }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text">{{ payment.invoice_number }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text">{{ payment.payment_method|payment_method }}
-                                            - {{ payment.comments }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text"></p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text">
-                                        <p class="item-text">R {{ payment.amount_paid|currency }}.00</p>
-                                    </td>
-                                    <td>
-                                        <p class="item-text"></p>
-                                    </td>
+                                    <td>{{ payment.date_paid }}</td>
+                                    <td>{{ payment.invoice_number }}</td>
+                                    <td>{{ payment.payment_method|payment_method }}- {{ payment.comments }}</td>
+                                    <td></td>
+                                    <td>R {{ payment.amount_paid|currency }}.00</td>
+                                    <td></td>
                                 </tr>
                             {% endfor %}
                         {% endif %}
