@@ -35,10 +35,10 @@ async def report(user: User, company_id: str):
     company = await company_controller.get_company_internal(company_id=company_id)
     cashflow = CashFlowModel(company_id=company.company_id)
     monthly_cashflows = cashflow.monthly_cashflow
-    # x_axis = [month for month, cashflow in enumerate(monthly_cashflows.values())]
-    x_axis = ["January", "February", "March", "April"]
-    # y_axis = [cashflow.cashflow for month, cashflow in enumerate(monthly_cashflows.values())]
-    y_axis = [50000, 120000, 450000, 456000]
+    x_axis = [month for month, cashflow in enumerate(monthly_cashflows.values())]
+    # x_axis = ["January", "February", "March", "April"]
+    y_axis = [cashflow.cashflow for month, cashflow in enumerate(monthly_cashflows.values())]
+    # y_axis = [50000, 120000, 450000, 456000]
 
     figure = plot.Figure(data=plot.Bar(x=x_axis, y=y_axis))
     figure.update_layout(
