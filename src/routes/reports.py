@@ -1,7 +1,8 @@
-
+import plotly.graph_objects as plot
 from flask import Blueprint, render_template
 
 from src.authentication import login_required
+from src.database.models.cashflow import CashFlowModel
 from src.database.models.users import User
 from src.logger import init_logger
 from src.main import company_controller
@@ -32,5 +33,20 @@ async def report(user: User, company_id: str):
     :return:
     """
     company = await company_controller.get_company_internal(company_id=company_id)
-    context = dict(user=user.dict(), company=company.dict())
+    cashflow = CashFlowModel(company_id=company.company_id)
+    monthly_cashflows = cashflow.monthly_cashflow
+    # x_axis = [month for month, cashflow in enumerate(monthly_cashflows.values())]
+    x_axis = ["January", "February", "March", "April"]
+    # y_axis = [cashflow.cashflow for month, cashflow in enumerate(monthly_cashflows.values())]
+    y_axis = [50000, 120000, 450000, 456000]
+
+    figure = plot.Figure(data=plot.Bar(x=x_axis, y=y_axis))
+    figure.update_layout(
+        title="Monthly Cashflow",
+        xaxis_title="Month",
+        yaxis_title="Income",
+        showlegend=True
+    )
+
+    context = dict(user=user.dict(), company=company.dict(), chart_data=figure.to_json())
     return render_template('reports/reporting_interface.html', **context)

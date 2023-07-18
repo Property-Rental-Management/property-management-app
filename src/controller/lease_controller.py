@@ -319,6 +319,24 @@ class LeaseController(Controllers):
 
         return payments
 
+    def sync_load_company_payments(self, company_id) -> list[Payment]:
+        """
+
+        :param company_id:
+        :return:
+        """
+        with self.get_session() as session:
+            payments = []
+            property_list: list[PropertyORM] = session.query(PropertyORM).filter(
+                PropertyORM.company_id == company_id).all()
+            for property_obj in property_list:
+                payments_list = session.query(PaymentORM).filter(
+                    PaymentORM.property_id == property_obj.property_id).all()
+                for payment_obj in payments_list:
+                    payments.append(Payment(**payment_obj.to_dict()))
+
+        return payments
+
     @error_handler
     async def load_tenant_payments(self, tenant_id: str) -> list[Payment]:
         """

@@ -278,6 +278,21 @@ class CompaniesController(Controllers):
                     if isinstance(_prop, PropertyORM)] if properties else []
 
     @error_handler
+    async def get_properties_internal(self, company_id: str) -> list[Property] | None:
+        """
+
+        :param user:
+        :param company_id:
+        :return:
+        """
+        with self.get_session() as session:
+            properties: list[PropertyORM] = session.query(PropertyORM).filter(
+                PropertyORM.company_id == company_id).all()
+
+            return [Property(**_prop.to_dict()) for _prop in properties
+                    if isinstance(_prop, PropertyORM)] if properties else []
+
+    @error_handler
     async def get_property_by_id_internal(self, property_id: str) -> Property | None:
         """
 

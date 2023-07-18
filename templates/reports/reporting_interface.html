@@ -1,5 +1,9 @@
 {% extends "layouts/page.html" %}
 
+{% block custom_css %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
 {% block content %}
     <div class="card">
         <div class="card-header  d-flex justify-content-between align-items-center">
@@ -30,10 +34,16 @@
                     <!-- Cashflow statements content goes here -->
                     <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title">Cashflow statements for {{ company.company_name }}</h2>
+                            <h2 class="card-title">Cashflow Statement for <span
+                                    class="text-info">{{ company.company_name }}</span></h2>
                         </div>
                         <div class="card-body">
-                            <span class="font-weight-bold">coming soon ...</span>
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Cashflow</h4>
+                                </div>
+                                <div id="chart"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -52,4 +62,11 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const chartData = {{ chart_data|safe }};
+        Plotly.newPlot('chart', chartData);
+    </script>
 {% endblock %}
