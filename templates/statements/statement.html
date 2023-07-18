@@ -91,7 +91,7 @@
                                     <td></td>
                                     <td><h2>Total Invoiced</h2></td>
                                     <td>
-                                        <h2>{{ statement.total_invoiced }}</h2>
+                                        <h2>R {{ statement.total_invoiced|currency }}.00</h2>
                                     </td>
                                 </tr>
                                 <tr>
@@ -101,7 +101,7 @@
                                         <h2>Total Payments</h2>
                                     </td>
                                     <td>
-                                        <h2>{{ statement.total_payments|currency }}</h2>
+                                        <h2>R {{ statement.total_payments|currency }}.00</h2>
                                     </td>
                                 </tr>
                                 <tr>
@@ -111,7 +111,7 @@
                                         <h2>Balance</h2>
                                     </td>
                                     <td>
-                                        <h2>{{ statement.balance|currency }}</h2>
+                                        <h2>R {{ statement.balance|currency }}.00</h2>
                                     </td>
                                 </tr>
                             </table>
