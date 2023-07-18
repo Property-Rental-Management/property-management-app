@@ -27,11 +27,11 @@
         <div id="invoice-mid">
             <div class="invoice-info">
                 <h2>Billed to</h2>
-                <p>{{ statement.company.company_name }}</p>
-                <p>Email: {{ statement.company.contact_email }}</p>
-                <p>Phone: {{ statement.company.contact_number }}</p>
-                <p>
-                    Address: {{ statement.company.address_line_1 }}, {{ statement.company.address_line_2 }}, {{ statement.company.city }}, {{ statement.company.province }}, {{ statement.company.postal_code }}, {{ statement.company.country }}</p>
+                <ol class="list text-dark">
+                    <li>{{ statement.customer.name }}</li>
+                    <li>Email: {{ statement.customer.email }}</li>
+                    <li>Phone: {{ statement.customer.cell }}</li>
+                </ol>
             </div>
         </div>
 

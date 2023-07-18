@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from src.database.models.companies import Company
-from src.database.models.invoices import Invoice
+from src.database.models.invoices import Invoice, Customer
 from src.database.models.payments import Payment
 from src.database.models.properties import Property
 
@@ -33,6 +33,7 @@ class CreateStatement(BaseModel):
     month: int | None
     statement_period: tuple[date, date] | None
     company: Company | None
+    customer: Customer | None
     invoices: list[Invoice] | None
     payments: list[Payment] | None
 
@@ -109,7 +110,9 @@ class CreateStatement(BaseModel):
             property_id = payment.property_id
             await self.load_company(property_id=property_id)
             # Generate a statement for the specified year and month
-
+        if self.invoices:
+            customer: Customer = self.invoices[0]
+            self.customer = customer
         return self
 
     async def create_all_statements(self, start_year: int, end_year: int):
