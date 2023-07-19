@@ -51,7 +51,7 @@ class CashFlowModel(BaseModel):
                 tenant_id = payment.tenant_id
                 unit_id = payment.unit_id
 
-                if month in monthly_cashflows:
+                if month in list(monthly_cashflows.keys()):
                     monthly_cashflows[month].cashflow += amount_paid
                 else:
                     monthly_cashflows[month] = MonthlyCashFlow(

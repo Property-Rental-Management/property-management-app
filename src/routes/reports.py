@@ -86,8 +86,8 @@ async def monthly_cashflow_context(company_id: str, user: User):
     """
 
     cashflow = CashFlowModel(company_id=company_id)
-    report_logger.info(f"cashflow : {cashflow}")
     cashflows = await cashflow.monthly_cashflow()
+    # report_logger.info(f"cashflow : {cashflows}")
     return await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user, flow_type="monthly")
 
 
@@ -99,8 +99,8 @@ async def property_cashflow_context(company_id: str, user: User):
     :return:
     """
     cashflow = CashFlowModel(company_id=company_id)
-    report_logger.info(f"cashflow : {cashflow}")
     cashflows = await cashflow.monthly_cashflow_by_property()
+    # report_logger.info(f"cashflow : {cashflows}")
     return await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user, flow_type="property")
 
 
