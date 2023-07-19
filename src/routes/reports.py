@@ -14,6 +14,12 @@ report_logger = init_logger('REPORT_LOGGER:')
 
 
 async def get_company_name(property_id: str) -> str:
+    """
+        **get_company_name**
+            given company_id return company name
+    :param property_id:
+    :return:
+    """
     building: Property = await company_controller.get_property_by_id_internal(property_id=property_id)
     return building.name if building else None
 
@@ -34,6 +40,7 @@ async def months_names(year: int, month: int) -> str:
 async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_type: str = "monthly"):
     """
         **create_bar_graph**
+
     :param flow_type:
     :param cashflows:
     :param company_id:
@@ -133,6 +140,8 @@ async def report(user: User, company_id: str):
 @login_required
 async def select_cashflow(user: User, company_id: str):
     """
+        **select_cashflow**
+            returns cashflow report based on selections on business reports
 
     :param user:
     :param company_id:
