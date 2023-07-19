@@ -38,7 +38,7 @@ async def report(user: User, company_id: str):
     x_axis = [month for month, cashflow in enumerate(monthly_cashflows.values())]
     # x_axis = ["January", "February", "March", "April"]
     y_axis = [cashflow.cashflow for month, cashflow in enumerate(monthly_cashflows.values())]
-    # y_axis = [50000, 120000, 450000, 456000]
+    # y_axis = [50000, 120000, 450000, 956000]
 
     figure = plot.Figure(data=plot.Bar(x=x_axis, y=y_axis))
     figure.update_layout(
