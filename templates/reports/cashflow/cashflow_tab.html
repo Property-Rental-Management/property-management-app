@@ -5,7 +5,7 @@
         <div>
             <form class="form-horizontal" enctype="application/x-www-form-urlencoded" method="POST"
                   action="{{ url_for('reports.select_cashflow', company_id=company.company_id) }}">
-                <select class="form-control-sm" id="cashflow_type" name="cashflow_type"
+                <select class="form-control-sm btn-outline-info" id="cashflow_type" name="cashflow_type"
                         onchange="if (this.value) this.form.submit()">
                     <option value="" {% if selected == "" %}selected{% endif %}>Select Cashflow</option>
                     <option value="monthly_cashflow" {% if selected == "monthly_cashflow" %}selected{% endif %}>Monthly
