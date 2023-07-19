@@ -283,8 +283,7 @@ class CompaniesController(Controllers):
     @error_handler
     async def get_properties_internal(self, company_id: str) -> list[Property] | None:
         """
-
-        :param user:
+            **get_properties_internal**
         :param company_id:
         :return:
         """
@@ -451,9 +450,8 @@ class CompaniesController(Controllers):
     @error_handler
     async def get_unit(self, user: User, building_id: str, unit_id: str) -> Unit | None:
         """
-
+            **get_unit**
         :param building_id:
-        :param user:
         :param unit_id:
         :return:
         """
@@ -508,6 +506,12 @@ class CompaniesController(Controllers):
 
     @error_handler
     async def delete_billed_item(self, property_id: str, item_number: str):
+        """
+        **delete_billed_item**
+        :param property_id:
+        :param item_number:
+        :return:
+        """
         with self.get_session() as session:
             billable_orm: ItemsORM = session.query(ItemsORM).filter(ItemsORM.property_id == property_id).first()
             billable_orm.deleted = True
@@ -518,7 +522,7 @@ class CompaniesController(Controllers):
     @error_handler
     async def get_billable_items(self, building_id: str) -> list[BillableItem]:
         """
-
+            **get_billable_items**
         :param building_id:
         :return:
         """
@@ -531,7 +535,7 @@ class CompaniesController(Controllers):
     @error_handler
     async def create_unit_bill_charge(self, charge_item: CreateUnitCharge) -> CreateUnitCharge:
         """
-
+            **create_unit_bill_charge**
         :param charge_item:
         :return:
         """
