@@ -18,30 +18,37 @@ async def get_company_name(property_id: str) -> str:
     return building.name if building else None
 
 
+async def months_names(month: int) -> str:
+    months = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
+              7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
+    return months.get(month, "")
+
+
 async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_type: str = "monthly"):
     """
         **create_bar_graph**
+    :param flow_type:
     :param cashflows:
     :param company_id:
     :param user:
-    :param title:
-    :param x_title:
     :return:
     """
     company = await company_controller.get_company_internal(company_id=company_id)
     if flow_type.casefold() == "monthly":
         title = "Monthly Cashflow"
         x_title = "Month"
-        x_axis = [month for month, cashflow in enumerate(cashflows.values())]
-        y_axis = [cashflow.cashflow for month, cashflow in enumerate(cashflows.values())]
+        x_axis = [await months_names(month=cashflow.month) for cashflow in cashflows.values()]
+        y_axis = [cashflow.cashflow for cashflow in cashflows.values()]
+
     elif flow_type.casefold() == "property":
         title = "Property Cashflow"
         x_title = "Property"
-        x_axis = [await get_company_name(property_id=cashflow.property_id) for month, cashflow in
-                  enumerate(cashflows.values())]
-        y_axis = [cashflow.cashflow for month, cashflow in enumerate(cashflows.values())]
+        x_axis = [await get_company_name(property_id=cashflow.property_id) for cashflow in cashflows.values()]
+        y_axis = [cashflow.cashflow for cashflow in cashflows.values()]
+
     else:
         return None
+
     report_logger.info(f"y_axis : {y_axis}")
     report_logger.info(f"x_axis : {x_axis}")
 
@@ -53,8 +60,7 @@ async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_ty
         showlegend=True
     )
 
-    context = dict(user=user.dict(), company=company.dict(), chart_data=figure.to_json())
-    return context
+    return dict(user=user.dict(), company=company.dict(), chart_data=figure.to_json())
 
 
 async def monthly_cashflow_context(company_id: str, user: User):
