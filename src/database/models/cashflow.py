@@ -5,10 +5,12 @@ from src.logger import init_logger
 
 cashflow_logger = init_logger('cashflow_logger')
 
+
 class MonthlyCashFlow(BaseModel):
     """
     Represents the cash flow for a specific month.
     """
+    year: int
     month: int
     cashflow: int
     property_id: str
@@ -42,6 +44,7 @@ class CashFlowModel(BaseModel):
         self.load_payments()
         for payment in self.payments:
             if payment.is_successful:
+                year = payment.date_paid.year
                 month = payment.date_paid.month
                 amount_paid = payment.amount_paid
                 property_id = payment.property_id
@@ -52,6 +55,7 @@ class CashFlowModel(BaseModel):
                     monthly_cashflows[month].cashflow += amount_paid
                 else:
                     monthly_cashflows[month] = MonthlyCashFlow(
+                        year=year,
                         month=month,
                         cashflow=amount_paid,
                         property_id=property_id,
@@ -76,6 +80,7 @@ class CashFlowModel(BaseModel):
         for payment in self.payments:
             if payment.property_id in property_ids:
                 if payment.is_successful:
+                    year = payment.date_paid.year
                     month = payment.date_paid.month
                     amount_paid = payment.amount_paid
                     property_id = payment.property_id
@@ -86,6 +91,7 @@ class CashFlowModel(BaseModel):
                         cashflow_by_property[payment.property_id].cashflow += amount_paid
                     else:
                         cashflow_by_property[payment.property_id] = MonthlyCashFlow(
+                            year=year,
                             month=month,
                             cashflow=amount_paid,
                             property_id=property_id,

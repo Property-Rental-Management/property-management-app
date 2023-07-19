@@ -18,10 +18,11 @@ async def get_company_name(property_id: str) -> str:
     return building.name if building else None
 
 
-async def months_names(month: int) -> str:
+async def months_names(year: int, month: int) -> str:
     months = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
               7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
-    return months.get(month, "")
+
+    return f"{year}-{months.get(month, '')}"
 
 
 async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_type: str = "monthly"):
@@ -41,7 +42,7 @@ async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_ty
     if flow_type.casefold() == "monthly":
         title = "Monthly Cashflow"
         x_title = "Month"
-        x_axis = [await months_names(month=cashflow.month) for cashflow in cashflows.values()]
+        x_axis = [await months_names(year=cashflow.year, month=cashflow.month) for cashflow in cashflows.values()]
         y_axis = [cashflow.cashflow for cashflow in cashflows.values()]
 
     elif flow_type.casefold() == "property":
