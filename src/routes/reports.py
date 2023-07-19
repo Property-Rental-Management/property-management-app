@@ -19,6 +19,12 @@ async def get_company_name(property_id: str) -> str:
 
 
 async def months_names(year: int, month: int) -> str:
+    """
+        **months_names**
+    :param year:
+    :param month:
+    :return:
+    """
     months = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
               7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
 
