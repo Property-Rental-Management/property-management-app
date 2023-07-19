@@ -33,6 +33,10 @@ async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_ty
     :param user:
     :return:
     """
+    color_pallet = ['rgb(31, 119, 180)', 'rgb(255, 127, 14)', 'rgb(44, 160, 44)', 'rgb(214, 39, 40)',
+                    'rgb(148, 103, 189)', 'rgb(140, 86, 75)', 'rgb(227, 119, 194)', 'rgb(127, 127, 127)',
+                    'rgb(188, 189, 34)', 'rgb(23, 190, 207)']
+
     company = await company_controller.get_company_internal(company_id=company_id)
     if flow_type.casefold() == "monthly":
         title = "Monthly Cashflow"
@@ -52,7 +56,7 @@ async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_ty
     report_logger.info(f"y_axis : {y_axis}")
     report_logger.info(f"x_axis : {x_axis}")
 
-    figure = plot.Figure(data=plot.Bar(x=x_axis, y=y_axis))
+    figure = plot.Figure(data=plot.Bar(x=x_axis, y=y_axis, marker=dict(color=color_pallet)))
     figure.update_layout(
         title=title,
         xaxis_title=x_title,
