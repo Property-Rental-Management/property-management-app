@@ -45,6 +45,9 @@ async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_ty
                     'rgb(188, 189, 34)', 'rgb(23, 190, 207)']
 
     company = await company_controller.get_company_internal(company_id=company_id)
+    if company is None:
+        return None
+
     if flow_type.casefold() == "monthly":
         title = "Monthly Cashflow"
         x_title = "Month"
