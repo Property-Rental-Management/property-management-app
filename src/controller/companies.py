@@ -223,10 +223,13 @@ class CompaniesController(Controllers):
                 raise UnauthorizedError(description="Not Authorized to Add Properties to this Company")
 
             property_orm: PropertyORM = PropertyORM(**_property.dict())
+
+            building = Property(**property_orm.to_dict()) if isinstance(property_orm, PropertyORM) else None
+
             session.add(property_orm)
             session.commit()
 
-            return Property(**_property.dict()) if isinstance(_property, PropertyORM) else None
+            return building
 
     @error_handler
     async def update_property(self, user: User, property_details: UpdateProperty) -> Property | None:
