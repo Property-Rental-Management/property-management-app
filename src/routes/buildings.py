@@ -89,9 +89,21 @@ async def add_building(user: User, company_id: str):
 @login_required
 async def do_add_building(user: User, company_id: str):
     company: Company = await company_controller.get_company(company_id=company_id, user_id=user.user_id)
-    property_data: CreateProperty = CreateProperty(**request.form)
+    try:
+        property_data: CreateProperty = CreateProperty(**request.form)
+    except ValidationError as e:
+        buildings_logger.error(f"Create building Error : {str(e)}")
+        _message: str = "Unable to add Property"
+        flash(message=_message, category="success")
+        return redirect(url_for('companies.get_company', company_id=company.company_id), code=302)
+
     property_data.company_id = company.company_id
     property_model: Property = await company_controller.add_property(user=user, _property=property_data)
+
+    if property_model is None:
+        _message: str = "Unable to add Property"
+        flash(message=_message, category="success")
+        return redirect(url_for('companies.get_company', company_id=company.company_id), code=302)
 
     _message: str = f"Property : {property_model.name.title()} Successfully added to : {company.company_name.title()}"
 
@@ -109,14 +121,19 @@ async def edit_building(user: User, building_id: str):
 @buildings_route.post('/admin/edit-building/<string:building_id>')
 @login_required
 async def do_edit_building(user: User, building_id: str):
+    company_id: str = request.form.get('company_id')
     try:
         updated_building: UpdateProperty = UpdateProperty(**request.form)
-        _property = await company_controller.update_property(user=user, property_details=updated_building)
-        if _property is not None:
-            flash(message="Successfully updated Property/Building", category="success")
+
     except ValidationError as e:
-        print(f"error {str(e)}")
+        buildings_logger.error(f"Error Updating Building : {str(e)}")
         flash(message="Error updating Property/Building...", category="danger")
+        return redirect(url_for('companies.get_company', company_id=company_id), code=302)
+
+    _property = await company_controller.update_property(user=user, property_details=updated_building)
+    if _property is None:
+        flash(message="Error updating Property/Building...", category="danger")
+        return redirect(url_for('companies.get_company', company_id=company_id), code=302)
 
     context = await get_common_context(user=user, building_id=building_id)
     return render_template('building/building.html', **context)
@@ -134,6 +151,7 @@ async def do_add_unit(user: User, building_id: str):
     except ValidationError as e:
         buildings_logger.error(f"error raised when adding Unit : {str(e)}")
         flash(message="To Add a Unit please Fill in all Fields", category="danger")
+
     return redirect(url_for('buildings.get_building', building_id=building_id), code=302)
 
 
