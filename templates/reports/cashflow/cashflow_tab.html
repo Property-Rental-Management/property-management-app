@@ -1,0 +1,45 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="card-title">Cashflow Statement for <span class="text-info">{{ company.company_name }}</span></h2>
+
+        <div>
+            <form class="form-horizontal" enctype="application/x-www-form-urlencoded" method="POST"
+                  action="{{ url_for('reports.select_cashflow', company_id=company.company_id) }}">
+                <select class="form-control-sm" id="cashflow_type" name="cashflow_type"
+                        onchange="if (this.value) this.form.submit()">
+                    <option value="" {% if selected == "" %}selected{% endif %}>Select Cashflow</option>
+                    <option value="monthly_cashflow" {% if selected == "monthly_cashflow" %}selected{% endif %}>Monthly
+                        Cashflow
+                    </option>
+                    <option value="cashflow_by_property" {% if selected == "cashflow_by_property" %}selected{% endif %}>
+                        Cashflow by Property
+                    </option>
+                </select>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="card-body">
+        <div class="card">
+            <div class="card-title">
+                <h4>Cashflow</h4>
+            </div>
+
+            <div id="chart"></div>
+
+            <div class="card-footer">
+                <button class="btn btn-sm btn-primary" onclick="window.print()">
+                    <i class="ti-printer"></i>
+                    Print
+                </button>
+                <button class="btn btn-sm btn-primary">
+                    <i class="ti-download"></i>
+                    Download
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</div>

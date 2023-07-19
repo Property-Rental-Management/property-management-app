@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 
 from src.database.models.payments import Payment
+from src.logger import init_logger
 
+cashflow_logger = init_logger('cashflow_logger')
 
 class MonthlyCashFlow(BaseModel):
     """
@@ -35,8 +37,7 @@ class CashFlowModel(BaseModel):
         _payments = lease_agreement_controller.sync_load_company_payments(company_id=self.company_id)
         self.payments = _payments
 
-    @property
-    def monthly_cashflow(self) -> dict[int, MonthlyCashFlow]:
+    async def monthly_cashflow(self) -> dict[int, MonthlyCashFlow]:
         monthly_cashflows = {}
         self.load_payments()
         for payment in self.payments:
@@ -60,32 +61,36 @@ class CashFlowModel(BaseModel):
 
         return monthly_cashflows
 
-    @property
-    def total_cashflow(self) -> int:
-        return sum(monthly_cashflow.cashflow for monthly_cashflow in self.monthly_cashflow.values())
+    async def total_cashflow(self) -> int:
+        monthly_cashflows = await self.monthly_cashflow()
+        return sum(monthly_cashflow.cashflow for monthly_cashflow in monthly_cashflows.values())
 
-    def monthly_cashflow_by_property(self, property_id: str) -> list[MonthlyCashFlow]:
-        cashflow_by_property = []
+    async def monthly_cashflow_by_property(self) -> dict[str, MonthlyCashFlow]:
+        from src.main import company_controller
+        cashflow_by_property = {}
 
-        for monthly_cash_flow in self.monthly_cashflow.values():
-            if monthly_cash_flow.property_id == property_id:
-                cashflow_by_property.append(monthly_cash_flow)
+        buildings = await company_controller.get_properties_internal(company_id=self.company_id)
+        property_ids = [building.property_id for building in buildings]
+        cashflow_logger.info(f"Property IDS : {property_ids}")
+        self.load_payments()
+        for payment in self.payments:
+            if payment.property_id in property_ids:
+                if payment.is_successful:
+                    month = payment.date_paid.month
+                    amount_paid = payment.amount_paid
+                    property_id = payment.property_id
+                    tenant_id = payment.tenant_id
+                    unit_id = payment.unit_id
+
+                    if payment.property_id in cashflow_by_property:
+                        cashflow_by_property[payment.property_id].cashflow += amount_paid
+                    else:
+                        cashflow_by_property[payment.property_id] = MonthlyCashFlow(
+                            month=month,
+                            cashflow=amount_paid,
+                            property_id=property_id,
+                            tenant_id=tenant_id,
+                            unit_id=unit_id,
+                        )
 
         return cashflow_by_property
-
-    def monthly_cashflow_by_unit(self, unit_id: str) -> list[MonthlyCashFlow]:
-        cashflow_by_unit = []
-
-        for monthly_cash_flow in self.monthly_cashflow.values():
-            if monthly_cash_flow.unit_id == unit_id:
-                cashflow_by_unit.append(monthly_cash_flow)
-
-        return cashflow_by_unit
-
-    def monthly_cashflow_by_tenant(self, tenant_id: str) -> list[MonthlyCashFlow]:
-        cashflow_by_tenant = []
-        for monthly_cash_flow in self.monthly_cashflow.values():
-            if monthly_cash_flow.tenant_id == tenant_id:
-                cashflow_by_tenant.append(monthly_cash_flow)
-
-        return cashflow_by_tenant
