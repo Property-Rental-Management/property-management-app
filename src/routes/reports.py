@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from src.authentication import login_required
 from src.database.models.cashflow import CashFlowModel
+from src.database.models.properties import Property
 from src.database.models.users import User
 from src.logger import init_logger
 from src.main import company_controller
@@ -12,7 +13,12 @@ reports_route = Blueprint('reports', __name__)
 report_logger = init_logger('REPORT_LOGGER:')
 
 
-async def create_bar_graph(cashflows: dict, user: User, company_id: str, title: str, x_title: str):
+async def get_company_name(property_id: str) -> str:
+    building: Property = await company_controller.get_property_by_id_internal(property_id=property_id)
+    return building.name if building else None
+
+
+async def create_bar_graph(cashflows: dict, user: User, company_id: str, flow_type: str = "monthly"):
     """
         **create_bar_graph**
     :param cashflows:
@@ -23,10 +29,22 @@ async def create_bar_graph(cashflows: dict, user: User, company_id: str, title: 
     :return:
     """
     company = await company_controller.get_company_internal(company_id=company_id)
-    x_axis = [month for month, cashflow in enumerate(cashflows.values())]
-    # x_axis = ["January", "February", "March", "April"]
-    y_axis = [cashflow.cashflow for month, cashflow in enumerate(cashflows.values())]
-    # y_axis = [50000, 120000, 450000, 956000]
+    if flow_type.casefold() == "monthly":
+        title = "Monthly Cashflow"
+        x_title = "Month"
+        x_axis = [month for month, cashflow in enumerate(cashflows.values())]
+        y_axis = [cashflow.cashflow for month, cashflow in enumerate(cashflows.values())]
+    elif flow_type.casefold() == "property":
+        title = "Property Cashflow"
+        x_title = "Property"
+        x_axis = [await get_company_name(property_id=cashflow.property_id) for month, cashflow in
+                  enumerate(cashflows.values())]
+        y_axis = [cashflow.cashflow for month, cashflow in enumerate(cashflows.values())]
+    else:
+        return None
+    report_logger.info(f"y_axis : {y_axis}")
+    report_logger.info(f"x_axis : {x_axis}")
+
     figure = plot.Figure(data=plot.Bar(x=x_axis, y=y_axis))
     figure.update_layout(
         title=title,
@@ -34,6 +52,7 @@ async def create_bar_graph(cashflows: dict, user: User, company_id: str, title: 
         yaxis_title="Income",
         showlegend=True
     )
+
     context = dict(user=user.dict(), company=company.dict(), chart_data=figure.to_json())
     return context
 
@@ -49,8 +68,7 @@ async def monthly_cashflow_context(company_id: str, user: User):
     cashflow = CashFlowModel(company_id=company_id)
     report_logger.info(f"cashflow : {cashflow}")
     cashflows = await cashflow.monthly_cashflow()
-    return await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user,
-                                  title="Monthly Cashflow", x_title="Month")
+    return await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user, flow_type="monthly")
 
 
 async def property_cashflow_context(company_id: str, user: User):
@@ -63,8 +81,7 @@ async def property_cashflow_context(company_id: str, user: User):
     cashflow = CashFlowModel(company_id=company_id)
     report_logger.info(f"cashflow : {cashflow}")
     cashflows = await cashflow.monthly_cashflow_by_property()
-    return await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user, title="Property Cashflow",
-                                  x_title="Property")
+    return await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user, flow_type="property")
 
 
 @reports_route.get('/admin/reports')
