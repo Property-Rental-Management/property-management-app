@@ -188,7 +188,7 @@ async def get_unit(user: User, building_id: str, unit_id: str):
     billable_dicts: list[dict[str, str | int]] = [item.dict()
                                                   for item in billable_items_ if item] if billable_items else []
 
-    charged_items_dicts = await build_charge_items(building_id, unit_id)
+    charged_items_dicts = await build_charge_items(building_id=building_id, unit_id=unit_id)
 
     if unit_data is None:
         flash(message="Could not find Unit with that ID", category="danger")
