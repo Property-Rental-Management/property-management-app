@@ -3,7 +3,7 @@ import hashlib
 from flask import Flask, request, jsonify
 
 
-class PayfastAPI:
+class PayFastAPI:
     def __init__(self):
         self.pay_fast_secret_key = None
 
@@ -39,16 +39,14 @@ class PayfastAPI:
         """
         self.pay_fast_secret_key = app.config.get('PAY_FAST_SECRET_KEY')
 
-        self.app = app
-
         # Add URL routes for the Payfast endpoints
-        self.app.add_url_rule('/payfast/subscribe', 'subscribe', self.subscribe, methods=['POST'])
-        self.app.add_url_rule('/payfast/cancel_subscription', 'cancel_subscription', self.cancel_subscription,
-                              methods=['POST'])
-        self.app.add_url_rule('/payfast/upgrade_subscription', 'upgrade_subscription', self.upgrade_subscription,
-                              methods=['POST'])
-        self.app.add_url_rule('/payfast/check_subscription', 'check_if_subscribed', self.check_if_subscribed,
-                              methods=['GET'])
+        app.add_url_rule('/payfast/subscribe', 'subscribe', self.subscribe, methods=['POST'])
+        app.add_url_rule('/payfast/cancel_subscription', 'cancel_subscription', self.cancel_subscription,
+                         methods=['POST'])
+        app.add_url_rule('/payfast/upgrade_subscription', 'upgrade_subscription', self.upgrade_subscription,
+                         methods=['POST'])
+        app.add_url_rule('/payfast/check_subscription', 'check_if_subscribed', self.check_if_subscribed,
+                         methods=['GET'])
 
     async def subscribe(self):
         """
