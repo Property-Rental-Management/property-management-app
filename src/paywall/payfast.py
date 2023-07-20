@@ -4,8 +4,8 @@ from flask import Flask, request, jsonify
 
 
 class PayfastAPI:
-    def __init__(self, pay_fast_secret_key: str):
-        self.pay_fast_secret_key = pay_fast_secret_key
+    def __init__(self):
+        self.pay_fast_secret_key = None
 
     async def authenticate_request(self):
         """
@@ -37,6 +37,8 @@ class PayfastAPI:
         Initialize the PayfastAPI with the Flask app instance.
         This method should be called in your Flask application to set up the PayfastAPI.
         """
+        self.pay_fast_secret_key = app.config.get('PAY_FAST_SECRET_KEY')
+
         self.app = app
 
         # Add URL routes for the Payfast endpoints
