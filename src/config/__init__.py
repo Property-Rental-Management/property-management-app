@@ -1,4 +1,5 @@
 import socket
+
 from pydantic import BaseSettings, Field
 
 
@@ -57,6 +58,7 @@ class Settings(BaseSettings):
     DEVELOPMENT_SERVER_NAME: str = Field(default="DESKTOP-T9V7F59")
     LOGGING: Logging = Logging()
     HOST_ADDRESSES: str = Field(..., env='HOST_ADDRESSES')
+    PAY_FAST_SECRET_KEY: str = Field(default="ccc")
 
     class Config:
         env_file = '.env.development'
