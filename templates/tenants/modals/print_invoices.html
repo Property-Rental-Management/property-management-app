@@ -1,0 +1,87 @@
+<!-- Modal dialog -->
+<div class="modal fade" id="printInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="printInvoiceModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="printInvoiceModalLabel">Print Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-content">
+                    <span class="font-weight-bold text-info">Use this form to print invoices.</span>
+                </div>
+                <div class="card-footer">
+
+                    <form id="printInvoiceForm" class="form-horizontal"
+                          action="{{ url_for('buildings.unit_print_invoice') }}"
+                          method="POST"
+                    >
+                        <input type="hidden" name="unit_id" value="{{ unit.unit_id }}">
+                        <input type="hidden" name="building_id" value="{{ unit.property_id }}">
+                        <div id="invoiceTableDiv" style="height: 400px; overflow-y: auto;">
+                            <h5>Select an invoice to Print</h5>
+                            <table id="invoiceTable" class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Due Date</th>
+                                    <th>Amount</th>
+                                    <th>Select</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for invoice in historical_invoices %}
+                                    <tr>
+                                        <td>{{ invoice.invoice_number }}</td>
+                                        <td>{{ invoice.customer.name }}</td>
+                                        <td class="{% if invoice.days_remaining < 0 %}text-danger{% else %}text-info{% endif %}">
+                                            {{ invoice.due_date }}
+                                        </td>
+                                        <td>R {{ invoice.amount_payable|currency }}.00</td>
+                                        <td>
+                                            <input type="radio" name="invoice_number"
+                                                   value="{{ invoice.invoice_number }}">
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if not historical_invoices %}
+                            <div class="card-footer">
+                                <span class="card-content text-danger">Please Note: There are no invoices to print, at this time.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" class="btn btn-sm btn-primary" disabled>
+                                    <i class="ti-printer"> </i>
+                                    Print
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                    <i class="ti-close"> </i>
+                                    Cancel
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="ti-printer"> </i>
+                                    Print
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                    <i class="ti-close"> </i>
+                                    Cancel
+                                </button>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
