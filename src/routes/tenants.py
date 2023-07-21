@@ -87,6 +87,7 @@ async def tenant_rentals(user: User):
     return redirect(url_for('tenants.get_tenants'), code=302)
 
 
+# noinspection DuplicatedCode
 @tenants_route.get('/admin/tenant/<string:tenant_id>')
 @login_required
 async def get_tenant(user: User, tenant_id: str):

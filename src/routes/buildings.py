@@ -8,7 +8,7 @@ from pydantic import ValidationError
 from src.authentication import login_required
 from src.database.models.companies import Company
 from src.database.models.invoices import (CreateInvoicedItem, BillableItem, CreateUnitCharge,
-                                          PrintInvoiceForm, UnitEMailInvoiceForm)
+                                          PrintInvoiceForm, UnitEMailInvoiceForm, PaymentStatus)
 from src.database.models.lease import LeaseAgreement, CreateLeaseAgreement
 from src.database.models.notifications import NotificationsModel
 from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty, UpdateUnit, \
@@ -155,6 +155,7 @@ async def do_add_unit(user: User, building_id: str):
     return redirect(url_for('buildings.get_building', building_id=building_id), code=302)
 
 
+# noinspection DuplicatedCode
 @buildings_route.get('/admin/building/<string:building_id>/unit/<string:unit_id>')
 @login_required
 async def get_unit(user: User, building_id: str, unit_id: str):
@@ -167,13 +168,22 @@ async def get_unit(user: User, building_id: str, unit_id: str):
     :return:
     """
     context = dict(user=user.dict())
-    historical_invoices = {}
+    historical_invoices = []
+    paid_invoices = []
+    un_paid_invoices = []
     unit_data: Unit = await company_controller.get_unit(user=user, building_id=building_id, unit_id=unit_id)
 
     if unit_data and unit_data.tenant_id:
         tenant_data: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=unit_data.tenant_id)
         context.update({'tenant': tenant_data.dict()})
-        historical_invoices = await lease_agreement_controller.get_invoices(tenant_id=tenant_data.tenant_id)
+        tenant_payments = await lease_agreement_controller.load_tenant_payments(tenant_id=unit_data.tenant_id)
+        invoices = await lease_agreement_controller.get_invoices(tenant_id=tenant_data.tenant_id)
+
+        historical_invoices = [invoice.dict() for invoice in invoices if invoice] if invoices else []
+        paid_invoices = [invoice.dict() for invoice in invoices
+                         if invoice.get_payment_status(payments=tenant_payments) == PaymentStatus.FULLY_PAID]
+        un_paid_invoices = [invoice.dict() for invoice in invoices
+                            if invoice.get_payment_status(payments=tenant_payments) != PaymentStatus.FULLY_PAID]
 
         if tenant_data.company_id:
             company_data: Company = await company_controller.get_company_internal(company_id=tenant_data.company_id)
@@ -199,6 +209,8 @@ async def get_unit(user: User, building_id: str, unit_id: str):
     context.update({'unit': unit_data,
                     'billable_items': billable_dicts,
                     'charged_items': charged_items_dicts,
+                    'paid_invoices': paid_invoices,
+                    'unpaid_invoices': un_paid_invoices,
                     'historical_invoices': historical_invoices,
                     'month_options': month_options})
 
