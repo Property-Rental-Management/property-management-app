@@ -151,11 +151,12 @@ class Invoice(BaseModel):
 
     def get_payment_status(self, payments: list[Payment]) -> PaymentStatus:
         total_amount_paid = self.calculate_total_amount_paid(payments)
-        status_map = {
-            self.amount_payable: PaymentStatus.FULLY_PAID,
-            0: PaymentStatus.UNPAID
-        }
-        return status_map.get(total_amount_paid, PaymentStatus.PARTIALLY_PAID)
+        if total_amount_paid >= self.amount_payable:
+            return PaymentStatus.FULLY_PAID
+        elif total_amount_paid > 0:
+            return PaymentStatus.PARTIALLY_PAID
+        else:
+            return PaymentStatus.UNPAID
 
     def dict(self):
         return {
