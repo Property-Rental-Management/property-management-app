@@ -5,8 +5,8 @@ from src.authentication import login_required
 from src.database.models.companies import Company
 from src.database.models.invoices import Invoice, PaymentStatus
 from src.database.models.properties import Property, Unit
-from src.database.models.tenants import QuotationForm, Tenant, CreateTenant, TenantSendMail, TenantAddress, \
-    CreateTenantAddress
+from src.database.models.tenants import (QuotationForm, Tenant, CreateTenant, TenantSendMail, TenantAddress,
+                                         CreateTenantAddress)
 from src.database.models.users import User
 from src.emailer import EmailModel
 from src.logger import init_logger
@@ -61,9 +61,10 @@ async def do_add_tenants(user: User, building_id: str, unit_id: str):
         :param unit_id:
         :return:
     """
-    user_data = user.dict()
+    _ = user.dict()
     new_tenant = CreateTenant(**request.form)
-    tenant_added = await tenant_controller.create_tenant(user_id=user.user_id, tenant=new_tenant)
+    # This only adds tenant
+    _ = await tenant_controller.create_tenant(user_id=user.user_id, tenant=new_tenant)
     flash(message="Tenant Successfully added - Continue to create a lease for tenant", category='success')
     return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
 
@@ -71,9 +72,9 @@ async def do_add_tenants(user: User, building_id: str, unit_id: str):
 @tenants_route.post('/admin/tenant-rentals')
 @login_required
 async def tenant_rentals(user: User):
-    user_data = user.dict()
+    _ = user.dict()
     tenant_quote: QuotationForm = QuotationForm(**request.form)
-    quotation = await tenant_controller.create_quotation(user=user, quotation=tenant_quote)
+    _ = await tenant_controller.create_quotation(user=user, quotation=tenant_quote)
 
     message = """Quote Created and Notification will be sent, via email or cell. 
     
@@ -142,7 +143,6 @@ async def get_tenant(user: User, tenant_id: str):
 @login_required
 async def create_tenant_address(user: User, tenant_id: str):
     """
-
     :param user:
     :param tenant_id:
     :return:
@@ -150,16 +150,20 @@ async def create_tenant_address(user: User, tenant_id: str):
     try:
         tenant_address = CreateTenantAddress(**request.form)
     except ValidationError as e:
+        tenants_logger.error(f"Error creating Tenant Address: {str(e)}")
         flash(message="Unable to create Tenant Address please fill in all required fields", category="danger")
         return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
     tenant_address_: TenantAddress = await tenant_controller.create_tenant_address(tenant_id=tenant_id,
                                                                                    tenant_address=tenant_address)
     tenant: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=tenant_id)
+
     if tenant:
         tenant.address_id = tenant_address_.address_id
-        updated_tenant = await tenant_controller.update_tenant(tenant=tenant)
+        # This only updates address_id on tenant model
+        _ = await tenant_controller.update_tenant(tenant=tenant)
         flash(message="Successfully updated tenant", category="success")
         return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
+
     flash(message="Unable to update Tenant Address", category="danger")
     return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
 
@@ -174,9 +178,13 @@ async def do_send_email(user: User, tenant_id: str):
     :param user:
     :return:
     """
+
     try:
+        # this is a useless statement
+        _ = user.dict()
         send_email_data = TenantSendMail(**request.form)
     except ValidationError as e:
+        tenants_logger.error(f"error sending email : {str(e)}")
         flash(message="Unable to send email please fill in all required fields", category="danger")
         return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
 
