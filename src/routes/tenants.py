@@ -129,7 +129,7 @@ async def get_tenant(user: User, tenant_id: str):
                     'address': tenant_address_dict,
                     'company': company_dict,
                     'paid_invoices': paid_invoices,
-                    'un_paid_invoices': un_paid_invoices,
+                    'unpaid_invoices': un_paid_invoices,
                     'unit': unit_dicts,
                     'payment_receipts': payment_dicts,
                     'statements': statements_dicts})
