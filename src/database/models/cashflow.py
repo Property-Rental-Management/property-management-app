@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 
 from src.database.models.payments import Payment
 from src.logger import init_logger
@@ -10,8 +10,8 @@ class MonthlyCashFlow(BaseModel):
     """
     Represents the cash flow for a specific month.
     """
-    year: int
-    month: int
+    year: PositiveInt
+    month: PositiveInt
     cashflow: int
     property_id: str
     tenant_id: str

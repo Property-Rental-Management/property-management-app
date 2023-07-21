@@ -1,7 +1,7 @@
 import uuid
 from datetime import date
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PositiveInt
 
 
 class LeaseAgreement(BaseModel):
@@ -25,7 +25,7 @@ class LeaseAgreement(BaseModel):
     unit_id: str
     start_date: date
     end_date: date
-    rent_amount: int
+    rent_amount: PositiveInt
     deposit_amount: int | None
     is_active: bool
     payment_period: str | None

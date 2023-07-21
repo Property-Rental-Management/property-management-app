@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, PositiveInt
 
 from src.database.tools import create_transaction_id
 
@@ -18,11 +18,11 @@ class Payment(BaseModel):
     tenant_id: str
     property_id: str
     unit_id: str
-    amount_paid: int
+    amount_paid: PositiveInt
     date_paid: date
     payment_method: str
     is_successful: bool
-    month: int
+    month: PositiveInt
     comments: str
 
     @property

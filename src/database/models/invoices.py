@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field, Extra, validator
+from pydantic import BaseModel, Field, Extra, validator, PositiveInt
 
 from src.database.models.payments import Payment
 
@@ -104,8 +104,8 @@ class Invoice(BaseModel):
     tax_rate: int = Field(default=15)
     date_issued: date
     due_date: date
-    month: int
-    rental_amount: int | None
+    month: PositiveInt
+    rental_amount: PositiveInt | None
     charge_ids: list[str] | None
     invoice_items: list[InvoicedItems]
     invoice_sent: bool

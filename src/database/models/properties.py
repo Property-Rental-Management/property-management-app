@@ -1,7 +1,7 @@
 import uuid
 from datetime import date
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, PositiveInt, FutureDate
 
 
 class Property(BaseModel):
@@ -35,7 +35,7 @@ class Property(BaseModel):
     landlord: str
     maintenance_contact: str
     lease_terms: str  # Monthly, Daily, Hourly
-    built_year: int
+    built_year: PositiveInt
     parking_spots: int
 
 
@@ -62,10 +62,10 @@ class Unit(BaseModel):
     unit_number: str
     is_occupied: bool = Field(default=False)
     is_booked: bool = Field(default=False)
-    rental_amount: int
+    rental_amount: PositiveInt
     lease_start_date: date | None = Field(default=None)
-    lease_end_date: date | None = Field(default=None)
-    unit_area: int
+    lease_end_date: FutureDate | None = Field(default=None)
+    unit_area: PositiveInt
     has_reception: bool
 
     @validator('is_occupied', pre=True)
@@ -120,10 +120,10 @@ class CreateUnitRental(BaseModel):
     unit_number: str
     is_occupied: bool = Field(default=True)
     is_booked: bool = Field(default=True)
-    rental_amount: int
+    rental_amount: PositiveInt
     lease_start_date: date | None = Field(default=None)
-    lease_end_date: date | None = Field(default=None)
-    unit_area: int
+    lease_end_date: FutureDate | None = Field(default=None)
+    unit_area: PositiveInt
     has_reception: bool
     rental_period: str
     number_days: str | None
@@ -133,8 +133,8 @@ class AddUnit(BaseModel):
     property_id: str
     unit_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     unit_number: str
-    rental_amount: int
-    unit_area: int
+    rental_amount: PositiveInt
+    unit_area: PositiveInt
     has_reception: bool
     is_booked: bool = Field(default=False)
     is_occupied: bool = Field(default=False)
@@ -162,10 +162,10 @@ class UpdateUnit(BaseModel):
     unit_number: str
     is_occupied: bool | None
     is_booked: bool | None
-    rental_amount: int
+    rental_amount: PositiveInt
     lease_start_date: date
-    lease_end_date: date
-    unit_area: int
+    lease_end_date: FutureDate
+    unit_area: PositiveInt
     has_reception: bool
 
 
@@ -180,7 +180,7 @@ class UpdateProperty(BaseModel):
     landlord: str | None
     maintenance_contact: str | None
     lease_terms: str | None
-    built_year: int | None
+    built_year: PositiveInt | None
     parking_spots: int | None
 
 
@@ -196,5 +196,5 @@ class CreateProperty(BaseModel):
     maintenance_contact: str
     lease_terms: str
     description: str
-    built_year: int
+    built_year: PositiveInt
     parking_spots: int
