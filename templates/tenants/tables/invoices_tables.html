@@ -23,35 +23,81 @@
     </div>
 
     <div class="card-body">
-        <div class="card-footer">
-            <table id="invoiceTable" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Invoice #</th>
-                    <th>Tenant</th>
-                    <th>Date Issued</th>
-                    <th>Due Date</th>
-                    <th>Amount Payable</th>
-                    <th>Payment</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for invoice in historical_invoices %}
-                    <tr>
-                        <td>{{ invoice.invoice_number }}</td>
-                        <td>{{ invoice.customer.name }}</td>
-                        <td>{{ invoice.date_issued }}</td>
-                        <td class="{% if invoice.days_remaining < 0 %}text-danger{% else %}text-info{% endif %}">
-                            {{ invoice.due_date }}
-                        </td>
-                        <td>R {{ invoice.amount_payable|currency }}.00</td>
-                        <td>
-                           {% include "invoices/invoice_list_form.html" %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="paid-tab" data-toggle="tab" href="#paid-invoices" role="tab"
+                   aria-controls="paid-invoices" aria-selected="true">Paid Invoices</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="unpaid-tab" data-toggle="tab" href="#unpaid-invoices" role="tab"
+                   aria-controls="unpaid-invoices" aria-selected="false">Unpaid Invoices</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="paid-invoices" role="tabpanel" aria-labelledby="paid-tab">
+                <div class="card-footer">
+                    <table id="invoiceTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Tenant</th>
+                            <th>Date Issued</th>
+                            <th>Due Date</th>
+                            <th>Amount Payable</th>
+                            <th>Payment</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for invoice in paid_invoices %}
+                            <tr>
+                                <td>{{ invoice.invoice_number }}</td>
+                                <td>{{ invoice.customer.name }}</td>
+                                <td>{{ invoice.date_issued }}</td>
+                                <td class="{% if invoice.days_remaining < 0 %}text-danger{% else %}text-info{% endif %}">
+                                    {{ invoice.due_date }}
+                                </td>
+                                <td>R {{ invoice.amount_payable|currency }}.00</td>
+                                <td>
+                                    {% include "invoices/invoice_list_form.html" %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="unpaid-invoices" role="tabpanel" aria-labelledby="unpaid-tab">
+                <div class="card-footer">
+                    <table id="invoiceTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Tenant</th>
+                            <th>Date Issued</th>
+                            <th>Due Date</th>
+                            <th>Amount Payable</th>
+                            <th>Payment</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for invoice in unpaid_invoices %}
+                            <tr>
+                                <td>{{ invoice.invoice_number }}</td>
+                                <td>{{ invoice.customer.name }}</td>
+                                <td>{{ invoice.date_issued }}</td>
+                                <td class="{% if invoice.days_remaining < 0 %}text-danger{% else %}text-info{% endif %}">
+                                    {{ invoice.due_date }}
+                                </td>
+                                <td>R {{ invoice.amount_payable|currency }}.00</td>
+                                <td>
+                                    {% include "invoices/invoice_list_form.html" %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 

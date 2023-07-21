@@ -3,6 +3,7 @@ from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.companies import Company
+from src.database.models.invoices import Invoice, PaymentStatus
 from src.database.models.properties import Property, Unit
 from src.database.models.tenants import QuotationForm, Tenant, CreateTenant, TenantSendMail, TenantAddress, \
     CreateTenantAddress
@@ -21,11 +22,9 @@ async def get_tenants(user: User):
     user_data = user.dict()
 
     companies: list[Company] = await company_controller.get_user_companies(user_id=user.user_id)
-    # tenants_logger.info(f'companies : {companies}')
     all_tenants = []
     for company in companies:
-        tenants_logger.info(f'Company : {company}')
-        tenants_logger.info(f'Company Isinstance: {isinstance(company, Company)}')
+        tenants_list = []
         if isinstance(company, Company):
             tenants_list = await tenant_controller.get_tenants_by_company_id(company_id=company.company_id)
             tenants_logger.info(f"tenants : {tenants_list}")
@@ -57,8 +56,14 @@ async def get_buildings(user: User, company_id: str):
 @tenants_route.post('/admin/add-tenants/<string:building_id>/<string:unit_id>')
 @login_required
 async def do_add_tenants(user: User, building_id: str, unit_id: str):
+    """
+        **do_add_tenants**
+        :param user:
+        :param building_id:
+        :param unit_id:
+        :return:
+    """
     user_data = user.dict()
-    context = dict(user=user_data)
     new_tenant = CreateTenant(**request.form)
     tenant_added = await tenant_controller.create_tenant(user_id=user.user_id, tenant=new_tenant)
     flash(message="Tenant Successfully added - Continue to create a lease for tenant", category='success')
@@ -102,15 +107,19 @@ async def get_tenant(user: User, tenant_id: str):
     if tenant_data and tenant_data.address_id:
         tenant_address = await tenant_controller.get_tenant_address(address_id=tenant_data.address_id)
 
-    invoices = await lease_agreement_controller.get_invoices(tenant_id=tenant_id)
+    tenant_payments = await lease_agreement_controller.load_tenant_payments(tenant_id=tenant_id)
+    invoices: list[Invoice] = await lease_agreement_controller.get_invoices(tenant_id=tenant_id)
+    paid_invoices = [invoice.dict() for invoice in invoices
+                     if invoice.get_payment_status(payments=tenant_payments) == PaymentStatus.FULLY_PAID]
+    un_paid_invoices = [invoice.dict() for invoice in invoices
+                        if invoice.get_payment_status(payments=tenant_payments) != PaymentStatus.FULLY_PAID]
 
-    invoices_dicts = [invoice.dict() for invoice in invoices if invoice] if invoices else []
     unit = await lease_agreement_controller.get_leased_unit_by_tenant_id(tenant_id=tenant_id)
     unit_dicts = unit.dict() if isinstance(unit, Unit) else {}
     tenant_data_dict = tenant_data.dict() if isinstance(tenant_data, Tenant) else {}
     tenant_address_dict = tenant_address.dict() if isinstance(tenant_address, TenantAddress) else {}
     company_dict = company_data.dict() if isinstance(company_data, Company) else {}
-    tenant_payments = await lease_agreement_controller.load_tenant_payments(tenant_id=tenant_id)
+
     payment_dicts = [payment.dict() for payment in tenant_payments if payment] if tenant_payments else []
     statements_list = await lease_agreement_controller.load_tenant_statements(tenant_id=tenant_id)
 
@@ -119,7 +128,8 @@ async def get_tenant(user: User, tenant_id: str):
     context.update({'tenant': tenant_data_dict,
                     'address': tenant_address_dict,
                     'company': company_dict,
-                    'historical_invoices': invoices_dicts,
+                    'paid_invoices': paid_invoices,
+                    'un_paid_invoices': un_paid_invoices,
                     'unit': unit_dicts,
                     'payment_receipts': payment_dicts,
                     'statements': statements_dicts})
