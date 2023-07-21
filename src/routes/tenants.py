@@ -27,12 +27,10 @@ async def get_tenants(user: User):
         tenants_list = []
         if isinstance(company, Company):
             tenants_list = await tenant_controller.get_tenants_by_company_id(company_id=company.company_id)
-            tenants_logger.info(f"tenants : {tenants_list}")
 
         for tenant in tenants_list:
             tenant_dict = tenant.dict() if isinstance(tenant, Tenant) else None
             if tenant_dict:
-                print(tenant_dict)
                 all_tenants.append(tenant_dict)
 
     companies_dicts = [company.dict() for company in companies if company] if isinstance(companies, list) else []
