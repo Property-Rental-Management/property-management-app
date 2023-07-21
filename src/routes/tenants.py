@@ -109,6 +109,7 @@ async def get_tenant(user: User, tenant_id: str):
 
     tenant_payments = await lease_agreement_controller.load_tenant_payments(tenant_id=tenant_id)
     invoices: list[Invoice] = await lease_agreement_controller.get_invoices(tenant_id=tenant_id)
+    historical_invoices = [invoice.dict() for invoice in invoices if invoice] if invoices else []
     paid_invoices = [invoice.dict() for invoice in invoices
                      if invoice.get_payment_status(payments=tenant_payments) == PaymentStatus.FULLY_PAID]
     un_paid_invoices = [invoice.dict() for invoice in invoices
@@ -130,6 +131,7 @@ async def get_tenant(user: User, tenant_id: str):
                     'company': company_dict,
                     'paid_invoices': paid_invoices,
                     'unpaid_invoices': un_paid_invoices,
+                    'historical_invoices': historical_invoices,
                     'unit': unit_dicts,
                     'payment_receipts': payment_dicts,
                     'statements': statements_dicts})
