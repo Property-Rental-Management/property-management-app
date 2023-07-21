@@ -44,7 +44,6 @@
                             <th>Date Issued</th>
                             <th>Due Date</th>
                             <th>Amount Payable</th>
-                            <th>Payment</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -57,9 +56,6 @@
                                     {{ invoice.due_date }}
                                 </td>
                                 <td>R {{ invoice.amount_payable|currency }}.00</td>
-                                <td>
-                                    {% include "invoices/invoice_list_form.html" %}
-                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>
