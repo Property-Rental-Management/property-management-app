@@ -28,6 +28,7 @@ class InvoiceORM(Base):
     month: int = Column(Integer)
     rental_amount: int = Column(Integer)
     charge_ids: str = Column(Text)
+
     invoice_sent: bool = Column(Boolean, default=False)
     invoice_printed: bool = Column(Boolean, default=False)
 

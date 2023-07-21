@@ -1,7 +1,16 @@
 import uuid
 from datetime import date, datetime
+from enum import Enum
 
 from pydantic import BaseModel, Field, Extra, validator
+
+from src.database.models.payments import Payment
+
+
+class PaymentStatus(Enum):
+    UNPAID = "Unpaid"
+    PARTIALLY_PAID = "Partially Paid"
+    FULLY_PAID = "Fully Paid"
 
 
 class Customer(BaseModel):
@@ -137,6 +146,17 @@ class Invoice(BaseModel):
         """
         return _notes
 
+    def calculate_total_amount_paid(self, payments: list[Payment]) -> int:
+        return sum(payment.amount_paid for payment in payments if payment.invoice_number == self.invoice_number)
+
+    def get_payment_status(self, payments: list[Payment]) -> PaymentStatus:
+        total_amount_paid = self.calculate_total_amount_paid(payments)
+        status_map = {
+            self.amount_payable: PaymentStatus.FULLY_PAID,
+            0: PaymentStatus.UNPAID
+        }
+        return status_map.get(total_amount_paid, PaymentStatus.PARTIALLY_PAID)
+
     def dict(self):
         return {
             'invoice_number': self.invoice_number,
@@ -195,6 +215,7 @@ class PrintInvoiceForm(BaseModel):
     invoice_number: str
 
 
+# noinspection PyMethodParameters
 class UnitEMailInvoiceForm(BaseModel):
     unit_id: str
     building_id: str
@@ -213,9 +234,6 @@ class UnitEMailInvoiceForm(BaseModel):
 
 
 # noinspection PyMethodParameters
-from pydantic import Extra, validator
-
-
 class UnitCreateInvoiceForm(BaseModel):
     property_id: str
     unit_id: str

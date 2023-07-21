@@ -80,6 +80,7 @@ def create_app(config):
         app.register_blueprint(tenants_route)
         app.register_blueprint(cron_route)
         app.register_blueprint(notices_route)
+
         app.jinja_env.filters['currency'] = format_with_grouping
         app.jinja_env.filters['lease_counter'] = lease_formatter
         app.jinja_env.filters['square_meters'] = format_square_meters

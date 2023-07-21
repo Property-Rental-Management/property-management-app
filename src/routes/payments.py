@@ -92,6 +92,7 @@ async def do_verify_payment(user: User):
 
     payment_logger.info(f"Payment Verification: {payment_verification}")
     payment_instance = await lease_agreement_controller.add_payment(Payment(**payment_verification.dict()))
+    updated_invoice = await lease_agreement_controller.update_invoice()
     if not payment_verification.is_successful:
         building_id = payment_verification.property_id
         unit_id = payment_verification.unit_id
