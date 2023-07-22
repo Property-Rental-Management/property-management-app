@@ -223,7 +223,7 @@ async def add_tenants_company(user: User):
 @login_required
 async def update_tenant_company(user: User, company_id: str):
     """
-
+        **update_tenant_company**
     :param user:
     :param company_id:
     :return:
