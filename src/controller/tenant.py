@@ -26,7 +26,9 @@ class TenantController(Controllers):
 
     def load_tenants(self) -> None:
         """
+
         **load_tenants*8
+
         :return:
         """
         with self.get_session() as session:
