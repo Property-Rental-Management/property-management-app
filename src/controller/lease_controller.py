@@ -48,7 +48,8 @@ class LeaseController(Controllers):
     async def get_all_active_lease_agreements(self) -> list[LeaseAgreement]:
         with self.get_session() as session:
             lease_agreements = session.query(LeaseAgreementORM).filter(LeaseAgreementORM.is_active == True).all()
-            return [LeaseAgreement(**lease.dict()) for lease in lease_agreements] if lease_agreements else []
+            return [LeaseAgreement(**lease.dict())
+                    for lease in lease_agreements] if lease_agreements else []
 
     @error_handler
     async def create_lease_agreement(self, lease: CreateLeaseAgreement) -> LeaseAgreement | None:
