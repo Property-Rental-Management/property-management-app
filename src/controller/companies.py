@@ -376,20 +376,22 @@ class CompaniesController(Controllers):
         :return: False
         """
         with self.get_session() as session:
-            user_id = user.user_id
-
-            _property: PropertyORM = session.query(PropertyORM).filter(
-                PropertyORM.property_id == property_id).first()
-
-            is_company_member: bool = await self.is_company_member(user_id=user_id,
-                                                                   company_id=_property.company_id,
-                                                                   session=session)
-            if not is_company_member:
-                raise UnauthorizedError(description="Not Authorized to access the Property")
+            await self.check_ownership(property_id, session, user)
 
             property_units: list[UnitORM] = session.query(UnitORM).filter(UnitORM.property_id == property_id).all()
             return [Unit(**unit_.to_dict()) for unit_ in property_units
                     if isinstance(unit_, UnitORM)] if property_units else []
+
+    async def check_ownership(self, property_id, session, user):
+        user_id = user.user_id
+        _property: PropertyORM = session.query(PropertyORM).filter(
+            PropertyORM.property_id == property_id).first()
+        is_company_member: bool = await self.is_company_member(user_id=user_id,
+                                                               company_id=_property.company_id,
+                                                               session=session)
+        if not is_company_member:
+            raise UnauthorizedError(description="Not Authorized to access the Property")
+        return _property
 
     @error_handler
     async def get_un_leased_units(self, user: User, property_id: str) -> list[Unit]:
@@ -401,16 +403,7 @@ class CompaniesController(Controllers):
         :return:
         """
         with self.get_session() as session:
-            user_id = user.user_id
-
-            _property: PropertyORM = session.query(PropertyORM).filter(
-                PropertyORM.property_id == property_id).first()
-
-            is_company_member: bool = await self.is_company_member(user_id=user_id,
-                                                                   company_id=_property.company_id,
-                                                                   session=session)
-            if not is_company_member:
-                raise UnauthorizedError(description="Not Authorized to access the Property")
+            _ = await self.check_ownership(property_id=property_id, session=session, user=user)
 
             property_units: list[UnitORM] = session.query(UnitORM).filter(UnitORM.property_id == property_id,
                                                                           UnitORM.is_occupied == False).all()
@@ -427,16 +420,7 @@ class CompaniesController(Controllers):
         :return:
         """
         with self.get_session() as session:
-            user_id = user.user_id
-
-            _property: PropertyORM = session.query(PropertyORM).filter(
-                PropertyORM.property_id == property_id).first()
-
-            is_company_member: bool = await self.is_company_member(user_id=user_id,
-                                                                   company_id=_property.company_id,
-                                                                   session=session)
-            if not is_company_member:
-                raise UnauthorizedError(description="Not Authorized to access the Property")
+            _property = await self.check_ownership(property_id, session, user)
 
             # Note Adding one more unit number of units and available units
             _property.number_of_units += 1
@@ -451,10 +435,13 @@ class CompaniesController(Controllers):
     async def get_unit(self, user: User, building_id: str, unit_id: str) -> Unit | None:
         """
             **get_unit**
+        :param user:
         :param building_id:
         :param unit_id:
         :return:
         """
+        # Useless statement
+        _ = user.dict()
         with self.get_session() as session:
             unit_data: UnitORM = session.query(UnitORM).filter(
                 UnitORM.property_id == building_id, UnitORM.unit_id == unit_id).first()
@@ -464,6 +451,12 @@ class CompaniesController(Controllers):
 
     @error_handler
     async def update_unit(self, user_id: str, unit_data: Unit) -> Unit | None:
+        """
+
+        :param user_id:
+        :param unit_data:
+        :return:
+        """
         with self.get_session() as session:
             unit_orm: UnitORM = session.query(UnitORM).filter(UnitORM.unit_id == unit_data.unit_id,
                                                               UnitORM.property_id == unit_data.property_id).first()
@@ -513,7 +506,8 @@ class CompaniesController(Controllers):
         :return:
         """
         with self.get_session() as session:
-            billable_orm: ItemsORM = session.query(ItemsORM).filter(ItemsORM.property_id == property_id).first()
+            billable_orm: ItemsORM = session.query(ItemsORM).filter(ItemsORM.property_id == property_id,
+                                                                    ItemsORM.item_number == item_number).first()
             billable_orm.deleted = True
             session.merge(billable_orm)
             session.commit()
