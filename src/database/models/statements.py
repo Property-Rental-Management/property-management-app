@@ -1,7 +1,7 @@
 import uuid
 from datetime import date
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PastDate, root_validator
 from typing_extensions import Self
 
 from src.database.models.companies import Company
@@ -148,7 +148,21 @@ class CreateStatement(BaseModel):
         }
 
 
+# noinspection PyMethodParameters
 class StatementForm(BaseModel):
     tenant_id: str
-    start_date: date
+    start_date: PastDate
     end_date: date
+
+    @root_validator
+    def validate_dates(cls, values):
+        start_date = values.get('start_date')
+        end_date = values.get('end_date')
+
+        if start_date and end_date and start_date >= end_date:
+            raise ValueError("End date must be later than the start date.")
+
+        if end_date and end_date > date.today():
+            raise ValueError("End date cannot be in the future.")
+
+        return values

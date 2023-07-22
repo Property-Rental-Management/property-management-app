@@ -1,7 +1,7 @@
 import uuid
 from datetime import date
 
-from pydantic import BaseModel, Field, validator, PositiveInt, FutureDate
+from pydantic import BaseModel, Field, validator, PositiveInt
 
 
 class Property(BaseModel):
@@ -64,7 +64,7 @@ class Unit(BaseModel):
     is_booked: bool = Field(default=False)
     rental_amount: PositiveInt
     lease_start_date: date | None = Field(default=None)
-    lease_end_date: FutureDate | None = Field(default=None)
+    lease_end_date: date | None = Field(default=None)
     unit_area: PositiveInt
     has_reception: bool
 
@@ -122,7 +122,7 @@ class CreateUnitRental(BaseModel):
     is_booked: bool = Field(default=True)
     rental_amount: PositiveInt
     lease_start_date: date | None = Field(default=None)
-    lease_end_date: FutureDate | None = Field(default=None)
+    lease_end_date: date | None = Field(default=None)
     unit_area: PositiveInt
     has_reception: bool
     rental_period: str
@@ -164,7 +164,7 @@ class UpdateUnit(BaseModel):
     is_booked: bool | None
     rental_amount: PositiveInt
     lease_start_date: date
-    lease_end_date: FutureDate
+    lease_end_date: date
     unit_area: PositiveInt
     has_reception: bool
 

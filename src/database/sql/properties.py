@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, Date, ForeignKey, inspect
 from datetime import date
+
+from sqlalchemy import Column, Integer, String, Text, Boolean, Date, ForeignKey, inspect
+
 from src.database.constants import ID_LEN, NAME_LEN
 from src.database.sql import Base, engine
 
@@ -66,11 +68,12 @@ class UnitORM(Base):
         Convert the UnitORM object to a dictionary.
         :return: Dictionary representation of the object.
         """
-        return {'unit_id': self.unit_id, 'unit_number': self.unit_number, 'property_id': self.property_id, 'tenant_id': self.tenant_id,
+        return {'unit_id': self.unit_id, 'unit_number': self.unit_number, 'property_id': self.property_id,
+                'tenant_id': self.tenant_id,
                 'is_occupied': self.is_occupied, 'is_booked': self.is_booked, 'rental_amount': self.rental_amount,
                 'unit_area': self.unit_area, 'has_reception': self.has_reception,
-                'lease_start_date': self.lease_start_date.isoformat() if self.lease_start_date else None,
-                'lease_end_date': self.lease_end_date.isoformat() if self.lease_end_date else None}
+                'lease_start_date': self.lease_start_date if self.lease_start_date else None,
+                'lease_end_date': self.lease_end_date if self.lease_end_date else None}
 
     @classmethod
     def create_if_not_table(cls):
