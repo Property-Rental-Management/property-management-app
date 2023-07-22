@@ -19,6 +19,7 @@ class TenantController(Controllers):
             if tenant.tenant_id == tenant_instance.tenant_id:
                 # Tenant already exists, remove the existing instance
                 self.tenants.pop(index)
+                self.tenants.append(tenant_instance)
                 break
         else:
             # Tenant instance not found, add the new instance to the list

@@ -1,11 +1,12 @@
 import uuid
 
+from flask import Flask
 from pydantic import ValidationError
 
 from src.controller import error_handler, UnauthorizedError, Controllers
 from src.database.models.bank_accounts import BusinessBankAccount
 from src.database.models.companies import (Company, UpdateCompany, TenantRelationCompany, CreateTenantCompany,
-                                           UpdateTenantCompany)
+                                           UpdateTenantCompany, UserRelationCompany)
 from src.database.models.invoices import CreateInvoicedItem, BillableItem, CreateUnitCharge
 from src.database.models.properties import Property, Unit, AddUnit, UpdateProperty, CreateProperty
 from src.database.models.users import User
@@ -20,15 +21,85 @@ class CompaniesController(Controllers):
     def __init__(self):
         super().__init__()
         self._logger = init_logger(self.__class__.__name__)
+        self.company_user: dict[str, str] = {}
+        self.company_tenant: dict[str, str] = {}
+        self.companies: list[Company] = []
+        self.units: list[Unit] = []
+        self.buildings: list[Property] = []
+
+    def manage_company_list(self, company_instance: Company):
+        # Check if the tenant instance already exists in the list
+
+        for index, company in enumerate(self.companies):
+            if company.company_id == company_instance.company_id:
+                # Tenant already exists, remove the existing instance
+                self.companies.pop(index)
+                self.companies.append(company_instance)
+                break
+        else:
+            # Tenant instance not found, add the new instance to the list
+            self.companies.append(company_instance)
+
+    def manage_building_list(self, building_instance: Property):
+        # Check if the tenant instance already exists in the list
+
+        for index, building in enumerate(self.buildings):
+            if building == building_instance:
+                # Tenant already exists, remove the existing instance
+                self.buildings.pop(index)
+                self.buildings.append(building_instance)
+                break
+        else:
+            # Tenant instance not found, add the new instance to the list
+            self.buildings.append(building_instance)
+
+    def manage_unit_list(self, unit_instance: Unit):
+        # Check if the tenant instance already exists in the list
+
+        for index, unit in enumerate(self.units):
+            if unit == unit_instance:
+                # Tenant already exists, remove the existing instance
+                self.units.pop(index)
+                self.units.append(unit_instance)
+                break
+        else:
+            # Tenant instance not found, add the new instance to the list
+            self.units.append(unit_instance)
+
+    def load_company_details(self):
+        """
+
+        :return:
+        """
+        with self.get_session() as session:
+            user_company_data = session.query(UserCompanyORM).filter().all()
+            self.company_user = {user_company.company_id: user_company.user_id for user_company in user_company_data}
+            self.companies = [Company(**company.to_dict()) for company in session.query(CompanyORM).filter().all()]
+            self.units = [Unit(**unit.to_dict()) for unit in session.query(UnitORM).filter().all()]
+            self.buildings = [Property(**building.to_dict()) for building in session.query(PropertyORM).filter().all()]
+
+    def init_app(self, app: Flask):
+        self.load_company_details()
 
     @error_handler
-    async def is_company_member(self, user_id: str, company_id: str, session):
+    async def is_company_member(self, user_id: str, company_id: str, session) -> bool:
+
+        if self.company_user and user_id:
+            return self.company_user.get(company_id) == user_id
+
         result: UserCompanyORM = session.query(UserCompanyORM).filter(
             UserCompanyORM.user_id == user_id, UserCompanyORM.company_id == company_id).first()
+
         return result and result.user_id == user_id
 
     @error_handler
     async def get_user_companies(self, user_id: str) -> list[Company]:
+        if self.company_user and self.company_user:
+            # Get the list of company IDs associated with the given user_id
+            company_ids = [company_id for company_id, user in self.company_user.items() if user == user_id]
+            # Filter the companies list based on the company IDs then return
+            return [company for company in self.companies if company.company_id in company_ids]
+
         with self.get_session() as session:
             company_list: list[UserCompanyORM] = session.query(UserCompanyORM).filter(
                 UserCompanyORM.user_id == user_id).all()
@@ -57,18 +128,32 @@ class CompaniesController(Controllers):
 
             return Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
 
-    @error_handler
-    async def internal_company_id_to_user_id(self, company_id: str) -> UserCompanyORM:
-        """
-            **internal_company_id_to_user_id**
-        :param company_id:
-        :return:
-        """
-        with self.get_session() as session:
-            return session.query(UserCompanyORM).filter(UserCompanyORM.company_id == company_id).filter()
+    # @error_handler
+    # async def internal_company_id_to_user_id(self, company_id: str) -> UserCompanyORM:
+    #     """
+    #         **internal_company_id_to_user_id**
+    #     :param company_id:
+    #     :return:
+    #     """
+    #     for company in self.companies:
+    #         if company.company_id == company_id:
+    #             # Return the UserCompanyORM object if company_id matches
+    #             return company
+    #
+    #     # If company_id does not match any company in self.companies,
+    #     # perform the database query
+    #     with self.get_session() as session:
+    #         user_company = session.query(UserCompanyORM).filter(UserCompanyORM.company_id == company_id).first()
+    #
+    #     return user_company
 
     @error_handler
     async def get_company_internal(self, company_id: str) -> Company | None:
+
+        for company in self.companies:
+            if company.company_id == company_id:
+                return company
+
         with self.get_session() as session:
             company_orm: CompanyORM = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
             return Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
@@ -85,13 +170,17 @@ class CompaniesController(Controllers):
 
             try:
                 company: Company = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
+                self.companies.append(company)
             except ValidationError as e:
                 self._logger.error(str(e))
                 return None
 
             user_company_dict = dict(id=str(uuid.uuid4()), company_id=company_orm.company_id, user_id=user.user_id)
             session.add(company_orm)
-            session.add(UserCompanyORM(**user_company_dict))
+            user_company_orm: UserCompanyORM = UserCompanyORM(**user_company_dict)
+            # Note see cache_dict to understand what is happening here
+            self.company_user.update(UserRelationCompany(**user_company_dict).cache_dict())
+            session.add(user_company_orm)
             session.commit()
             return company
 
@@ -108,6 +197,7 @@ class CompaniesController(Controllers):
             result = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
             session.add(company_orm)
             session.commit()
+            self.companies.append(result)
             return result
 
     @error_handler
@@ -121,6 +211,7 @@ class CompaniesController(Controllers):
             tenant_relation_orm: TenantCompanyORM = TenantCompanyORM(**company_relation.dict())
             session.add(tenant_relation_orm)
             session.commit()
+            self.company_tenant.update(company_relation.cache_dict())
             return company_relation
 
     @error_handler
@@ -152,8 +243,9 @@ class CompaniesController(Controllers):
 
             session.merge(_company_data)
             session.commit()
-
-            return Company(**_company_data.to_dict())
+            company = Company(**_company_data.to_dict())
+            self.manage_company_list(company_instance=company)
+            return company
 
     @error_handler
     async def update_tenant_company(self, company_data: UpdateTenantCompany):
@@ -172,8 +264,11 @@ class CompaniesController(Controllers):
             for field, value in company_data.dict().items():
                 if value is not None:
                     setattr(o_company_data, field, value)
+            session.merge(o_company_data)
             session.commit()
-            return company_data
+            update_company_data = Company(**o_company_data.to_dict())
+            self.manage_company_list(company_instance=update_company_data)
+            return update_company_data
 
     @error_handler
     async def update_bank_account(self, user: User, account_details: BusinessBankAccount) -> BusinessBankAccount | None:
@@ -226,6 +321,8 @@ class CompaniesController(Controllers):
 
             building = Property(**property_orm.to_dict()) if isinstance(property_orm, PropertyORM) else None
 
+            self.buildings.append(building)
+
             session.add(property_orm)
             session.commit()
 
@@ -255,8 +352,11 @@ class CompaniesController(Controllers):
                 session.merge(original_property_orm)
             # Commit the changes to the database
             session.commit()
-            return Property(**original_property_orm.to_dict()) if isinstance(original_property_orm,
-                                                                             PropertyORM) else None
+            building = Property(**original_property_orm.to_dict()) if isinstance(original_property_orm,
+                                                                                 PropertyORM) else None
+            if building:
+                self.buildings.append(building)
+            return building
 
     @error_handler
     async def get_properties(self, user: User, company_id: str) -> list[Property] | None:
@@ -266,7 +366,11 @@ class CompaniesController(Controllers):
         :param company_id:
         :return:
         """
+        if self.buildings:
+            return [building for building in self.buildings if building.company_id == company_id]
+
         with self.get_session() as session:
+            # Move this up
             user_id = user.user_id
             is_company_member: bool = await self.is_company_member(user_id=user_id,
                                                                    company_id=company_id,
@@ -287,6 +391,9 @@ class CompaniesController(Controllers):
         :param company_id:
         :return:
         """
+        if self.buildings:
+            return [building for building in self.buildings if building.company_id == company_id]
+
         with self.get_session() as session:
             properties: list[PropertyORM] = session.query(PropertyORM).filter(
                 PropertyORM.company_id == company_id).all()
@@ -301,6 +408,10 @@ class CompaniesController(Controllers):
         :param property_id:
         :return:
         """
+        for building in self.buildings:
+            if building.property_id == property_id:
+                return building
+
         with self.get_session() as session:
             property_: PropertyORM = session.query(PropertyORM).filter(PropertyORM.property_id == property_id).first()
             return Property(**property_.to_dict()) if isinstance(property_, PropertyORM) else None
@@ -356,6 +467,10 @@ class CompaniesController(Controllers):
         :param property_id:
         :return:
         """
+        for building in self.buildings:
+            if building.property_id == property_id:
+                return building
+
         with self.get_session() as session:
             _property: PropertyORM = session.query(PropertyORM).filter(
                 PropertyORM.property_id == property_id).first()
@@ -375,6 +490,9 @@ class CompaniesController(Controllers):
 
         :return: False
         """
+        if self.units:
+            return [unit for unit in self.units if unit.property_id == property_id]
+
         with self.get_session() as session:
             await self.check_ownership(property_id, session, user)
 
@@ -402,6 +520,9 @@ class CompaniesController(Controllers):
         :param property_id:
         :return:
         """
+        if self.units:
+            return [unit for unit in self.units if (unit.property_id == property_id and not unit.is_occupied)]
+
         with self.get_session() as session:
             _ = await self.check_ownership(property_id=property_id, session=session, user=user)
 
@@ -429,6 +550,7 @@ class CompaniesController(Controllers):
             unit_orm: UnitORM = UnitORM(**unit_data.dict())
             session.add(unit_orm)
             session.commit()
+            self.units.append(Unit(**unit_data.dict()))
             return unit_data
 
     @error_handler
@@ -441,6 +563,10 @@ class CompaniesController(Controllers):
         :return:
         """
         # Useless statement
+        for unit in self.units:
+            if unit.property_id == building_id and unit.unit_id == unit_id:
+                return unit
+
         _ = user.dict()
         with self.get_session() as session:
             unit_data: UnitORM = session.query(UnitORM).filter(
@@ -471,8 +597,9 @@ class CompaniesController(Controllers):
                 # Commit the changes to the database
                 session.merge(unit_orm)
                 session.commit()
-
-                return Unit(**unit_orm.to_dict())
+                unit_data = Unit(**unit_orm.to_dict())
+                self.manage_unit_list(unit_instance=unit_data)
+                return unit_data
 
             return None
 

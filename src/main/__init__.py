@@ -48,6 +48,8 @@ def create_app(config):
         encryptor.init_app(app=app)
         user_controller.init_app(app=app)
         tenant_controller.init_app(app=app)
+        company_controller.init_app(app=app)
+
         firewall.init_app(app=app)
         send_mail.init_app(app=app)
         invoice_man.init_app(app=app)

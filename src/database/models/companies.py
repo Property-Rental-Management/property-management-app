@@ -82,6 +82,7 @@ class CreateCompany(BaseModel):
     class Config:
         extra = Extra.ignore
 
+
 class CreateTenantCompany(BaseModel):
     """
     Represents the details of a company_id.
@@ -148,3 +149,16 @@ class TenantRelationCompany(BaseModel):
     id: str
     company_id: str
     tenant_id: str
+
+    def cache_dict(self) -> dict[str, str]:
+        return {self.company_id: self.tenant_id}
+
+
+class UserRelationCompany(BaseModel):
+    id: str
+    company_id: str
+    user_id: str
+    user_level: str = Field(default="admin")
+
+    def cache_dict(self) -> dict[str, str]:
+        return {self.company_id: self.user_id}

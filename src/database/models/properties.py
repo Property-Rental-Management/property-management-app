@@ -38,6 +38,18 @@ class Property(BaseModel):
     built_year: PositiveInt
     parking_spots: int
 
+    def __eq__(self, other):
+        """
+        Define the equality comparison for Property instances.
+        Two Property instances are equal if their company_id and property_id are equal.
+
+        :param other: The other instance to compare with.
+        :return: True if the company_id and property_id are equal, False otherwise.
+        """
+        if not isinstance(other, Property):
+            return False
+
+        return (self.company_id, self.property_id) == (other.company_id, other.property_id)
 
 # noinspection PyNestedDecorators
 class Unit(BaseModel):
@@ -67,6 +79,19 @@ class Unit(BaseModel):
     lease_end_date: date | None = Field(default=None)
     unit_area: PositiveInt
     has_reception: bool
+
+    def __eq__(self, other):
+        """
+        Define the equality comparison for Unit instances.
+        Two Unit instances are equal if their property_id and unit_id are equal.
+
+        :param other: The other instance to compare with.
+        :return: True if the property_id and unit_id are equal, False otherwise.
+        """
+        if not isinstance(other, Unit):
+            return False
+
+        return (self.property_id, self.unit_id) == (other.property_id, other.unit_id)
 
     @validator('is_occupied', pre=True)
     @classmethod
