@@ -92,7 +92,7 @@ class LeaseController(Controllers):
                 return [LeaseAgreement(**lease.dict()) for lease in lease_orm_list if lease] if lease_orm_list else []
 
             except Exception as e:
-                self._logger.error(f"Error creating Lease Agreement:  {str(e)}")
+                self.logger.error(f"Error creating Lease Agreement:  {str(e)}")
             return []
 
     @error_handler
@@ -161,7 +161,7 @@ class LeaseController(Controllers):
                 tenant: Tenant = Tenant(**tenant_orm.to_dict()) if tenant_orm else None
 
                 if not (property_ and company and tenant):
-                    self._logger.error(f"""                    
+                    self.logger.error(f"""                    
                     Error -- !                                        
                     Property : {property_}                    
                     Company : {company}                    
@@ -169,7 +169,7 @@ class LeaseController(Controllers):
                     """)
                     return None
                 else:
-                    self._logger.debug(f"""                    
+                    self.logger.debug(f"""                    
                     Error -- !                                        
                     Property : {property_}                    
                     Company : {company}                    
@@ -177,10 +177,11 @@ class LeaseController(Controllers):
                     """)
 
                 service_name: str = f"{property_.name} Invoice" if property_.name else None
-                description: str = f"{company.company_name} Monthly Rental for a Unit on {property_.name}" if company.company_name and property_.name else None
+                description: str = f"{company.company_name} Monthly Rental for a Unit on {property_.name}" \
+                    if company.company_name and property_.name else None
 
                 if not (service_name and description):
-                    self._logger.error(f"""
+                    self.logger.error(f"""
                     This should not happen : 
                     Service Name: {service_name} & Description: {description}""")
                     return None
@@ -203,14 +204,14 @@ class LeaseController(Controllers):
                                                          charge_ids=charge_ids, invoice_sent=False,
                                                          invoice_printed=False)
 
-                    self._logger.info(f"Invoice ORM : {invoice_orm}")
+                    self.logger.info(f"Invoice ORM : {invoice_orm}")
 
                 except Exception as e:
-                    self._logger.error(str(e))
+                    self.logger.error(str(e))
                 # TODO - find a way to allow user to indicate Discount and Tax Rate - preferrably Tax rate can be set on
                 #  settings
                 if not invoice_orm:
-                    self._logger.error("Whoa -- BIG Trouble not creating Invoice look at the InvoiceORM")
+                    self.logger.error("Whoa -- BIG Trouble not creating Invoice look at the InvoiceORM")
                     return None
 
                 session.add(invoice_orm)
@@ -219,18 +220,19 @@ class LeaseController(Controllers):
                 try:
                     _response: Invoice = Invoice(**invoice_orm.to_dict())
                 except ValidationError as e:
-                    self._logger.error(str(e))
-                self._logger.info(f"Invoice Created Successfully : {_response}")
+                    self.logger.error(str(e))
+                self.logger.info(f"Invoice Created Successfully : {_response}")
 
                 # NOTE: marking user charges as invoiced
                 await self.mark_charges_as_invoiced(session=session, charge_ids=list_charge_ids)
                 return _response
 
             except Exception as e:
-                self._logger.error(str(e))
+                self.logger.error(str(e))
 
             return None
 
+    # noinspection DuplicatedCode
     @staticmethod
     @error_handler
     async def calculate_due_date(date_issued: date, due_after: int | None) -> date:
@@ -316,6 +318,19 @@ class LeaseController(Controllers):
             unit_orm: UnitORM = session.query(UnitORM).filter(UnitORM.tenant_id == tenant_id).first()
             return Unit(**unit_orm.to_dict()) if isinstance(unit_orm, UnitORM) else None
 
+    def load_company_payments(self, company_id: str):
+        with self.get_session() as session:
+            payments = []
+            property_list: list[PropertyORM] = session.query(PropertyORM).filter(
+                PropertyORM.company_id == company_id).all()
+            for property_obj in property_list:
+                payments_list = session.query(PaymentORM).filter(
+                    PaymentORM.property_id == property_obj.property_id).all()
+                for payment_obj in payments_list:
+                    payments.append(Payment(**payment_obj.to_dict()))
+
+        return payments
+
     @error_handler
     async def load_company_payments(self, company_id: str) -> list[Payment]:
         """
@@ -324,17 +339,7 @@ class LeaseController(Controllers):
         :param company_id:
         :return:
         """
-        with self.get_session() as session:
-            payments = []
-            property_list: list[PropertyORM] = session.query(PropertyORM).filter(
-                PropertyORM.company_id == company_id).all()
-            for property_obj in property_list:
-                payments_list = session.query(PaymentORM).filter(
-                    PaymentORM.property_id == property_obj.property_id).all()
-                for payment_obj in payments_list:
-                    payments.append(Payment(**payment_obj.to_dict()))
-
-        return payments
+        return self.load_company_payments(company_id=company_id)
 
     def sync_load_company_payments(self, company_id) -> list[Payment]:
         """
@@ -342,17 +347,7 @@ class LeaseController(Controllers):
         :param company_id:
         :return:
         """
-        with self.get_session() as session:
-            payments = []
-            property_list: list[PropertyORM] = session.query(PropertyORM).filter(
-                PropertyORM.company_id == company_id).all()
-            for property_obj in property_list:
-                payments_list = session.query(PaymentORM).filter(
-                    PaymentORM.property_id == property_obj.property_id).all()
-                for payment_obj in payments_list:
-                    payments.append(Payment(**payment_obj.to_dict()))
-
-        return payments
+        return self.load_company_payments(company_id=company_id)
 
     @error_handler
     async def load_tenant_payments(self, tenant_id: str) -> list[Payment]:
@@ -411,8 +406,8 @@ class LeaseController(Controllers):
 
 class InvoiceManager:
     def __init__(self, cache_path):
+        self.logger = init_logger(self.__class__.__name__)
         self._base_url = ""
-        self._logger = init_logger()
         self._cache_path = cache_path
         self.invoices = self._load_cache()
 
@@ -427,7 +422,7 @@ class InvoiceManager:
         :return:
         """
         expiration_date: datetime = datetime.now() + timedelta(days=1)
-        self._logger.info(f"Invoice added will expire @: {expiration_date}")
+        self.logger.info(f"Invoice added will expire @: {expiration_date}")
         self.invoices[invoice_number] = expiration_date
         self._save_cache()
         url = url_for('invoices.get_invoice', invoice_number=invoice_number, building_id=building_id, _external=True)
@@ -435,18 +430,18 @@ class InvoiceManager:
 
     async def verify_invoice_number(self, invoice_number: str) -> str | None:
         expiration_date = self.invoices.get(invoice_number)
-        self._logger.info(f"stored data: {self.invoices}")
-        self._logger.info(f"fetching invoice number: {invoice_number} and found date: {expiration_date}")
+        self.logger.info(f"stored data: {self.invoices}")
+        self.logger.info(f"fetching invoice number: {invoice_number} and found date: {expiration_date}")
         if expiration_date:
             if datetime.now() <= expiration_date:
-                self._logger.info(f"Retrieving invoice: {invoice_number}")
+                self.logger.info(f"Retrieving invoice: {invoice_number}")
                 return invoice_number
             else:
                 self.invoices.pop(invoice_number)
                 self._save_cache()
-                self._logger.info(f"The invoice {invoice_number} has expired")
+                self.logger.info(f"The invoice {invoice_number} has expired")
         else:
-            self._logger.info(f"The invoice {invoice_number} does not exist")
+            self.logger.info(f"The invoice {invoice_number} does not exist")
         return None
 
     def _load_cache(self):
