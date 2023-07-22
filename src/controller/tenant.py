@@ -1,4 +1,5 @@
 from flask import Flask
+from pydantic import ValidationError
 
 from src.controller import error_handler, Controllers
 from src.database.models.properties import Unit, Property
@@ -34,8 +35,12 @@ class TenantController(Controllers):
         """
         with self.get_session() as session:
             tenant_orm_list = session.query(TenantORM).filter().all()
-            self.tenants = [Tenant(**tenant.to_dict()) for tenant in tenant_orm_list if
-                            tenant] if tenant_orm_list else []
+            try:
+                self.tenants = [Tenant(**tenant.to_dict()) for tenant in tenant_orm_list if
+                                tenant] if tenant_orm_list else []
+            except ValidationError as e:
+                self.logger.error(f"Error loading tenants on start_up : {str(e)}")
+                pass
 
     def init_app(self, app: Flask):
         """

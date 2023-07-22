@@ -25,7 +25,24 @@ from src.logger import init_logger
 class LeaseController(Controllers):
     def __init__(self):
         super().__init__()
-        self._logger = init_logger(self.__class__.__name__)
+        self.invoices: list[Invoice] = []
+        self.payments: list[Payment] = []
+
+    def load_data(self):
+        with self.get_session() as session:
+            try:
+                self.invoices = [Invoice(**invoice_orm.to_dict()) for invoice_orm in
+                                 session.query(InvoiceORM).filter().all()]
+            except ValidationError as e:
+                self.logger.error(f"Error loading invoices on start_up: {str(e)}")
+            try:
+                self.payments = [Payment(**payment_orm.to_dict()) for payment_orm in
+                                 session.query(PaymentORM).filter().all()]
+            except ValidationError as e:
+                self.logger.error(f"Error loading payments on start_up event: {str(e)}")
+
+    def init_app(self, app: Flask):
+        self.load_data()
 
     @error_handler
     async def get_all_active_lease_agreements(self) -> list[LeaseAgreement]:

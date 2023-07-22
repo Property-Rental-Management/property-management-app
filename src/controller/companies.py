@@ -74,9 +74,19 @@ class CompaniesController(Controllers):
         with self.get_session() as session:
             user_company_data = session.query(UserCompanyORM).filter().all()
             self.company_user = {user_company.company_id: user_company.user_id for user_company in user_company_data}
-            self.companies = [Company(**company.to_dict()) for company in session.query(CompanyORM).filter().all()]
-            self.units = [Unit(**unit.to_dict()) for unit in session.query(UnitORM).filter().all()]
-            self.buildings = [Property(**building.to_dict()) for building in session.query(PropertyORM).filter().all()]
+            try:
+                self.companies = [Company(**company.to_dict()) for company in session.query(CompanyORM).filter().all()]
+            except ValidationError as e:
+                self.logger.error(f"Error on loading Company Data on start_up: {str(e)}")
+            try:
+                self.units = [Unit(**unit.to_dict()) for unit in session.query(UnitORM).filter().all()]
+            except ValidationError as e:
+                self.logger.error(f"Error on loading property units on start_up: {str(e)}")
+            try:
+                self.buildings = [Property(**building.to_dict()) for building in
+                                  session.query(PropertyORM).filter().all()]
+            except ValidationError as e:
+                self.logger.error(f"Error on loading Building Data on Start_up: {str(e)}")
 
     def init_app(self, app: Flask):
         self.load_company_details()
