@@ -111,6 +111,19 @@ class Invoice(BaseModel):
     invoice_sent: bool
     invoice_printed: bool
 
+    def __eq__(self, other):
+        """
+        Define the equality comparison for Invoice instances.
+        Two Invoice instances are equal if their invoice_number is equal.
+
+        :param other: The other instance to compare with.
+        :return: True if the invoice_number is equal, False otherwise.
+        """
+        if not isinstance(other, Invoice):
+            return False
+
+        return self.invoice_number == other.invoice_number
+
     @validator('charge_ids', pre=True)
     def validate_charge_ids(cls, value):
         if isinstance(value, str):

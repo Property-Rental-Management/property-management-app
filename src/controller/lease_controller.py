@@ -25,11 +25,59 @@ from src.logger import init_logger
 class LeaseController(Controllers):
     def __init__(self):
         super().__init__()
+        self.lease_agreements: list[LeaseAgreement] = []
+        # NOTE: invoices could be buggy
         self.invoices: list[Invoice] = []
         self.payments: list[Payment] = []
 
+    def manage_invoice_list(self, invoice_instance: Invoice):
+
+        for index, invoice in enumerate(self.invoices):
+            if invoice == invoice_instance:
+                # Tenant already exists, remove the existing instance
+                self.invoices.pop(index)
+                self.invoices.append(invoice_instance)
+                break
+        else:
+            # Tenant instance not found, add the new instance to the list
+            self.invoices.append(invoice_instance)
+
+    def manage_payment_list(self, payment_instance: Payment):
+        """
+
+        :param payment_instance:
+        :return:
+        """
+        for index, payment in enumerate(self.payments):
+            if payment == payment_instance:
+                # Tenant already exists, remove the existing instance
+                self.payments.pop(index)
+                self.payments.append(payment_instance)
+                break
+        else:
+            # Tenant instance not found, add the new instance to the list
+            self.payments.append(payment_instance)
+
+    def manage_lease_list(self, lease_instance: LeaseAgreement):
+
+        for index, lease in enumerate(self.lease_agreements):
+            if lease == lease_instance:
+                # Tenant already exists, remove the existing instance
+                self.lease_agreements.pop(index)
+                self.lease_agreements.append(lease_instance)
+                break
+        else:
+            # Tenant instance not found, add the new instance to the list
+            self.lease_agreements.append(lease_instance)
+
     def load_data(self):
         with self.get_session() as session:
+            try:
+                self.lease_agreements = [LeaseAgreement(**lease.to_dict())
+                                         for lease in session.query(LeaseAgreementORM).filter().all()]
+            except ValidationError as e:
+                self.logger.error(f"Error loading lease agreements on start_up: {str(e)}")
+
             try:
                 self.invoices = [Invoice(**invoice_orm.to_dict()) for invoice_orm in
                                  session.query(InvoiceORM).filter().all()]
@@ -46,6 +94,9 @@ class LeaseController(Controllers):
 
     @error_handler
     async def get_all_active_lease_agreements(self) -> list[LeaseAgreement]:
+        if self.lease_agreements:
+            return [lease for lease in self.lease_agreements if lease.is_active]
+
         with self.get_session() as session:
             lease_agreements = session.query(LeaseAgreementORM).filter(LeaseAgreementORM.is_active == True).all()
             return [LeaseAgreement(**lease.dict())
@@ -63,7 +114,10 @@ class LeaseController(Controllers):
             lease_orm: LeaseAgreementORM = LeaseAgreementORM(**lease.dict())
             session.add(lease_orm)
             session.commit()
-            return LeaseAgreement(**lease.dict())
+
+            lease_data = LeaseAgreement(**lease.dict())
+            self.lease_agreements.append(lease_data)
+            return lease_data
 
     @staticmethod
     async def calculate_deposit_amount(rental_amount: int) -> int:
@@ -85,6 +139,10 @@ class LeaseController(Controllers):
         :param payment_terms:
         :return:
         """
+        if self.lease_agreements:
+            return [lease for lease in self.lease_agreements
+                    if lease.is_active and lease.payment_period == payment_terms]
+
         with self.get_session() as session:
             try:
                 lease_orm_list: list[LeaseAgreementORM] = session.query(LeaseAgreementORM).filter(
@@ -104,6 +162,10 @@ class LeaseController(Controllers):
 
         :return:
         """
+        for invoice in self.invoices:
+            if invoice.invoice_number == invoice_number:
+                return invoice
+
         with self.get_session() as session:
             invoice_orm = session.query(InvoiceORM).filter(InvoiceORM.invoice_number == invoice_number).first()
             return Invoice(**invoice_orm.to_dict()) if isinstance(invoice_orm, InvoiceORM) else None
@@ -130,7 +192,9 @@ class LeaseController(Controllers):
                 session.commit()
 
                 # Return the updated invoice
-                return Invoice(**invoice_orm.to_dict())
+                invoice_data = Invoice(**invoice_orm.to_dict())
+                self.manage_invoice_list(invoice_instance=invoice_data)
+                return invoice_data
 
             return None
 
@@ -219,14 +283,17 @@ class LeaseController(Controllers):
                 session.commit()
 
                 try:
-                    _response: Invoice = Invoice(**invoice_orm.to_dict())
+                    _invoice_data: Invoice = Invoice(**invoice_orm.to_dict())
+                    # TODO - this could be buggy please revise
+                    self.invoices.append(_invoice_data)
                 except ValidationError as e:
                     self.logger.error(str(e))
-                self.logger.info(f"Invoice Created Successfully : {_response}")
+                self.logger.info(f"Invoice Created Successfully : {_invoice_data}")
 
                 # NOTE: marking user charges as invoiced
                 await self.mark_charges_as_invoiced(session=session, charge_ids=list_charge_ids)
-                return _response
+
+                return _invoice_data
 
             except Exception as e:
                 self.logger.error(str(e))
@@ -290,6 +357,9 @@ class LeaseController(Controllers):
             **get_invoices**
         :return:
         """
+        if self.invoices:
+            return [invoice for invoice in self.invoices if invoice.customer.tenant_id == tenant_id]
+
         with self.get_session() as session:
             invoice_list: list[InvoiceORM] = session.query(InvoiceORM).filter(InvoiceORM.tenant_id == tenant_id).all()
             return [Invoice(**_invoice.to_dict()) for _invoice in invoice_list if _invoice] if invoice_list else []

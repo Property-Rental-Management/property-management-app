@@ -25,6 +25,19 @@ class Payment(BaseModel):
     month: PositiveInt
     comments: str
 
+    def __eq__(self, other):
+        """
+        Define the equality comparison for Payment instances.
+        Two Payment instances are equal if their transaction_id and invoice_number are equal.
+
+        :param other: The other instance to compare with.
+        :return: True if the transaction_id and invoice_number are equal, False otherwise.
+        """
+        if not isinstance(other, Payment):
+            return False
+
+        return (self.transaction_id, self.invoice_number) == (other.transaction_id, other.invoice_number)
+
     @property
     def year(self) -> int:
         return self.date_paid.year
