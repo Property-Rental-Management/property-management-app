@@ -214,6 +214,20 @@ class CompaniesController(Controllers):
             self.company_tenant.update(company_relation.cache_dict())
             return company_relation
 
+    async def do_update_company_data(self, company_data, o_company_data, session):
+        if not o_company_data:
+            return None
+        # Update original_company_data fields with corresponding values from company_data
+        for field, value in company_data.dict().items():
+            if value is not None:
+                setattr(o_company_data, field, value)
+        session.merge(o_company_data)
+        session.commit()
+        update_company_data = Company(**o_company_data.to_dict())
+        self.manage_company_list(company_instance=update_company_data)
+        return update_company_data
+
+    # noinspection DuplicatedCode
     @error_handler
     async def update_company(self, user: User, company_data: UpdateCompany) -> Company | None:
         """
@@ -231,21 +245,10 @@ class CompaniesController(Controllers):
             if not is_company_member:
                 raise UnauthorizedError(description="Not Authorized to Update Bank Account")
 
-            _company_data = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
+            o_company_data = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
 
-            if _company_data is None:
-                return None
-
-            # Update original_company_data fields with corresponding values from company_data
-            for field, value in company_data.dict().items():
-                if value is not None:
-                    setattr(_company_data, field, value)
-
-            session.merge(_company_data)
-            session.commit()
-            company = Company(**_company_data.to_dict())
-            self.manage_company_list(company_instance=company)
-            return company
+            return await self.do_update_company_data(company_data=company_data, o_company_data=o_company_data,
+                                                     session=session)
 
     @error_handler
     async def update_tenant_company(self, company_data: UpdateTenantCompany):
@@ -257,18 +260,8 @@ class CompaniesController(Controllers):
             company_id: str = company_data.company_id
             o_company_data: CompanyORM = session.query(CompanyORM).filter(CompanyORM.company_id == company_id).first()
 
-            if o_company_data is None:
-                return None
-
-            # Update original_company_data fields with corresponding values from company_data
-            for field, value in company_data.dict().items():
-                if value is not None:
-                    setattr(o_company_data, field, value)
-            session.merge(o_company_data)
-            session.commit()
-            update_company_data = Company(**o_company_data.to_dict())
-            self.manage_company_list(company_instance=update_company_data)
-            return update_company_data
+            return await self.do_update_company_data(company_data=company_data, o_company_data=o_company_data,
+                                                     session=session)
 
     @error_handler
     async def update_bank_account(self, user: User, account_details: BusinessBankAccount) -> BusinessBankAccount | None:
