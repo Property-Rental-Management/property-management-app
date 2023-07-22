@@ -426,8 +426,8 @@ class CompaniesController(Controllers):
             _property.number_of_units += 1
             _property.available_units += 1
 
-            unit: UnitORM = UnitORM(**unit_data.dict())
-            session.add(unit)
+            unit_orm: UnitORM = UnitORM(**unit_data.dict())
+            session.add(unit_orm)
             session.commit()
             return unit_data
 

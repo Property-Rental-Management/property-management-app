@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from flask import Blueprint, render_template, request, url_for, redirect, flash, send_file
@@ -24,16 +25,19 @@ companies_logger.setLevel(logging.INFO)
 @companies_route.get('/admin/companies')
 @login_required
 async def get_companies(user: User):
-    context: dict[str, str | list[dict[str, str]]] =  dict(user=user.dict())
+    """
 
-    companies: list[Company] = await company_controller.get_user_companies(user_id=user.user_id)
+    :param user:
+    :return:
+    """
+    context: dict[str, str | list[dict[str, str]]] = dict(user=user.dict())
+    get_companies_instance = company_controller.get_user_companies(user_id=user.user_id)
+    get_notifications = notifications_controller.get_user_notifications(user_id=user.user_id)
+    companies, notifications = await asyncio.gather(*[get_companies_instance, get_notifications])
     companies_dict = [company.dict() for company in companies if company] if isinstance(companies, list) else []
-
-    notifications: NotificationsModel = await notifications_controller.get_user_notifications(user_id=user.user_id)
     notifications_dicts = [notice.dict() for notice in notifications.unread_notification] if notifications else []
 
-    context.update({'companies': companies_dict,
-                    'notifications_list': notifications_dicts})
+    context.update({'companies': companies_dict, 'notifications_list': notifications_dicts})
 
     return render_template('companies/companies.html', **context)
 
@@ -130,10 +134,8 @@ async def do_add_bank_account(user: User, company_id: str):
 
         account_details = await company_controller.update_bank_account(user=user,
                                                                        account_details=bank_account_details)
-        companies_logger.info(account_details)
 
         flash(message="successfully updated company_id bank account details", category="success")
-
     except ValidationError as e:
         companies_logger.error(str(e))
         flash(message="Error creating Bank Account please fill in all the details", category="danger")
@@ -234,11 +236,12 @@ async def update_tenant_company(user: User, company_id: str):
         updated_company = None
 
     if updated_company:
-        flash(message=f"updated Tenant Company data : {updated_company.company_name}", category="success")
+        flash(message=f"Updated Tenant Company data : {updated_company.company_name}", category="success")
     else:
         flash(message=f"Unable to Update Company Data : {updated_company.company_name}", category="danger")
 
     _company_id = tenant_company_data.company_id or company_id
     unit_id = tenant_company_data.unit_id
 
-    return redirect(url_for('buildings.get_unit', building_id=tenant_company_data.building_id, unit_id=unit_id), code=302)
+    return redirect(url_for('buildings.get_unit', building_id=tenant_company_data.building_id, unit_id=unit_id),
+                    code=302)
