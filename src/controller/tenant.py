@@ -67,6 +67,7 @@ class TenantController(Controllers):
             return [Tenant(**tenant_orm.to_dict()) for tenant_orm in tenants_list
                     if isinstance(tenant_orm, TenantORM)] if tenants_list else []
 
+    # noinspection DuplicatedCode
     @error_handler
     async def get_tenant_by_cell(self, user: User, cell: str) -> Tenant | None:
         """
@@ -82,6 +83,7 @@ class TenantController(Controllers):
             tenant = session.query(TenantORM).filter(TenantORM.cell == cell).first()
             return Tenant(**tenant.to_dict()) if isinstance(tenant, TenantORM) else None
 
+    # noinspection DuplicatedCode
     @error_handler
     async def get_tenant_by_id(self, tenant_id: str) -> Tenant | None:
         """
