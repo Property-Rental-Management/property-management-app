@@ -115,7 +115,7 @@ async def create_invoice(user: User):
     """
     try:
         invoice_data: UnitCreateInvoiceForm = UnitCreateInvoiceForm(**request.form)
-        invoice_logger.info(invoice_data.dict())
+        invoice_logger.info(f"Invoice Data: {invoice_data.dict()}")
     except ValidationError as e:
         invoice_logger.error(str(e))
         invoice_logger.error(dict(**request.form))
