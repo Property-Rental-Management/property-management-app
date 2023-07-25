@@ -14,13 +14,11 @@ from src.database.sql.bank_account import BankAccountORM
 from src.database.sql.companies import CompanyORM, UserCompanyORM, TenantCompanyORM
 from src.database.sql.invoices import ItemsORM, UserChargesORM
 from src.database.sql.properties import PropertyORM, UnitORM
-from src.logger import init_logger
 
 
 class CompaniesController(Controllers):
     def __init__(self):
         super().__init__()
-        self._logger = init_logger(self.__class__.__name__)
         self.company_user: dict[str, str] = {}
         self.company_tenant: dict[str, str] = {}
         self.companies: list[Company] = []
@@ -138,25 +136,6 @@ class CompaniesController(Controllers):
 
             return Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
 
-    # @error_handler
-    # async def internal_company_id_to_user_id(self, company_id: str) -> UserCompanyORM:
-    #     """
-    #         **internal_company_id_to_user_id**
-    #     :param company_id:
-    #     :return:
-    #     """
-    #     for company in self.companies:
-    #         if company.company_id == company_id:
-    #             # Return the UserCompanyORM object if company_id matches
-    #             return company
-    #
-    #     # If company_id does not match any company in self.companies,
-    #     # perform the database query
-    #     with self.get_session() as session:
-    #         user_company = session.query(UserCompanyORM).filter(UserCompanyORM.company_id == company_id).first()
-    #
-    #     return user_company
-
     @error_handler
     async def get_company_internal(self, company_id: str) -> Company | None:
 
@@ -182,7 +161,7 @@ class CompaniesController(Controllers):
                 company: Company = Company(**company_orm.to_dict()) if isinstance(company_orm, CompanyORM) else None
                 self.companies.append(company)
             except ValidationError as e:
-                self._logger.error(str(e))
+                self.logger.error(str(e))
                 return None
 
             user_company_dict = dict(id=str(uuid.uuid4()), company_id=company_orm.company_id, user_id=user.user_id)

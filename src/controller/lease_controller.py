@@ -173,7 +173,7 @@ class LeaseController(Controllers):
     @error_handler
     async def update_invoice(self, invoice: Invoice):
         """
-
+        **update_invoice**
         :param invoice:
         :return:
         """
