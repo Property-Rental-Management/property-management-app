@@ -228,7 +228,7 @@ async def update_tenant_company(user: User, company_id: str):
     :param company_id:
     :return:
     """
-    tenant_company_data = UpdateTenantCompany(**request.form)
+    tenant_company_data: UpdateTenantCompany = UpdateTenantCompany(**request.form)
     if company_id == tenant_company_data.company_id:
         updated_company: UpdateTenantCompany | None = await company_controller.update_tenant_company(
             company_data=tenant_company_data)

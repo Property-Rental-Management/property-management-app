@@ -251,7 +251,7 @@ async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str
     """
 
     context = dict(user=user.dict())
-    tenant_rental = CreateUnitRental(**request.form)
+    tenant_rental: CreateUnitRental = CreateUnitRental(**request.form)
     _updated_unit = await company_controller.update_unit(user_id=user.user_id, unit_data=tenant_rental)
 
     if _updated_unit:
