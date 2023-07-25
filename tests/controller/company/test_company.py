@@ -3,19 +3,14 @@ import pytest
 from src.controller import UnauthorizedError
 from src.controller.companies import CompaniesController
 from src.database.models.companies import Company
-from src.database.sql import Session
+from tests.controller import Session
 
 
 # Assuming you have imported the necessary classes and exceptions
 
 @pytest.fixture
 def companies_controller():
-    return CompaniesController()
-
-
-@pytest.fixture
-def mocked_session():
-    return Session()
+    return CompaniesController(session_maker=Session)
 
 
 # Test case for is_company_member method

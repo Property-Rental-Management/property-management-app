@@ -12,8 +12,8 @@ error_logger = init_logger("error_logger")
 
 class Controllers:
 
-    def __init__(self):
-        self.sessions = [Session() for _ in range(20)]
+    def __init__(self, session_maker=Session):
+        self.sessions = [session_maker() for _ in range(20)]
         self.logger = init_logger(self.__class__.__name__)
 
     def get_session(self) -> Session:

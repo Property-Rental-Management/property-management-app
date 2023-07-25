@@ -17,8 +17,8 @@ from src.database.sql.properties import PropertyORM, UnitORM
 
 
 class CompaniesController(Controllers):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.company_user: dict[str, str] = {}
         self.company_tenant: dict[str, str] = {}
         self.companies: list[Company] = []
