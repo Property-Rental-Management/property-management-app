@@ -1,3 +1,5 @@
+from flask import Flask
+
 from src.controller import error_handler, Controllers
 from src.database.models.notifications import NotificationsModel, Notification
 from src.database.sql.notifications import NotificationORM
@@ -7,6 +9,9 @@ class NotificationsController(Controllers):
 
     def __init__(self):
         super().__init__()
+
+    def init_app(self, app: Flask):
+        super().init_app(app=app)
 
     @error_handler
     async def get_user_notifications(self, user_id: str) -> NotificationsModel | None:

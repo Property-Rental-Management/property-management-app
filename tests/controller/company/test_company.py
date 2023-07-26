@@ -16,19 +16,20 @@ def companies_controller():
 # Test case for is_company_member method
 def test_is_company_member(companies_controller, mocked_session):
     # Test case with a valid user and company IDs
-    result = companies_controller.is_company_member(user_id="user1", company_id="company1", session=mocked_session)
+    result = await companies_controller.is_company_member(user_id="user1", company_id="company1",
+                                                          session=mocked_session)
     assert result == False
 
 
 # Test case for get_user_companies method
 def test_get_user_companies(companies_controller, mocked_session):
     # Test case with a valid user ID
-    result = companies_controller.get_user_companies(user_id="user1")
+    result = await companies_controller.get_user_companies(user_id="user1")
     assert isinstance(result, list)
     assert len(result) == 2  # Assuming there are two companies associated with the user
 
     # Test case with an invalid user ID
-    result = companies_controller.get_user_companies(user_id="invalid_user")
+    result = await companies_controller.get_user_companies(user_id="invalid_user")
     assert isinstance(result, list)
     assert len(result) == 0  # No companies associated with the invalid user
 
@@ -36,7 +37,7 @@ def test_get_user_companies(companies_controller, mocked_session):
 # Test case for get_company method (Authorized)
 def test_get_company_authorized(companies_controller, mocked_session):
     # Test case with a valid company ID and an authorized user
-    result = companies_controller.get_company(company_id="company1", user_id="user1")
+    result = await companies_controller.get_company(company_id="company1", user_id="user1")
     assert isinstance(result, Company)
     assert result.company_id == "company1"
 

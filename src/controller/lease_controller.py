@@ -90,6 +90,7 @@ class LeaseController(Controllers):
                 self.logger.error(f"Error loading payments on start_up event: {str(e)}")
 
     def init_app(self, app: Flask):
+        super().init_app(app=app)
         self.load_data()
 
     @error_handler

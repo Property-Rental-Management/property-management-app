@@ -1,6 +1,6 @@
 import functools
 
-from flask import redirect, url_for, flash
+from flask import redirect, url_for, flash, Flask
 from pydantic import ValidationError
 from sqlalchemy.exc import OperationalError, ProgrammingError, IntegrityError
 
@@ -11,6 +11,10 @@ error_logger = init_logger("error_logger")
 
 
 class Controllers:
+    """
+        **Controllers**
+            registers controllers
+    """
 
     def __init__(self, session_maker=Session):
         self.sessions = [session_maker() for _ in range(20)]
@@ -21,6 +25,23 @@ class Controllers:
             return self.sessions.pop()
         self.sessions = [Session() for _ in range(20)]
         return self.get_session()
+
+    def setup_error_handler(self, app: Flask):
+        app.add_url_rule("")
+
+    def init_app(self, app: Flask):
+        """
+            **init_app**
+        :param app:
+        :return:
+        """
+        self.setup_error_handler(app=app)
+
+        session_maker = app.config.get('session_maker')
+        session_limit = app.config.get('session_limit')
+
+        if session_maker and session_limit:
+            self.sessions = [session_maker() for _ in range(session_limit)]
 
 
 class UnauthorizedError(Exception):

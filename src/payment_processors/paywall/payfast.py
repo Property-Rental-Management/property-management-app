@@ -32,14 +32,7 @@ class PayFastAPI:
         # If the security signature matches, the request is genuine, and you can proceed with processing it.
         return True
 
-    def init(self, app: Flask):
-        """
-        Initialize the PayfastAPI with the Flask app instance.
-        This method should be called in your Flask application to set up the PayfastAPI.
-        """
-        self.pay_fast_secret_key = app.config.get('PAY_FAST_SECRET_KEY')
-
-        # Add URL routes for the Payfast endpoints
+    def _add_pay_fast_routes(self, app):
         app.add_url_rule('/payfast/subscribe', 'subscribe', self.subscribe, methods=['POST'])
         app.add_url_rule('/payfast/cancel_subscription', 'cancel_subscription', self.cancel_subscription,
                          methods=['POST'])
@@ -47,6 +40,12 @@ class PayFastAPI:
                          methods=['POST'])
         app.add_url_rule('/payfast/check_subscription', 'check_if_subscribed', self.check_if_subscribed,
                          methods=['GET'])
+
+    def init(self, app: Flask):
+        """
+        """
+        self.pay_fast_secret_key = app.config.get('PAY_FAST_SECRET_KEY')
+        self._add_pay_fast_routes(app)
 
     async def subscribe(self):
         """

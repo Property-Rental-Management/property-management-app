@@ -87,6 +87,7 @@ class CompaniesController(Controllers):
                 self.logger.error(f"Error on loading Building Data on Start_up: {str(e)}")
 
     def init_app(self, app: Flask):
+        super().init_app(app=app)
         self.load_company_details()
 
     @error_handler

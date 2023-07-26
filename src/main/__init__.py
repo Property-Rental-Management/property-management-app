@@ -31,7 +31,7 @@ from src.controller.lease_controller import InvoiceManager
 cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
 
 invoice_man = InvoiceManager(cache_path)
-from src.paywall.payfast import PayFastAPI
+from payment_processors.paywall.payfast import PayFastAPI
 
 paywall: PayFastAPI = PayFastAPI()
 

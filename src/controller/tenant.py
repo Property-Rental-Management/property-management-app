@@ -48,6 +48,7 @@ class TenantController(Controllers):
         :param app:
         :return:
         """
+        super().init_app(app=app)
         self.load_tenants()
 
     @error_handler
