@@ -6,7 +6,6 @@ from src.database.models.properties import Unit, Property
 from src.database.models.tenants import Tenant, QuotationForm, CreateTenant, TenantAddress, CreateTenantAddress
 from src.database.models.users import User
 from src.database.sql.tenants import TenantORM, TenantAddressORM
-from src.main import company_controller
 
 
 class TenantController(Controllers):
@@ -116,6 +115,7 @@ class TenantController(Controllers):
         :param quotation:
         :return:
         """
+        from src.main import company_controller
         property_listed: Property = await company_controller.get_property(user=user, property_id=quotation.property_id)
         property_units: list[Unit] = await company_controller.get_un_leased_units(
             user=user, property_id=quotation.building)

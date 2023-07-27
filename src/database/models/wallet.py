@@ -13,6 +13,7 @@ class WalletTransaction(BaseModel):
     """
     Transaction model represents an individual transaction.
     """
+    user_id: str
     date: datetime = Field(default_factory=datetime.utcnow)
     transaction_type: str
     pay_to_wallet: str
@@ -104,7 +105,9 @@ class Wallet(WalletConst):
 
     async def _record_transaction(self, amount: PositiveInt, transaction_type: str, pay_from_wallet: str | None = None,
                                   pay_to_wallet: str | None = None):
+
         transaction = WalletTransaction(
+            user_id=self.user_id,
             amount=amount,
             transaction_type=transaction_type,
             pay_to_wallet=pay_to_wallet,
