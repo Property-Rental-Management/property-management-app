@@ -27,7 +27,8 @@ class Controllers:
         return self.get_session()
 
     def setup_error_handler(self, app: Flask):
-        app.add_url_rule("")
+        # app.add_url_rule("")
+        pass
 
     def init_app(self, app: Flask):
         """

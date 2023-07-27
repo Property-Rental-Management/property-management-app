@@ -1,4 +1,3 @@
-from datetime import date
 from pydantic import BaseModel, Field
 
 
@@ -9,6 +8,6 @@ class Profile(BaseModel):
             such us - deposit multiplier
 
     """
+    user_id: str
     deposit_multiplier: float = Field(default="2")
     currency: str = Field(default="R")
-

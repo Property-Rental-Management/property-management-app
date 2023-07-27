@@ -5,11 +5,12 @@ from flask_bcrypt import Bcrypt
 class Encryptor:
 
     def __init__(self):
-        self._bcrypt: Bcrypt = None
+        self._bcrypt: Bcrypt | None = None
 
     def init_app(self, app: Flask):
-        self._bcrypt = Bcrypt()
-        self._bcrypt.init_app(app=app)
+        if not self._bcrypt:
+            self._bcrypt = Bcrypt()
+            self._bcrypt.init_app(app=app)
 
     def create_hash(self, password: str) -> str:
         return self._bcrypt.generate_password_hash(password).decode('utf-8')

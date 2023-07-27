@@ -31,9 +31,6 @@ from src.controller.lease_controller import InvoiceManager
 cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
 
 invoice_man = InvoiceManager(cache_path)
-from payment_processors.paywall.payfast import PayFastAPI
-
-paywall: PayFastAPI = PayFastAPI()
 
 
 def create_app(config):
@@ -54,7 +51,6 @@ def create_app(config):
         firewall.init_app(app=app)
         send_mail.init_app(app=app)
         invoice_man.init_app(app=app)
-        paywall.init(app=app)
 
         from src.routes.home import home_route
         from src.routes.companies import companies_route
