@@ -16,12 +16,19 @@ class UserController(Controllers):
 
     def __init__(self):
         super().__init__()
-
         self._time_limit = 360
         self._verification_tokens: dict[str, int | dict[str, str | int]] = {}
+        self.users: dict[str, User] = {}
+
+    def load_users(self):
+        with self.get_session() as session:
+            users_orm_list = session.query(UserORM).filter().all()
+            users_list = [User(**user_orm.to_dict()) for user_orm in users_orm_list]
+            for user in users_list:
+                self.users[user.user_id] = user
 
     def init_app(self, app: Flask):
-        pass
+        self.load_users()
 
     async def is_token_valid(self, token: str) -> bool:
         """
@@ -47,6 +54,8 @@ class UserController(Controllers):
         """
         if not user_id:
             return None
+        if self.users:
+            return self.users[user_id].dict()
 
         with self.get_session() as session:
             user_data: UserORM = session.query(UserORM).filter(UserORM.user_id == user_id).first()
@@ -61,6 +70,9 @@ class UserController(Controllers):
         """
         if not email:
             return None
+        for user in self.users.values():
+            if user.email.casefold() == email.casefold():
+                return user
 
         with self.get_session() as session:
             user_data: UserORM = session.query(UserORM).filter(UserORM.email == email.casefold()).first()
@@ -85,7 +97,8 @@ class UserController(Controllers):
         <body>
             <h2>Rental-Manager.site Password Reset</h2>
             <p>Hello,</p>
-            <p>We received a password reset request for your Rental Manager account. Please click the link below to reset your password:</p>
+            <p>We received a password reset request for your Rental Manager account. 
+            Please click the link below to reset your password:</p>
             <a href="{password_reset_link}">{password_reset_link}</a>
             <p>If you didn't request a password reset, you can ignore this email.</p>
             <p>Thank you,</p>
@@ -129,7 +142,9 @@ class UserController(Controllers):
             session.add(new_user)
             new_user_dict = new_user.to_dict()
             session.commit()
-            return User(**new_user_dict) if isinstance(new_user, UserORM) else None
+            _user_data = User(**new_user_dict) if isinstance(new_user, UserORM) else None
+            self.users[_user_data.user_id] = _user_data
+            return _user_data
 
     @error_handler
     async def put(self, user: User) -> dict[str, str] | None:
@@ -146,7 +161,7 @@ class UserController(Controllers):
             # Save the updated user_data back to the session
             session.add(user_data)
             session.commit()
-
+            self.users[user_data.user_id] = user_data
             return user_data.to_dict()
 
     @error_handler

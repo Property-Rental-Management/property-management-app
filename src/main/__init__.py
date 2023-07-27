@@ -57,7 +57,6 @@ def create_app(config):
         add_blue_prints(app)
         add_filters(app)
 
-
     return app
 
 
@@ -97,7 +96,7 @@ def add_blue_prints(app):
 def add_filters(app):
     """
         **add_filters**
-            add filters
+            filters allows formatting from models to user readable format
     :param app:
     :return:
     """
