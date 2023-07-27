@@ -40,6 +40,8 @@ def create_app(config):
     app.config['BASE_URL'] = "https://rental-manager.site"
 
     with app.app_context():
+        from src.main.bootstrapping import bootstrapper
+        bootstrapper()
 
         encryptor.init_app(app=app)
         user_controller.init_app(app=app)
@@ -55,8 +57,6 @@ def create_app(config):
         add_blue_prints(app)
         add_filters(app)
 
-        from src.main.bootstrapping import bootstrapper
-        bootstrapper()
 
     return app
 
