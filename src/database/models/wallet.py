@@ -15,7 +15,7 @@ class WalletTransaction(BaseModel):
     """
     date: datetime = Field(default_factory=datetime.utcnow)
     transaction_type: str
-    destination_wallet: str
+    pay_to_wallet: str
     amount: PositiveInt
 
 
@@ -50,7 +50,8 @@ class Wallet(WalletConst):
 
         # For demonstration purposes, we'll just deduct the payment amount from the balance
         self.balance -= amount
-        self._record_transaction(amount, TransactionType.payment, destination_wallet)
+        self._record_transaction(amount=amount, transaction_type=TransactionType.payment,
+                                 pay_to_wallet=destination_wallet)
 
     def withdraw_funds(self, amount: PositiveInt):
         if amount > self.balance:
@@ -66,7 +67,7 @@ class Wallet(WalletConst):
 
         # For demonstration purposes, we'll just deduct the withdrawal amount from the balance
         self.balance -= amount
-        self._record_transaction(amount, TransactionType.withdrawal, self.user_id)
+        self._record_transaction(amount=amount, transaction_type=TransactionType.withdrawal)
 
     def deposit_funds(self, amount: PositiveInt, originating_wallet: str):
         if amount < self._min_transaction_amount:
@@ -80,14 +81,13 @@ class Wallet(WalletConst):
 
         # For demonstration purposes, we'll just add the deposit amount to the balance
         self.balance += amount
-        self._record_transaction(amount, TransactionType.deposit, originating_wallet)
+        self._record_transaction(amount=amount, transaction_type=TransactionType.deposit)
 
-    def _record_transaction(self, amount: PositiveInt, transaction_type: str, other_wallet: str):
+    def _record_transaction(self, amount: PositiveInt, transaction_type: str, pay_to_wallet: str | None = None):
         transaction = WalletTransaction(
             amount=amount,
             transaction_type=transaction_type,
-            originating_wallet=self.user_id,
-            destination_wallet=other_wallet,
+            pay_to_wallet=pay_to_wallet
         )
         self.transactions.append(transaction)
 
