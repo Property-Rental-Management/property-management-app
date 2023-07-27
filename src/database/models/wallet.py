@@ -68,7 +68,7 @@ class Wallet(WalletConst):
         self.balance -= amount
         self._record_transaction(amount, TransactionType.withdrawal, self.user_id)
 
-    def deposit_funds(self, amount: PositiveInt):
+    def deposit_funds(self, amount: PositiveInt, originating_wallet: str):
         if amount < self._min_transaction_amount:
             raise ValueError(f"Deposit amount must be equal to or greater than {self._min_transaction_amount}")
         if amount > self._max_transaction_amount:
@@ -80,12 +80,13 @@ class Wallet(WalletConst):
 
         # For demonstration purposes, we'll just add the deposit amount to the balance
         self.balance += amount
-        self._record_transaction(amount=amount, transaction_type=TransactionType.deposit)
+        self._record_transaction(amount, TransactionType.deposit, originating_wallet)
 
     def _record_transaction(self, amount: PositiveInt, transaction_type: str, other_wallet: str):
         transaction = WalletTransaction(
             amount=amount,
             transaction_type=transaction_type,
+            originating_wallet=self.user_id,
             destination_wallet=other_wallet,
         )
         self.transactions.append(transaction)
