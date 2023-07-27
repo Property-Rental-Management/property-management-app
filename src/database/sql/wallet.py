@@ -2,17 +2,18 @@ from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime, inspect
 
+from src.database.constants import ID_LEN
 from src.database.sql import engine, Base
 
 
 class WalletTransactionORM(Base):
     __tablename__ = 'wallet_transactions'
-    transaction_id: str = Column(Integer, primary_key=True)
-    user_id: str = Column(String, nullable=False)
+    transaction_id: str = Column(String(ID_LEN), primary_key=True)
+    user_id: str = Column(String(ID_LEN), nullable=False)
     date: datetime = Column(DateTime)
-    transaction_type: str = Column(String, nullable=False)
-    pay_to_wallet: str = Column(String, nullable=False)
-    payment_from_wallet: str = Column(String, nullable=False)
+    transaction_type: str = Column(String(16), nullable=False)
+    pay_to_wallet: str = Column(String(ID_LEN), nullable=False)
+    payment_from_wallet: str = Column(String(ID_LEN), nullable=False)
     amount: int = Column(Integer, nullable=False)
 
     @classmethod
