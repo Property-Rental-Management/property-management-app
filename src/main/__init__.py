@@ -3,8 +3,8 @@ import os
 from flask import Flask
 
 from src.emailer import SendMail
-from src.utils import (template_folder, static_folder, format_with_grouping, lease_formatter,
-                       format_square_meters, format_payment_method)
+from src.utils import (template_folder, static_folder, format_with_grouping, lease_formatter, format_square_meters,
+                       format_payment_method)
 
 send_mail = SendMail()
 
@@ -31,36 +31,7 @@ cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
 invoice_man = InvoiceManager(cache_path)
 
 
-def create_app(config):
-    app: Flask = Flask(__name__)
-
-    app.template_folder = template_folder()
-    app.static_folder = static_folder()
-    app.config['SECRET_KEY'] = config.SECRET_KEY
-    app.config['BASE_URL'] = "https://rental-manager.site"
-
-    with app.app_context():
-        from src.main.bootstrapping import bootstrapper
-        bootstrapper()
-
-        encryptor.init_app(app=app)
-        user_controller.init_app(app=app)
-        tenant_controller.init_app(app=app)
-        company_controller.init_app(app=app)
-        lease_agreement_controller.init_app(app=app)
-        wallet_controller.init_app(app=app)
-
-        firewall.init_app(app=app)
-        send_mail.init_app(app=app)
-        invoice_man.init_app(app=app)
-
-        add_blue_prints(app)
-        add_filters(app)
-
-    return app
-
-
-def add_blue_prints(app):
+def _add_blue_prints(app):
     """
         this function adds blueprints
     :param app:
@@ -93,7 +64,7 @@ def add_blue_prints(app):
     app.register_blueprint(notices_route)
 
 
-def add_filters(app):
+def _add_filters(app):
     """
         **add_filters**
             filters allows formatting from models to user readable format
@@ -104,3 +75,32 @@ def add_filters(app):
     app.jinja_env.filters['lease_counter'] = lease_formatter
     app.jinja_env.filters['square_meters'] = format_square_meters
     app.jinja_env.filters['payment_method'] = format_payment_method
+
+
+def create_app(config):
+    app: Flask = Flask(__name__)
+
+    app.template_folder = template_folder()
+    app.static_folder = static_folder()
+    app.config['SECRET_KEY'] = config.SECRET_KEY
+    app.config['BASE_URL'] = "https://rental-manager.site"
+
+    with app.app_context():
+        from src.main.bootstrapping import bootstrapper
+        bootstrapper()
+
+        encryptor.init_app(app=app)
+        user_controller.init_app(app=app)
+        tenant_controller.init_app(app=app)
+        company_controller.init_app(app=app)
+        lease_agreement_controller.init_app(app=app)
+        wallet_controller.init_app(app=app)
+
+        firewall.init_app(app=app)
+        send_mail.init_app(app=app)
+        invoice_man.init_app(app=app)
+
+        _add_blue_prints(app)
+        _add_filters(app)
+
+    return app
