@@ -16,7 +16,7 @@ tenants_route = Blueprint('tenants', __name__)
 tenants_logger = init_logger('tenants_logger')
 
 
-@tenants_route.get('/admin/tenants-list')
+@tenants_route.get('/dashboard/tenants-list')
 @login_required
 async def get_tenants(user: User):
     user_data = user.dict()
@@ -39,7 +39,7 @@ async def get_tenants(user: User):
     return render_template('tenants/get_tenant.html', **context)
 
 
-@tenants_route.get('/admin/tenant/buildings/<string:company_id>')
+@tenants_route.get('/dashboard/tenant/buildings/<string:company_id>')
 @login_required
 async def get_buildings(user: User, company_id: str):
     # Query the database or perform any necessary logic to fetch the buildings based on the company_id ID
@@ -51,7 +51,7 @@ async def get_buildings(user: User, company_id: str):
     return jsonify(buildings_dicts)
 
 
-@tenants_route.post('/admin/add-tenants/<string:building_id>/<string:unit_id>')
+@tenants_route.post('/dashboard/add-tenants/<string:building_id>/<string:unit_id>')
 @login_required
 async def do_add_tenants(user: User, building_id: str, unit_id: str):
     """
@@ -69,7 +69,7 @@ async def do_add_tenants(user: User, building_id: str, unit_id: str):
     return redirect(url_for('buildings.get_unit', building_id=building_id, unit_id=unit_id), code=302)
 
 
-@tenants_route.post('/admin/tenant-rentals')
+@tenants_route.post('/dashboard/tenant-rentals')
 @login_required
 async def tenant_rentals(user: User):
     _ = user.dict()
@@ -87,7 +87,7 @@ async def tenant_rentals(user: User):
 
 
 # noinspection DuplicatedCode
-@tenants_route.get('/admin/tenant/<string:tenant_id>')
+@tenants_route.get('/dashboard/tenant/<string:tenant_id>')
 @login_required
 async def get_tenant(user: User, tenant_id: str):
     """
@@ -139,7 +139,7 @@ async def get_tenant(user: User, tenant_id: str):
     return render_template("tenants/tenant_details.html", **context)
 
 
-@tenants_route.post('/admin/tenant-address/<string:tenant_id>')
+@tenants_route.post('/dashboard/tenant-address/<string:tenant_id>')
 @login_required
 async def create_tenant_address(user: User, tenant_id: str):
     """
@@ -168,7 +168,7 @@ async def create_tenant_address(user: User, tenant_id: str):
     return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
 
 
-@tenants_route.post('/admin/tenant-email/<string:tenant_id>')
+@tenants_route.post('/dashboard/tenant-email/<string:tenant_id>')
 @login_required
 async def do_send_email(user: User, tenant_id: str):
     """

@@ -26,7 +26,7 @@ async def get_payment_context(user: User, payment_instance: Payment) -> dict[str
             'company': company.dict()}
 
 
-@payments_route.get('/admin/payments')
+@payments_route.get('/dashboard/payments')
 @login_required
 async def get_payments(user: User):
     user_data = user.dict()
@@ -35,7 +35,7 @@ async def get_payments(user: User):
     return render_template('payments/payments.html', **context)
 
 
-@payments_route.post('/admin/get-unit-payment/<int:invoice_number>')
+@payments_route.post('/dashboard/get-unit-payment/<int:invoice_number>')
 @login_required
 async def create_unit_payment(user: User, invoice_number: int):
     """
@@ -77,7 +77,7 @@ async def create_unit_payment(user: User, invoice_number: int):
     return render_template('payments/verify_payment.html', **context)
 
 
-@payments_route.post('/admin/payments/verification')
+@payments_route.post('/dashboard/payments/verification')
 @login_required
 async def do_verify_payment(user: User):
     building_id = request.form.get('property_id')
@@ -105,7 +105,7 @@ async def do_verify_payment(user: User):
     return render_template("payments/payment_receipt.html", **context)
 
 
-@payments_route.post('/admin/payments/print-receipt')
+@payments_route.post('/dashboard/payments/print-receipt')
 @login_required
 async def print_payment_receipt(user: User):
     transaction_id = request.form.get('transaction_id')
@@ -124,7 +124,7 @@ async def print_payment_receipt(user: User):
     return render_template("payments/payment_receipt.html", **context)
 
 
-@payments_route.get('/admin/edit-payment/<string:transaction_id>')
+@payments_route.get('/dashboard/edit-payment/<string:transaction_id>')
 @login_required
 async def edit_payment(user: User, transaction_id: str):
     """
@@ -143,7 +143,7 @@ async def edit_payment(user: User, transaction_id: str):
     return render_template("payments/edit_payment.html", **context)
 
 
-@payments_route.post('/admin/edit-payment/<string:transaction_id>')
+@payments_route.post('/dashboard/edit-payment/<string:transaction_id>')
 @login_required
 async def do_update_payment(user: User, transaction_id: str):
     """

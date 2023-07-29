@@ -44,7 +44,7 @@ notification3 = Notification(
 notifications_dicts: list[Notification] = [notification1, notification2, notification3]
 
 
-@notices_route.get('/admin/notifications')
+@notices_route.get('/dashboard/notifications')
 @login_required
 async def get_all(user: User):
     """

@@ -1,7 +1,9 @@
 
 import uuid
-from pydantic import BaseModel, Field
 from enum import Enum
+
+from pydantic import BaseModel, Field
+
 from src.controller.encryptor import encryptor
 
 
@@ -35,6 +37,7 @@ class User(BaseModel):
     full_name: str | None
     contact_number: str | None
     account_verified: bool = Field(default=False)
+    is_system_admin: bool = Field(default=False)
 
     class Config:
         orm_mode = True

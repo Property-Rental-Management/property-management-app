@@ -21,7 +21,7 @@ async def create_response(redirect_url, message=None, category=None) -> Response
     return response
 
 
-@auth_route.get('/admin/login')
+@auth_route.get('/dashboard/login')
 async def get_login():
     """
     **get_login**
@@ -32,7 +32,7 @@ async def get_login():
     return render_template('login.html')
 
 
-@auth_route.post('/admin/login')
+@auth_route.post('/dashboard/login')
 async def do_login():
     try:
         auth_user = Auth(**request.form)
@@ -59,7 +59,7 @@ async def do_login():
                                      'Login failed. you may not be registered in this system', 'danger')
 
 
-@auth_route.get('/admin/logout')
+@auth_route.get('/dashboard/logout')
 async def do_logout():
     """
 
@@ -72,7 +72,7 @@ async def do_logout():
     return response
 
 
-@auth_route.get('/admin/register')
+@auth_route.get('/dashboard/register')
 async def get_register():
     """
 
@@ -82,7 +82,7 @@ async def get_register():
     return render_template('register.html')
 
 
-@auth_route.post('/admin/register')
+@auth_route.post('/dashboard/register')
 async def do_register():
     """
         **do_register**
@@ -116,7 +116,7 @@ async def do_register():
     return await create_response(url_for('home.get_home'))
 
 
-@auth_route.get('/admin/password-reset')
+@auth_route.get('/dashboard/password-reset')
 async def get_password_reset():
     """
         **get_password_reset**
@@ -125,7 +125,7 @@ async def get_password_reset():
     return render_template('password_reset.html')
 
 
-@auth_route.post('/admin/password-reset')
+@auth_route.post('/dashboard/password-reset')
 async def do_password_reset():
     email = request.form.get('email')
     if not email:
@@ -142,7 +142,7 @@ async def do_password_reset():
     return await create_response(url_for('home.get_home'))
 
 
-@auth_route.route('/admin/reset-password', methods=['GET', 'POST'])
+@auth_route.route('/dashboard/reset-password', methods=['GET', 'POST'])
 async def reset_password():
     """
     **reset_password**
@@ -185,7 +185,7 @@ async def reset_password():
     return redirect(url_for('home.get_home'), code=302)
 
 
-@auth_route.get('/admin/verify-email')
+@auth_route.get('/dashboard/verify-email')
 async def verify_email():
     """
         **verify_email**

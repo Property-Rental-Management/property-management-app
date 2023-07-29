@@ -111,7 +111,7 @@ async def property_cashflow_context(company_id: str, user: User):
     return await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user, flow_type="property")
 
 
-@reports_route.get('/admin/reports')
+@reports_route.get('/dashboard/reports')
 @login_required
 async def get_reports(user: User):
     user_data = user.dict()
@@ -122,7 +122,7 @@ async def get_reports(user: User):
     return render_template('reports/reports.html', **context)
 
 
-@reports_route.get('/admin/report/<string:company_id>')
+@reports_route.get('/dashboard/report/<string:company_id>')
 @login_required
 async def report(user: User, company_id: str):
     """
@@ -136,7 +136,7 @@ async def report(user: User, company_id: str):
     return render_template('reports/reporting_interface.html', **context)
 
 
-@reports_route.post('/admin/report/monthly-cashflow/<string:company_id>')
+@reports_route.post('/dashboard/report/monthly-cashflow/<string:company_id>')
 @login_required
 async def select_cashflow(user: User, company_id: str):
     """

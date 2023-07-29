@@ -20,6 +20,7 @@ class UserORM(Base):
     full_name: str = Column(String(NAME_LEN))
     contact_number: str = Column(String(13))
     account_verified: bool = Column(Boolean, default=False)
+    is_system_admin: bool = Column(Boolean, default=False)
 
     @classmethod
     def create_if_not_table(cls):
@@ -60,5 +61,6 @@ class UserORM(Base):
             'password_hash': self.password_hash,
             'full_name': self.full_name,
             'contact_number': self.contact_number,
-            'account_verified': self.account_verified
+            'account_verified': self.account_verified,
+            'is_system_admin': self.is_system_admin
         }

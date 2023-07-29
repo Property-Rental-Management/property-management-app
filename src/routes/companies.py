@@ -22,7 +22,7 @@ companies_logger = init_logger('companies_logger')
 companies_logger.setLevel(logging.INFO)
 
 
-@companies_route.get('/admin/companies')
+@companies_route.get('/dashboard/companies')
 @login_required
 async def get_companies(user: User):
     """
@@ -42,7 +42,7 @@ async def get_companies(user: User):
     return render_template('companies/companies.html', **context)
 
 
-@companies_route.get('/admin/company/<string:company_id>')
+@companies_route.get('/dashboard/company/<string:company_id>')
 @login_required
 async def get_company(user: User, company_id: str):
     user_data = user.dict()
@@ -69,7 +69,7 @@ async def get_company(user: User, company_id: str):
     return render_template('companies/company.html', **context)
 
 
-@companies_route.get('/admin/create-company')
+@companies_route.get('/dashboard/create-company')
 @login_required
 async def get_create_company(user: User):
     user_data = user.dict()
@@ -82,7 +82,7 @@ async def get_create_company(user: User):
     return render_template('companies/create_company.html', **context)
 
 
-@companies_route.post('/admin/create-company')
+@companies_route.post('/dashboard/create-company')
 @login_required
 async def do_create_company(user: User):
     """
@@ -102,7 +102,7 @@ async def do_create_company(user: User):
     return redirect(url_for('companies.get_companies'), code=302)
 
 
-@companies_route.post('/admin/edit-company/<string:company_id>')
+@companies_route.post('/dashboard/edit-company/<string:company_id>')
 @login_required
 async def do_edit_company(user: User, company_id: str):
     """
@@ -123,7 +123,7 @@ async def do_edit_company(user: User, company_id: str):
     return redirect(url_for('companies.get_company', company_id=company_id), code=302)
 
 
-@companies_route.post('/admin/company/add-bank-account/<string:company_id>')
+@companies_route.post('/dashboard/company/add-bank-account/<string:company_id>')
 @login_required
 async def do_add_bank_account(user: User, company_id: str):
     try:
@@ -143,7 +143,7 @@ async def do_add_bank_account(user: User, company_id: str):
     return redirect(url_for('companies.get_company', company_id=company_id), code=302)
 
 
-@companies_route.get('/admin/company/print/<string:company_id>')
+@companies_route.get('/dashboard/company/print/<string:company_id>')
 @login_required
 async def print_company(user: User, company_id: str):
     """
@@ -183,7 +183,7 @@ async def print_company(user: User, company_id: str):
         download_name=f"{_title}.pdf")
 
 
-@companies_route.post('/admin/add-tenants-company')
+@companies_route.post('/dashboard/add-tenants-company')
 @login_required
 async def add_tenants_company(user: User):
     """
@@ -219,7 +219,7 @@ async def add_tenants_company(user: User):
                             unit_id=tenant_company.unit_id), code=302)
 
 
-@companies_route.post('/admin/update-tenant-company/<string:company_id>')
+@companies_route.post('/dashboard/update-tenant-company/<string:company_id>')
 @login_required
 async def update_tenant_company(user: User, company_id: str):
     """

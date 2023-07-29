@@ -1,0 +1,28 @@
+
+
+
+{% extends "layouts/page.html" %}
+
+{% block content %}
+    <div class="content">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="ti-user"> </i> Users </h3>
+            </div>
+
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for user in users %}
+                        <li class="list-group-item">
+                            <a href="{{ url_for('admin.admin_get_user', user_id=user.user_id) }}">
+                        <span class="text-info font-weight-bold">
+                            {{ user.username }}
+                        </span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

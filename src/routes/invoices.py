@@ -44,7 +44,7 @@ async def sub_invoice_context(user: User, invoice: Invoice, building_id: str):
             'bank_account': bank_account.dict()}
 
 
-@invoices_route.get('/admin/invoices')
+@invoices_route.get('/dashboard/invoices')
 @login_required
 async def get_invoices(user: User):
     user_data = user.dict()
@@ -85,7 +85,7 @@ async def get_invoice(user: User, building_id: str, invoice_number: str):
     return render_template("reports/invoice_report.html", **context)
 
 
-@invoices_route.route('/admin/invoice/<string:building_id>/<string:invoice_number>')
+@invoices_route.route('/dashboard/invoice/<string:building_id>/<string:invoice_number>')
 @login_required
 async def get_admin_invoice(user: User, building_id: str, invoice_number: str):
     """
@@ -105,7 +105,7 @@ async def get_admin_invoice(user: User, building_id: str, invoice_number: str):
     return render_template("reports/invoice_report.html", **context)
 
 
-@invoices_route.post('/admin/invoice/create-invoice')
+@invoices_route.post('/dashboard/invoice/create-invoice')
 @login_required
 async def create_invoice(user: User):
     """
@@ -182,7 +182,7 @@ async def create_invoice(user: User):
     return render_template('reports/invoice_report.html', **context)
 
 
-@invoices_route.post('/admin/invoice/edit-invoice')
+@invoices_route.post('/dashboard/invoice/edit-invoice')
 @login_required
 async def edit_invoice(user: User):
     """
@@ -209,7 +209,7 @@ async def edit_invoice(user: User):
     return render_template("invoices/modals/edit_invoice.html", **context)
 
 
-@invoices_route.post('/admin/invoice/update-invoice')
+@invoices_route.post('/dashboard/invoice/update-invoice')
 @login_required
 async def update_invoice(user: User):
     """

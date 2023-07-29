@@ -1,0 +1,23 @@
+{% extends "layouts/page.html" %}
+
+{% block content %}
+    <div class="content">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="ti-user"> </i> Users </h3>
+            </div>
+
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <a href="#">
+                        <span class="text-info font-weight-bold">
+                            {{ data.user.username }}
+                        </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

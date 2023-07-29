@@ -45,7 +45,7 @@ async def get_common_context(user: User, building_id: str, property_editor: bool
     return context
 
 
-@buildings_route.get('/admin/buildings')
+@buildings_route.get('/dashboard/buildings')
 @login_required
 async def get_buildings(user: User):
     user_data = user.dict()
@@ -57,7 +57,7 @@ async def get_buildings(user: User):
     return render_template('building/buildings.html', **context)
 
 
-@buildings_route.get('/admin/building/<string:building_id>')
+@buildings_route.get('/dashboard/building/<string:building_id>')
 @login_required
 async def get_building(user: User, building_id: str):
     """
@@ -70,7 +70,7 @@ async def get_building(user: User, building_id: str):
     return render_template('building/building.html', **context)
 
 
-@buildings_route.get('/admin/add-building/<string:company_id>')
+@buildings_route.get('/dashboard/add-building/<string:company_id>')
 @login_required
 async def add_building(user: User, company_id: str):
     user_data = user.dict()
@@ -85,7 +85,7 @@ async def add_building(user: User, company_id: str):
     return render_template('building/add_building.html', **context)
 
 
-@buildings_route.post('/admin/add-building/<string:company_id>')
+@buildings_route.post('/dashboard/add-building/<string:company_id>')
 @login_required
 async def do_add_building(user: User, company_id: str):
     company: Company = await company_controller.get_company(company_id=company_id, user_id=user.user_id)
@@ -111,14 +111,14 @@ async def do_add_building(user: User, company_id: str):
     return redirect(url_for('companies.get_company', company_id=company.company_id), code=302)
 
 
-@buildings_route.get('/admin/edit-building/<string:building_id>')
+@buildings_route.get('/dashboard/edit-building/<string:building_id>')
 @login_required
 async def edit_building(user: User, building_id: str):
     context = await get_common_context(user, building_id, property_editor=True)
     return render_template('building/building.html', **context)
 
 
-@buildings_route.post('/admin/edit-building/<string:building_id>')
+@buildings_route.post('/dashboard/edit-building/<string:building_id>')
 @login_required
 async def do_edit_building(user: User, building_id: str):
     company_id: str = request.form.get('company_id')
@@ -139,7 +139,7 @@ async def do_edit_building(user: User, building_id: str):
     return render_template('building/building.html', **context)
 
 
-@buildings_route.post('/admin/add-unit/<string:building_id>')
+@buildings_route.post('/dashboard/add-unit/<string:building_id>')
 @login_required
 async def do_add_unit(user: User, building_id: str):
     _ = user.dict()
@@ -156,7 +156,7 @@ async def do_add_unit(user: User, building_id: str):
 
 
 # noinspection DuplicatedCode
-@buildings_route.get('/admin/building/<string:building_id>/unit/<string:unit_id>')
+@buildings_route.get('/dashboard/building/<string:building_id>/unit/<string:unit_id>')
 @login_required
 async def get_unit(user: User, building_id: str, unit_id: str):
     """
@@ -239,7 +239,7 @@ async def build_charge_items(building_id, unit_id):
     return response_data
 
 
-@buildings_route.post('/admin/building/<string:building_id>/unit/<string:unit_id>')
+@buildings_route.post('/dashboard/building/<string:building_id>/unit/<string:unit_id>')
 @login_required
 async def add_tenant_to_building_unit(user: User, building_id: str, unit_id: str):
     """
@@ -341,7 +341,7 @@ async def update_tenant_rental(tenant: Tenant, company_id: str, start_date: date
     return tenant
 
 
-@buildings_route.post('/admin/update-tenant-unit/<string:building_id>/unit/<string:unit_id>')
+@buildings_route.post('/dashboard/update-tenant-unit/<string:building_id>/unit/<string:unit_id>')
 @login_required
 async def update_tenant_to_building_unit(user: User, building_id: str, unit_id: str):
     """
@@ -369,7 +369,7 @@ async def update_tenant_to_building_unit(user: User, building_id: str, unit_id: 
     return redirect(url_for("buildings.get_unit", building_id=building_id, unit_id=unit_id), code=302)
 
 
-@buildings_route.post('/admin/building/billable')
+@buildings_route.post('/dashboard/building/billable')
 @login_required
 async def billable_items(user: User):
     """
@@ -384,7 +384,7 @@ async def billable_items(user: User):
     return redirect(url_for("buildings.get_building", building_id=billable_item.property_id), code=302)
 
 
-@buildings_route.post('/admin/building/billed-item/<string:property_id>/<string:item_number>')
+@buildings_route.post('/dashboard/building/billed-item/<string:property_id>/<string:item_number>')
 @login_required
 async def get_billed_item(user: User, property_id: str, item_number: str):
     """
@@ -400,7 +400,7 @@ async def get_billed_item(user: User, property_id: str, item_number: str):
     return billed_item
 
 
-@buildings_route.get('/admin/building/delete-billed-item/<string:property_id>/<string:item_number>')
+@buildings_route.get('/dashboard/building/delete-billed-item/<string:property_id>/<string:item_number>')
 @login_required
 async def delete_billed_item(user: User, property_id: str, item_number: str):
     """
@@ -417,7 +417,7 @@ async def delete_billed_item(user: User, property_id: str, item_number: str):
     return redirect(url_for("buildings.get_building", building_id=property_id), code=302)
 
 
-@buildings_route.post('/admin/building/create-charge')
+@buildings_route.post('/dashboard/building/create-charge')
 @login_required
 async def create_billing_charge(user: User):
     """
@@ -444,7 +444,7 @@ async def create_billing_charge(user: User):
                             unit_id=unit_charge_item.unit_id), code=302)
 
 
-@buildings_route.get('/admin/building/delete-charge/<string:charge_id>')
+@buildings_route.get('/dashboard/building/delete-charge/<string:charge_id>')
 @login_required
 async def delete_charge(user: User, charge_id: str):
     """
@@ -460,7 +460,7 @@ async def delete_charge(user: User, charge_id: str):
                             unit_id=deleted_charge_item.unit_id), code=302)
 
 
-@buildings_route.post('/admin/building/update-unit/<string:unit_id>')
+@buildings_route.post('/dashboard/building/update-unit/<string:unit_id>')
 @login_required
 async def updated_unit(user: User, unit_id: str):
     """
@@ -486,7 +486,7 @@ async def updated_unit(user: User, unit_id: str):
                             unit_id=update_unit_model.unit_id), code=302)
 
 
-@buildings_route.post('/admin/unit-print-invoice')
+@buildings_route.post('/dashboard/unit-print-invoice')
 @login_required
 async def unit_print_invoice(user: User):
     """
@@ -536,7 +536,7 @@ async def unit_print_invoice(user: User):
     return render_template('reports/invoice_report.html', **context)
 
 
-@buildings_route.post('/admin/email-invoices')
+@buildings_route.post('/dashboard/email-invoices')
 @login_required
 async def do_send_invoice_email(user: User):
     """

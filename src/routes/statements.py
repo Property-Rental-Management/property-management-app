@@ -13,7 +13,7 @@ statement_logger = init_logger('statement_logger')
 statements_route = Blueprint('statements', __name__)
 
 
-@statements_route.get('/admin/statements')
+@statements_route.get('/dashboard/statements')
 @login_required
 async def get_statements(user: User):
     user_data = user.dict()
@@ -22,7 +22,7 @@ async def get_statements(user: User):
     return render_template('statements/statements.html', **context)
 
 
-@statements_route.post('/admin/statement/create')
+@statements_route.post('/dashboard/statement/create')
 @login_required
 async def create_statement(user: User):
     """
