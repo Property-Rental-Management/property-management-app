@@ -7,28 +7,28 @@
     <div class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="ti-user"> </i> Tenants </h3>
+                <h3 class="card-title"><i class="ti-user"> </i> Companies </h3>
             </div>
 
             <div class="card-body">
                 <table class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <td class="font-weight-bold text-info">Name</td>
-                        <td class="font-weight-bold text-info">Email</td>
-                        <td class="font-weight-bold text-info">Cell</td>
+                        <td class="font-weight-bold text-info">Building Name</td>
+                        <td class="font-weight-bold text-info">Description</td>
+                        <td class="font-weight-bold text-info">Contact Number</td>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for tenant in tenants %}
+                    {% for building in buildings %}
                         <tr>
                             <td class="font-weight-bold">
                                 <a href="#">
-                                    {{ tenant.name }}
+                                    {{ building.name }}
                                 </a>
                             </td>
-                            <td>{{ tenant.email }}</td>
-                            <td>{{ tenant.cell }}</td>
+                            <td>{{ building.description }}</td>
+                            <td>{{ building.maintenance_contact }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

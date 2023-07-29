@@ -1,11 +1,9 @@
 from flask import Blueprint, render_template
 
-from flask import Blueprint, render_template
-
 from src.authentication import admin_login
 from src.database.models.users import User
 from src.logger import init_logger
-from src.main import user_controller
+from src.main import user_controller, tenant_controller, company_controller
 
 admin_logger = init_logger('admin_logger')
 admin_routes = Blueprint('admin', __name__)
@@ -61,5 +59,34 @@ async def get_tenants(user: User):
     :param user:
     :return:
     """
-    context = dict(user=user.dict())
+    tenants = [tenant.dict() for tenant in tenant_controller.tenants]
+    context = dict(user=user.dict(), tenants=tenants)
     return render_template('admin/tenants.html', **context)
+
+
+@admin_routes.get('/admin/companies')
+@admin_login
+async def admin_get_companies(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    companies = [company.dict() for company in company_controller.companies]
+    admin_logger.info(f"Admin logger : {companies}")
+    context = dict(user=user.dict(), companies=companies)
+    return render_template('admin/companies.html', **context)
+
+
+@admin_routes.get('/admin/buildings')
+@admin_login
+async def admin_get_buildings(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    buildings = [building.dict() for building in company_controller.buildings]
+    admin_logger.info(f"Admin logger : {buildings}")
+    context = dict(user=user.dict(), buildings=buildings)
+    return render_template('admin/buildings.html', **context)
