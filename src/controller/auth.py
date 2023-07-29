@@ -4,6 +4,7 @@ import uuid
 from flask import Flask, render_template
 from pydantic import ValidationError
 from sqlalchemy import or_
+from sqlalchemy.orm import lazyload
 
 from src.controller import error_handler, UnauthorizedError, Controllers
 from src.database.models.users import User, CreateUser
@@ -22,18 +23,18 @@ class UserController(Controllers):
 
     def load_users(self):
         with self.get_session() as session:
-            users_orm_list = session.query(UserORM).filter().all()
-            users_list = [User(**user_orm.to_dict()) for user_orm in users_orm_list]
-            for user in users_list:
-                self.users[user.user_id] = user
+            # Use session.query().options(lazyload) to fetch only the required columns
+            users_orm_list: list[UserORM] = session.query(UserORM).options(lazyload('*')).all()
+            # Convert the users_orm_list directly into a dictionary
+            self.users = {user.user_id: User(**user.to_dict()) for user in users_orm_list}
 
     def init_app(self, app: Flask):
         self.load_users()
 
     async def is_token_valid(self, token: str) -> bool:
         """
-        Checks if the password reset token is valid based on the elapsed time.
-
+        **is_token_valid**
+            Checks if the password reset token is valid based on the elapsed time.
         :param token: The password reset token to validate.
         :return: True if the token is valid, False otherwise.
         """
@@ -48,7 +49,6 @@ class UserController(Controllers):
     @error_handler
     async def get(self, user_id: str) -> dict[str, str] | None:
         """
-
         :param user_id:
         :return:
         """
@@ -64,7 +64,7 @@ class UserController(Controllers):
     @error_handler
     async def get_by_email(self, email: str) -> User | None:
         """
-
+            **get_by_email**
         :param email:
         :return:
         """

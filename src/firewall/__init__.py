@@ -205,9 +205,9 @@ class Firewall:
                 try:
                     response = send_request.get(url=_uri, headers=_headers)
                     response_data: dict[str, dict[str, str] | list[str]] = response.json()
-                    ipv4_cidrs = response_data.get('result', {}).get('ipv4_cidrs', DEFAULT_IPV4)
-                    ipv6_cidrs = response_data.get('result', {}).get('ipv6_cidrs', [])
-                    return ipv4_cidrs, ipv6_cidrs
+                    ipv4_cidr = response_data.get('result', {}).get('ipv4_cidrs', DEFAULT_IPV4)
+                    ipv6_cidr = response_data.get('result', {}).get('ipv6_cidrs', [])
+                    return ipv4_cidr, ipv6_cidr
                 except (ConnectionError, ReadTimeout):
                     self._logger.error("Firewall failed to connect to Cloudflare - unable to verify CIDRS")
                     return [], []
