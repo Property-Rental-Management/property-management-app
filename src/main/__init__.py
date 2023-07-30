@@ -50,6 +50,7 @@ def _add_blue_prints(app):
     from src.cron.routes import cron_route
     from src.routes.auth import auth_route
     from src.routes.admin.admin import admin_routes
+    from src.routes.profile.profile import profile_routes
 
     app.register_blueprint(home_route)
     app.register_blueprint(companies_route)
@@ -64,6 +65,7 @@ def _add_blue_prints(app):
     app.register_blueprint(cron_route)
     app.register_blueprint(notices_route)
     app.register_blueprint(admin_routes)
+    app.register_blueprint(profile_routes)
 
 
 def _add_filters(app):

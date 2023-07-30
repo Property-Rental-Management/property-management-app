@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from sqlalchemy import or_
 from sqlalchemy.orm import lazyload
 
+from database.models.profile import Profile
 from src.controller import error_handler, UnauthorizedError, Controllers
 from src.database.models.users import User, CreateUser
 from src.database.sql.user import UserORM
@@ -19,6 +20,7 @@ class UserController(Controllers):
         super().__init__()
         self._time_limit = 360
         self._verification_tokens: dict[str, int | dict[str, str | int]] = {}
+        self.profile: Profile | None = None
         self.users: dict[str, User] = {}
 
     def load_users(self):
