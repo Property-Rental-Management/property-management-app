@@ -6,8 +6,8 @@ from pydantic import ValidationError
 from sqlalchemy import or_
 from sqlalchemy.orm import lazyload
 
-from database.models.profile import Profile
 from src.controller import error_handler, UnauthorizedError, Controllers
+from src.database.models.profile import Profile
 from src.database.models.users import User, CreateUser
 from src.database.sql.user import UserORM
 from src.emailer import EmailModel

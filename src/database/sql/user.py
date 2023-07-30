@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Boolean, ForeignKey, inspect
+from sqlalchemy import Column, String, Boolean, ForeignKey, inspect, Integer
 
 from src.database.constants import ID_LEN, NAME_LEN
 from src.database.sql import Base, engine
@@ -64,3 +64,34 @@ class UserORM(Base):
             'account_verified': self.account_verified,
             'is_system_admin': self.is_system_admin
         }
+
+
+class ProfileORM(Base):
+    """
+        Profile ORM
+    """
+    __tablename__ = "profile"
+    user_id: str = Column(String(ID_LEN), primary_key=True)
+    deposit_multiplier: int = Column(Integer)
+    currency: str = Column(String(6))
+    tax_rate: int = Column(Integer)
+
+    @classmethod
+    def create_if_not_table(cls):
+        if not inspect(engine).has_table(cls.__tablename__):
+            Base.metadata.create_all(bind=engine)
+
+    def to_dict(self) -> dict[str, str | int]:
+        """
+
+        :return:
+        """
+        return {'user_id': self.user_id,
+                'deposit_multiplier': self.deposit_multiplier,
+                'currency': self.currency,
+                'tax_rate': self.tax_rate}
+
+    def __eq__(self, other):
+        if not isinstance(other, ProfileORM):
+            return False
+        return self.user_id == other.user_id
