@@ -15,6 +15,7 @@ profile_routes = Blueprint('profile', __name__)
 @login_required
 async def get_profile(user: User):
     """
+        **get_profile**
 
     :param user:
     :return:
@@ -29,7 +30,7 @@ async def get_profile(user: User):
 @login_required
 async def update_profile(user: User):
     """
-
+        **update_profile**
     :param user:
     :return:
     """
