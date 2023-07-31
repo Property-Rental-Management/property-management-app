@@ -7,8 +7,8 @@ from sqlalchemy import or_
 from sqlalchemy.orm import lazyload
 
 from src.controller import error_handler, UnauthorizedError, Controllers
-from src.database.models.profile import Profile
-from src.database.models.users import User, CreateUser
+from src.database.models.profile import Profile, ProfileUpdate
+from src.database.models.users import User, CreateUser, UserUpdate
 from src.database.sql.user import UserORM, ProfileORM
 from src.emailer import EmailModel
 from src.main import send_mail
@@ -41,6 +41,30 @@ class UserController(Controllers):
         for profile in self.profiles:
             if profile.user_id == user_id:
                 return profile
+
+    async def update_profile(self, user: UserUpdate, profile: ProfileUpdate):
+        """
+
+        :param user:
+        :param profile:
+        :return:
+        """
+        with self.get_session() as session:
+            o_user_orm: UserORM = session.query(UserORM).filter(UserORM.user_id == user.user_id).first()
+            o_profile_orm: ProfileORM = session.query(ProfileORM).filter(ProfileORM.user_id == user.user_id).first()
+
+            if o_user_orm:
+                o_user_orm.full_name = user.full_name
+                o_user_orm.username = user.username
+                o_user_orm.email = user.email
+                o_user_orm.contact_number = user.contact_number
+
+            # Update profile attributes
+            if o_profile_orm:
+                o_profile_orm.deposit_multiplier = profile.deposit_multiplier
+                o_profile_orm.currency = profile.currency
+                o_profile_orm.tax_rate = profile.tax_rate
+            session.commit()
 
     def init_app(self, app: Flask):
         self.load_users()

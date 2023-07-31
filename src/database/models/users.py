@@ -2,7 +2,7 @@
 import uuid
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, Extra
 
 from src.controller.encryptor import encryptor
 
@@ -64,6 +64,7 @@ class CreateUser(BaseModel):
     full_name: str | None
     contact_number: str | None
     account_verified: bool = Field(default=False)
+    is_system_admin: bool = Field(default=False)
 
     @property
     def password_hash(self):
@@ -86,6 +87,7 @@ class PasswordResetUser(BaseModel):
     full_name: str | None
     contact_number: str | None
     account_verified: bool = Field(default=False)
+    is_system_admin: bool = Field(default=False)
 
     @property
     def password_hash(self):
@@ -96,3 +98,18 @@ class PasswordResetUser(BaseModel):
         dict_.update(dict(password_hash=self.password_hash))
         print(f"Update User : {dict_}")
         return dict_
+
+
+class UserUpdate(BaseModel):
+    user_id: str
+    is_tenant: bool | None
+    tenant_id: str | None
+    username: str
+    password: str
+    email: str
+    full_name: str | None
+    contact_number: str | None
+    account_verified: bool = Field(default=False)
+
+    class Config:
+        extra = Extra.ignore

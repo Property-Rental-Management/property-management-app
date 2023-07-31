@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, Extra
 
 
 class Profile(BaseModel):
@@ -17,3 +17,13 @@ class Profile(BaseModel):
         if not isinstance(other, Profile):
             return False
         return self.user_id == other.user_id
+
+
+class ProfileUpdate(BaseModel):
+    user_id: str
+    deposit_multiplier: int = Field(default="2")
+    currency: str = Field(default="R")
+    tax_rate: int = Field(default=0)
+
+    class Config:
+        extra = Extra.ignore
