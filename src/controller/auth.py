@@ -20,8 +20,15 @@ class UserController(Controllers):
         super().__init__()
         self._time_limit = 360
         self._verification_tokens: dict[str, int | dict[str, str | int]] = {}
-        self.profiles: list[Profile] = []
+        self.profiles: dict[str, Profile] = {}
         self.users: dict[str, User] = {}
+
+    async def manage_users_dict(self, new_user: User):
+        # Check if the user instance already exists in the dictionary
+        self.users[new_user.user_id] = new_user
+
+    async def manage_profiles(self, new_profile: Profile):
+        self.profiles[new_profile.user_id] = new_profile
 
     def load_users(self):
         with self.get_session() as session:
@@ -32,15 +39,38 @@ class UserController(Controllers):
             profile_orm_list: list[ProfileORM] = session.query(ProfileORM).options(lazyload('*')).all()
             self.profiles = [Profile(**profile_orm.to_dict()) for profile_orm in profile_orm_list]
 
-    async def get_profile(self, user_id: str):
+    async def get_profile(self, user_id: str) -> Profile | None:
         """
+        Get the profile for the given user ID.
 
-        :param user_id:
-        :return:
+        :param user_id: The user ID for which to retrieve the profile.
+        :return: The Profile instance corresponding to the user ID if found, else None.
         """
-        for profile in self.profiles:
-            if profile.user_id == user_id:
-                return profile
+        # Check if the profile is available in the cache (profiles dictionary)
+        if user_id in self.profiles:
+            return self.profiles[user_id]
+
+        # Fetch the profile data from the database
+        with self.get_session() as session:
+            profile_orm = await session.query(ProfileORM).filter(ProfileORM.user_id == user_id).first()
+
+        # If the profile_orm is not found, return None
+        if not profile_orm:
+            return None
+
+        # Convert ProfileORM to Profile object
+        profile = Profile(
+            user_id=profile_orm.user_id,
+            deposit_multiplier=profile_orm.deposit_multiplier,
+            currency=profile_orm.currency,
+            tax_rate=profile_orm.tax_rate
+            # Add other attributes as required
+        )
+
+        # Cache the profile in the dictionary for future use
+        self.profiles[user_id] = profile
+
+        return profile
 
     async def update_profile(self, user: UserUpdate, profile: ProfileUpdate):
         """
@@ -92,7 +122,7 @@ class UserController(Controllers):
         """
         if not user_id:
             return None
-        if self.users:
+        if user_id in self.users:
             return self.users[user_id].dict()
 
         with self.get_session() as session:

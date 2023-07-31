@@ -53,6 +53,16 @@ class User(BaseModel):
         """
         return encryptor.compare_hashes(hash=self.password_hash, password=password)
 
+    def __eq__(self, other):
+        """
+        Compare two User instances based on their user_id only.
+
+        :param other: The other User instance to compare.
+        :return: True if user_id of both instances is the same, False otherwise.
+        """
+        if not isinstance(other, User):
+            return False
+        return self.user_id == other.user_id
 
 class CreateUser(BaseModel):
     user_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -105,7 +115,6 @@ class UserUpdate(BaseModel):
     is_tenant: bool | None
     tenant_id: str | None
     username: str
-    password: str
     email: str
     full_name: str | None
     contact_number: str | None

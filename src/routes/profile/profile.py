@@ -37,7 +37,9 @@ async def update_profile(user: User):
     try:
         user_update = UserUpdate(**request.form)
         profile_update = ProfileUpdate(**request.form)
+        admin_logger.info(f"Profile : {profile_update} , User: {user_update}")
     except ValidationError as e:
+        admin_logger.error(str(e))
         flash(message="Unable to update profile", category="danger")
         return redirect(url_for('profile.get_profile'), code=302)
 
