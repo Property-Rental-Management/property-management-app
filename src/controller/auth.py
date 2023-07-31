@@ -9,7 +9,7 @@ from sqlalchemy.orm import lazyload
 from src.controller import error_handler, UnauthorizedError, Controllers
 from src.database.models.profile import Profile
 from src.database.models.users import User, CreateUser
-from src.database.sql.user import UserORM
+from src.database.sql.user import UserORM, ProfileORM
 from src.emailer import EmailModel
 from src.main import send_mail
 
@@ -20,7 +20,7 @@ class UserController(Controllers):
         super().__init__()
         self._time_limit = 360
         self._verification_tokens: dict[str, int | dict[str, str | int]] = {}
-        self.profile: Profile | None = None
+        self.profiles: list[Profile] = []
         self.users: dict[str, User] = {}
 
     def load_users(self):
@@ -29,6 +29,18 @@ class UserController(Controllers):
             users_orm_list: list[UserORM] = session.query(UserORM).options(lazyload('*')).all()
             # Convert the users_orm_list directly into a dictionary
             self.users = {user.user_id: User(**user.to_dict()) for user in users_orm_list}
+            profile_orm_list: list[ProfileORM] = session.query(ProfileORM).options(lazyload('*')).all()
+            self.profiles = [Profile(**profile_orm.to_dict()) for profile_orm in profile_orm_list]
+
+    async def get_profile(self, user_id: str):
+        """
+
+        :param user_id:
+        :return:
+        """
+        for profile in self.profiles:
+            if profile.user_id == user_id:
+                return profile
 
     def init_app(self, app: Flask):
         self.load_users()
