@@ -88,12 +88,14 @@ class UserController(Controllers):
                 o_user_orm.username = user.username
                 o_user_orm.email = user.email
                 o_user_orm.contact_number = user.contact_number
-
+                self.users[user.user_id] = User(**o_user_orm.to_dict())
             # Update profile attributes
             if o_profile_orm:
                 o_profile_orm.deposit_multiplier = profile.deposit_multiplier
                 o_profile_orm.currency = profile.currency
                 o_profile_orm.tax_rate = profile.tax_rate
+                self.profiles[profile.user_id] = Profile(**o_profile_orm.to_dict())
+
             session.commit()
 
     def init_app(self, app: Flask):
