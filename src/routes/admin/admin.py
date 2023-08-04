@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
+from pydantic import ValidationError
 
 from src.authentication import admin_login
+from src.database.models.subscriptions import PlanName, CreatePlan
 from src.database.models.users import User
 from src.logger import init_logger
 from src.main import user_controller, tenant_controller, company_controller, subscriptions_controller
@@ -21,8 +23,24 @@ async def get_admin(user: User):
     subscribers = subscriptions_controller.subscriptions
     plans_dict = [plan.dict() for plan in plans]
     subscription_dicts = [subscription.dict() for subscription in subscribers.values()]
-    context = dict(user=user.dict(), plans=plans_dict, subscriptions=subscription_dicts)
+    plan_types = [plan_type.value for plan_type in PlanName]
+    context = dict(user=user.dict(), plans=plans_dict, subscriptions=subscription_dicts, plan_types=plan_types)
     return render_template('admin/admin.html', **context)
+
+
+@admin_routes.post('/admin/subscription/create')
+@admin_login
+async def add_subscription_plan():
+    """
+
+    :return:
+    """
+    try:
+        subscription_plan = CreatePlan(**request.form)
+        admin_logger.info(f"Subscription Plan : {subscription_plan}")
+    except ValidationError as e:
+        admin_logger.error(f"Error : {str(e)}")
+        pass
 
 
 @admin_routes.get('/admin/users')

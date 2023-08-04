@@ -1,8 +1,9 @@
+import uuid
 from datetime import date
 from enum import Enum
 
 from dateutil.relativedelta import relativedelta
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PlanName(str, Enum):
@@ -14,6 +15,12 @@ class PlanName(str, Enum):
 
 class Plan(BaseModel):
     name: PlanName
+    price: int
+
+
+class CreatePlan(BaseModel):
+    plan_id: str = Field(default_factory=lambda: uuid.uuid4())
+    name: str
     price: int
 
 

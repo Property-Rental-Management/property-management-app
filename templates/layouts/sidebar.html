@@ -21,6 +21,7 @@
                             </li>
                         </ul>
                     </li>
+                    {% if  user and user.is_system_admin %}
                     <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i> Admin<span
                             class="sidebar-collapse-icon ti-angle-down"></span></a>
                         <ul>
@@ -33,6 +34,7 @@
                             <li><a href="{{ url_for('admin.get_admin') }}"><i class="ti-settings"></i> Settings</a></li>
                         </ul>
                     </li>
+                    {% endif %}
                     {% if user %}
                         <li><a href="{{ url_for('auth.do_logout') }}"><i class="ti-power-off"></i> Logout</a></li>
                     {% else %}
