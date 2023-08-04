@@ -21,7 +21,7 @@ class PlansORM(Base):
     def to_dict(self):
         return {
             "plan_id": self.plan_id,
-            "plan_name": self.plan_name,
+            "name": self.name,
             "description": self.description,
             "price": self.price
         }
