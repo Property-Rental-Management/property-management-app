@@ -29,6 +29,7 @@ async def get_admin(user: User):
                    plans=plans_dict,
                    subscriptions=subscription_dicts,
                    plan_types=plan_types)
+
     return render_template('admin/admin.html', **context)
 
 
