@@ -16,6 +16,7 @@ from src.controller.lease_controller import LeaseController
 from src.controller.tenant import TenantController
 from src.controller.lease_controller import InvoiceManager
 from src.controller.wallet import WalletController
+from src.controller.subscriptions import SubscriptionController
 from src.firewall import Firewall
 
 firewall = Firewall()
@@ -26,6 +27,7 @@ user_controller = UserController()
 notifications_controller = NotificationsController()
 lease_agreement_controller = LeaseController()
 wallet_controller = WalletController()
+subscriptions_controller = SubscriptionController()
 
 cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
 invoice_man = InvoiceManager(cache_path)
@@ -99,6 +101,7 @@ def create_app(config):
         company_controller.init_app(app=app)
         lease_agreement_controller.init_app(app=app)
         wallet_controller.init_app(app=app)
+        subscriptions_controller.init_app(app=app)
 
         firewall.init_app(app=app)
         send_mail.init_app(app=app)

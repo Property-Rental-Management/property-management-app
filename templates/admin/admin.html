@@ -1,17 +1,29 @@
-
-
-
 {% extends "layouts/page.html" %}
 
 {% block content %}
     <div class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="ti-settings"> </i> Admin </h3>
+                <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="plans-tab" data-toggle="tab" href="#plans" role="tab"
+                           aria-controls="plans" aria-selected="true">Plans</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="subscriptions-tab" data-toggle="tab" href="#subscriptions" role="tab"
+                           aria-controls="subscriptions" aria-selected="false">Subscriptions</a>
+                    </li>
+                </ul>
             </div>
-
             <div class="card-body">
-
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="plans" role="tabpanel" aria-labelledby="plans-tab">
+                        {% include 'admin/tabs/plans.html' %}
+                    </div>
+                    <div class="tab-pane fade" id="subscriptions" role="tabpanel" aria-labelledby="subscriptions-tab">
+                        {% include 'admin/tabs/subscribers.html' %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

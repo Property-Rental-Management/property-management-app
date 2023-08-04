@@ -1,0 +1,17 @@
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Subscriptions</h4>
+    </div>
+    <div class="card-body">
+        <ul class="list-group">
+            {% for subscription in subscriptions %}
+                <li class="list-group-item">Subscription ID: {{ subscription.subscription_id }}</li>
+                <li class="list-group-item">Plan: {{ subscription.plan.name }}</li>
+                <li class="list-group-item">Expiry Date: {{ subscription.expiry_date }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+

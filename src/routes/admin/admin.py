@@ -3,7 +3,7 @@ from flask import Blueprint, render_template
 from src.authentication import admin_login
 from src.database.models.users import User
 from src.logger import init_logger
-from src.main import user_controller, tenant_controller, company_controller
+from src.main import user_controller, tenant_controller, company_controller, subscriptions_controller
 
 admin_logger = init_logger('admin_logger')
 admin_routes = Blueprint('admin', __name__)
@@ -17,7 +17,11 @@ async def get_admin(user: User):
     :param user:
     :return:
     """
-    context = dict(user=user.dict())
+    plans = subscriptions_controller.plans
+    subscribers = subscriptions_controller.subscriptions
+    plans_dict = [plan.dict() for plan in plans]
+    subscription_dicts = [subscription.dict() for subscription in subscribers.values()]
+    context = dict(user=user.dict(), plans=plans_dict, subscriptions=subscription_dicts)
     return render_template('admin/admin.html', **context)
 
 
