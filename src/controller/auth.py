@@ -4,7 +4,6 @@ import uuid
 from flask import Flask, render_template
 from pydantic import ValidationError
 from sqlalchemy import or_
-from sqlalchemy.orm import lazyload
 
 from src.controller import error_handler, UnauthorizedError, Controllers
 from src.database.models.profile import Profile, ProfileUpdate
@@ -23,6 +22,19 @@ class UserController(Controllers):
         self.profiles: dict[str, Profile] = {}
         self.users: dict[str, User] = {}
 
+    def init_app(self, app: Flask):
+        self._load_users()
+
+    def _load_users(self):
+        with self.get_session() as session:
+            # Use session.query().options(lazyload) to fetch only the required columns
+            users_orm_list: list[UserORM] = session.query(UserORM).all()
+            # Convert the users_orm_list directly into a dictionary
+            self.users = {user.user_id: User(**user.to_dict()) for user in users_orm_list}
+            profile_orm_list: list[ProfileORM] = session.query(ProfileORM).all()
+            self.profiles = {profile_orm.user_id: Profile(**profile_orm.to_dict())
+                             for profile_orm in profile_orm_list}
+
     async def manage_users_dict(self, new_user: User):
         # Check if the user instance already exists in the dictionary
         self.users[new_user.user_id] = new_user
@@ -30,16 +42,8 @@ class UserController(Controllers):
     async def manage_profiles(self, new_profile: Profile):
         self.profiles[new_profile.user_id] = new_profile
 
-    def load_users(self):
-        with self.get_session() as session:
-            # Use session.query().options(lazyload) to fetch only the required columns
-            users_orm_list: list[UserORM] = session.query(UserORM).options(lazyload('*')).all()
-            # Convert the users_orm_list directly into a dictionary
-            self.users = {user.user_id: User(**user.to_dict()) for user in users_orm_list}
-            profile_orm_list: list[ProfileORM] = session.query(ProfileORM).options(lazyload('*')).all()
-            self.profiles = [Profile(**profile_orm.to_dict()) for profile_orm in profile_orm_list]
-
-    async def get_profile(self, user_id: str) -> Profile | None:
+    @error_handler
+    async def get_profile_by_user_id(self, user_id: str) -> Profile | None:
         """
         Get the profile for the given user ID.
 
@@ -47,31 +51,34 @@ class UserController(Controllers):
         :return: The Profile instance corresponding to the user ID if found, else None.
         """
         # Check if the profile is available in the cache (profiles dictionary)
+        self.logger.info(f" Profiles : {self.profiles}")
+        self.logger.info(f"User : {self.users}")
         if user_id in self.profiles:
-            return self.profiles[user_id]
+            self.logger.info("Fetching profile from dict {} ")
+            return self.profiles.get(user_id)
 
         # Fetch the profile data from the database
         with self.get_session() as session:
             profile_orm = await session.query(ProfileORM).filter(ProfileORM.user_id == user_id).first()
 
-        # If the profile_orm is not found, return None
-        if not profile_orm:
-            return None
+            # If the profile_orm is not found, return None
+            if not profile_orm:
+                self.logger.info(f"Profile not Found")
+                return {}
 
-        # Convert ProfileORM to Profile object
-        profile = Profile(
-            user_id=profile_orm.user_id,
-            deposit_multiplier=profile_orm.deposit_multiplier,
-            currency=profile_orm.currency,
-            tax_rate=profile_orm.tax_rate
-            # Add other attributes as required
-        )
+            # Convert ProfileORM to Profile object
+            profile = Profile(user_id=profile_orm.user_id,
+                              deposit_multiplier=profile_orm.deposit_multiplier,
+                              currency=profile_orm.currency,
+                              tax_rate=profile_orm.tax_rate)
 
-        # Cache the profile in the dictionary for future use
-        self.profiles[user_id] = profile
-
+            # Cache the profile in the dictionary for future use
+            self.profiles[user_id] = profile
+            self.logger.info(f"Profile ORM : {profile_orm.to_dict()}")
+            self.logger.info(f"Profile : {self.profiles}")
         return profile
 
+    @error_handler
     async def update_profile(self, user: UserUpdate, profile: ProfileUpdate):
         """
 
@@ -90,16 +97,18 @@ class UserController(Controllers):
                 o_user_orm.contact_number = user.contact_number
                 self.users[user.user_id] = User(**o_user_orm.to_dict())
             # Update profile attributes
+
             if o_profile_orm:
                 o_profile_orm.deposit_multiplier = profile.deposit_multiplier
                 o_profile_orm.currency = profile.currency
                 o_profile_orm.tax_rate = profile.tax_rate
                 self.profiles[profile.user_id] = Profile(**o_profile_orm.to_dict())
+            else:
+                self.logger.info(f"Adding new profile: {profile}")
+                session.add(ProfileORM(**profile.dict()))
+                self.profiles[profile.user_id] = Profile(**profile.dict())
 
             session.commit()
-
-    def init_app(self, app: Flask):
-        self.load_users()
 
     async def is_token_valid(self, token: str) -> bool:
         """

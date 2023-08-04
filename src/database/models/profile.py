@@ -21,7 +21,7 @@ class Profile(BaseModel):
 
 class ProfileUpdate(BaseModel):
     user_id: str
-    deposit_multiplier: int = Field(default="2")
+    deposit_multiplier: int = Field(default=2)
     currency: str = Field(default="R")
     tax_rate: int = Field(default=0)
 

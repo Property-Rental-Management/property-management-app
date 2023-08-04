@@ -20,9 +20,9 @@ async def get_profile(user: User):
     :param user:
     :return:
     """
-    profile = await user_controller.get_profile(user_id=user.user_id)
-    profile = profile.dict() if profile else {}
-    context = dict(user=user.dict(), profile=profile)
+    profile = await user_controller.get_profile_by_user_id(user_id=user.user_id)
+    admin_logger.info(f"Profile : {profile}")
+    context = dict(user=user.dict(), profile=profile.dict() if profile else {})
     return render_template('profile/profile.html', **context)
 
 
