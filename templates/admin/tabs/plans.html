@@ -11,7 +11,7 @@
     <div class="card-body">
         <ul class="list-group">
             {% for plan in plans %}
-                <li class="list-group-item">{{ plan.name }} - Price: {{ plan.price }}</li>
+                <li class="list-group-item">{{ plan.name }} - Price: R {{ plan.price|currency }}.00</li>
             {% endfor %}
         </ul>
     </div>

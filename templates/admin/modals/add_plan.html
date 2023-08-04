@@ -18,7 +18,7 @@
 
                     <div class="form-group">
                         <label for="planName">Plan Name</label>
-                        <select class="form-control" id="planName" name="name">
+                        <select class="form-control" id="name" name="name">
                             {% for plan_type in plan_types %}
                                 <option value="{{ plan_type }}">{{ plan_type }}</option>
                             {% endfor %}
@@ -26,7 +26,7 @@
                     </div>
                     <div class="form-group">
                         <label for="planPrice">Plan Price</label>
-                        <input type="number" class="form-control" id="planPrice" name="price">
+                        <input type="number" class="form-control" id="price" name="price">
                     </div>
 
                 </div>

@@ -59,3 +59,17 @@ class SubscriptionController(Controllers):
 
         return [subscription for subscription in self.subscriptions.values()
                 if subscription.plan.name.casefold() == plan_name.casefold()]
+
+    @error_handler
+    async def add_subscription_plan(self, plan: Plan) -> Plan:
+        """
+
+        :param plan:
+        :return:
+        """
+        with self.get_session() as session:
+            plan_orm = PlansORM(**plan.dict())
+            session.add(plan_orm)
+            session.commit()
+            self.plans.append(plan)
+            return plan

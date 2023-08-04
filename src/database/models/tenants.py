@@ -17,7 +17,6 @@ class Tenant(BaseModel):
     - lease_start_date (date): The start date of the lease.
     - lease_end_date (date): The end date of the lease.
     """
-
     tenant_id: str
     address_id: str | None
     name: str
@@ -71,6 +70,9 @@ class Tenant(BaseModel):
 
 
 class CreateTenant(BaseModel):
+    """
+
+    """
     tenant_id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="The unique ID of the tenant.")
     address_id: str | None
     name: str

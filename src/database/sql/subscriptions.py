@@ -9,7 +9,7 @@ from src.database.sql import Base, engine
 class PlansORM(Base):
     __tablename__ = "subscription_plans"
     plan_id: str = Column(String(ID_LEN), primary_key=True)
-    plan_name: str = Column(String(12))
+    name: str = Column(String(12))
     description: str = Column(String(255))
     price: int = Column(Integer)
 

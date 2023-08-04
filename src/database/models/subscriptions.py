@@ -14,12 +14,13 @@ class PlanName(str, Enum):
 
 
 class Plan(BaseModel):
-    name: PlanName
+    plan_id: str
+    name: str
     price: int
 
 
 class CreatePlan(BaseModel):
-    plan_id: str = Field(default_factory=lambda: uuid.uuid4())
+    plan_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     price: int
 
