@@ -1,0 +1,53 @@
+<div class="content">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title"><i class="ti-package"></i> Subscription Details</h3>
+            <div>
+                <button class="btn btn-sm btn-primary">
+                    <i class="ti-plus"></i>
+                    Subscribe
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Subscription Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="label">Subscription Plan</label>
+                                <p>{{ user.subscription_plan }}</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Subscription Expiry</label>
+                                <p>{{ user.subscription_expiry }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Billing Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="label">Billing Address</label>
+                                <p>{{ user.billing_address }}</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Payment Method</label>
+                                <p>{{ user.payment_method }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

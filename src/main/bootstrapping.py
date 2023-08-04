@@ -15,6 +15,7 @@ def bootstrapper():
     from src.database.sql.payments import PaymentORM
     from src.database.sql.wallet import WalletTransactionORM
     from src.database.sql.user import ProfileORM
+    from src.database.sql.subscriptions import PlansORM, SubscriptionsORM
 
     AddressORM.create_if_not_table()
     TenantORM.create_if_not_table()
@@ -40,3 +41,5 @@ def bootstrapper():
     WalletTransactionORM.create_if_not_table()
 
     ProfileORM.create_if_not_table()
+    PlansORM.create_if_not_table()
+    SubscriptionsORM.create_if_not_table()

@@ -2,96 +2,32 @@
 
 
 {% extends "layouts/page.html" %}
-
 {% block content %}
     <div class="content">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><i class="ti-settings"> </i> Profile </h3>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#profile" role="tab">
+                    <i class="ti-settings"></i> Profile
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#subscriptions" role="tab">
+                    <i class="ti-package"></i> Subscriptions
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane" id="subscriptions" role="tabpanel">
+                {% include "profile/tabs/subscription_details.html" %}
             </div>
-
-            <div class="card-body">
-
-                <form class="form-horizontal" method="POST" enctype="application/x-www-form-urlencoded"
-                      action="{{ url_for('profile.update_profile') }}">
-                    <input type="hidden" name="user_id" value="{{ user.user_id }}">
-                    <input type="hidden" name="account_verified" value="{{ user.account_verified }}">
-
-
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Personal Details</h3>
-                                </div>
-                                <div class="card-footer">
-
-                                    <div class="form-group">
-                                        <label class="label"> Names</label>
-                                        <input class="form-control" type="text" id="full_name" name="full_name"
-                                               value="{{ user.full_name }}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="label">Username</label>
-                                        <input type="email" class="form-control" name="username" id="username"
-                                               value="{{ user.username }}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="label">Tel/Cell</label>
-                                        <input type="text" class="form-control" id="contact_number"
-                                               name="contact_number"
-                                               value="{{ user.contact_number }}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="label">Email</label>
-                                        <input type="email" class="form-control" name="email" id="email"
-                                               value="{{ user.email }}"/>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Profile</h3>
-                                </div>
-                                <div class="card-footer">
-
-                                    <div class="form-group">
-                                        <label class="label"> Currency</label>
-                                        <input class="form-control" type="text" id="full_name" name="full_name"
-                                               value="{{ profile.currency }}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="label">Tax</label>
-                                        <input type="text" class="form-control" id="contact_number"
-                                               name="contact_number"
-                                               value="{{ profile.tax_rate }}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="label">Deposit <span class="font-weight-bold">(Number of Rental taken as Deposit)</span></label>
-                                        <input type="number" class="form-control" name="deposit_multiplier"
-                                               id="deposit_multiplier"
-                                               value="{{ profile.deposit_multiplier }}"/>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <button class="btn btn-sm btn-outline-info btn-default">
-                                    <span class="font-weight-bold"><i class="ti-save"> </i>
-                                        Update Profile
-                                    </span>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-
+            <div class="tab-pane active" id="profile" role="tabpanel">
+                {% include "profile/tabs/profile.html" %}
             </div>
         </div>
     </div>
+
+
+
+
 {% endblock %}
