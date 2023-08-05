@@ -136,7 +136,13 @@ async def report(user: User, company_id: str):
     :param company_id:
     :return:
     """
-    context = await monthly_cashflow_context(company_id=company_id, user=user)
+    try:
+        context = await monthly_cashflow_context(company_id=company_id, user=user)
+    except Exception as e:
+        report_logger.info(f"Error : {str(e)}")
+        flash(message="Error fetching reports", category="danger")
+        return redirect(url_for("reports.get_reports"), code=302)
+
     context.update(dict(selected="monthly_cashflow"))
     return render_template('reports/reporting_interface.html', **context)
 

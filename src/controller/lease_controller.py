@@ -390,7 +390,7 @@ class LeaseController(Controllers):
             unit_orm: UnitORM = session.query(UnitORM).filter(UnitORM.tenant_id == tenant_id).first()
             return Unit(**unit_orm.to_dict()) if isinstance(unit_orm, UnitORM) else None
 
-    def load_company_payments(self, company_id: str):
+    def _load_company_payments(self, company_id: str):
         with self.get_session() as session:
             payments = []
             property_list: list[PropertyORM] = session.query(PropertyORM).filter(
@@ -411,7 +411,7 @@ class LeaseController(Controllers):
         :param company_id:
         :return:
         """
-        return self.load_company_payments(company_id=company_id)
+        return self._load_company_payments(company_id=company_id)
 
     def sync_load_company_payments(self, company_id) -> list[Payment]:
         """
@@ -419,7 +419,7 @@ class LeaseController(Controllers):
         :param company_id:
         :return:
         """
-        return self.load_company_payments(company_id=company_id)
+        return self._load_company_payments(company_id=company_id)
 
     @error_handler
     async def load_tenant_payments(self, tenant_id: str) -> list[Payment]:
