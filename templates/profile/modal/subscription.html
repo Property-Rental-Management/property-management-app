@@ -26,7 +26,9 @@
                                         <label class="label">Subscription Plan</label>
                                         <select class="form-control" name="subscription_plan" id="subscription_plan">
                                             {% for plan in plan_list %}
-                                                <option value="{{ plan.plan_id }}">{{ plan.name }} {{ plan.price|currency }}</option>
+                                                <option value="{{ plan.plan_id }}">{{ plan.name }}-
+                                                    R {{ plan.price|currency }}.00
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>
