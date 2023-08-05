@@ -153,7 +153,6 @@ async def select_cashflow(user: User, company_id: str):
     """
         **select_cashflow**
             returns cashflow report based on selections on business reports
-
     :param user:
     :param company_id:
     :return:
@@ -166,7 +165,6 @@ async def select_cashflow(user: User, company_id: str):
         return redirect(url_for('reports.report', company_id=company_id), code=302)
 
     if cashflow_type == "monthly_cashflow":
-
         context = await monthly_cashflow_context(company_id=company_id, user=user)
         context.update(dict(selected="monthly_cashflow"))
         return render_template('reports/reporting_interface.html', **context)

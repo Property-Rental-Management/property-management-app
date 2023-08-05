@@ -1,0 +1,73 @@
+<!-- Subscription Modal -->
+<div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="subscriptionModalLabel"><i class="ti-package"></i> Subscriptions</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" method="POST" enctype="application/x-www-form-urlencoded"
+                      action="#">
+                    <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                    <input type="hidden" name="subscription_status" value="{{ user.subscription_status }}">
+
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Subscription Details</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <label class="label">Subscription Plan</label>
+                                        <select class="form-control" name="subscription_plan" id="subscription_plan">
+                                            <option value="basic">Basic</option>
+                                            <option value="premium">Premium</option>
+                                            <option value="enterprise">Enterprise</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label">Subscription Expiry</label>
+                                        <input type="date" class="form-control" name="subscription_expiry"
+                                               value="{{ user.subscription_expiry }}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Billing Information</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <label class="label">Billing Address</label>
+                                        <textarea class="form-control" name="billing_address"
+                                                  rows="3">{{ user.billing_address }}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label">Payment Method</label>
+                                        <select class="form-control" name="payment_method" id="payment_method">
+                                            <option value="credit_card">Credit Card</option>
+                                            <option value="paypal">PayPal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-outline-success btn-default">
+                            <span class="font-weight-bold"><i class="ti-check"></i> Update Subscriptions</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
