@@ -5,7 +5,7 @@ from src.authentication import login_required
 from src.database.models.profile import ProfileUpdate
 from src.database.models.users import User, UserUpdate
 from src.logger import init_logger
-from src.main import user_controller
+from src.main import user_controller, subscriptions_controller
 
 admin_logger = init_logger('admin_logger')
 profile_routes = Blueprint('profile', __name__)
@@ -21,8 +21,16 @@ async def get_profile(user: User):
     :return:
     """
     profile = await user_controller.get_profile_by_user_id(user_id=user.user_id)
-    admin_logger.info(f"Profile : {profile}")
-    context = dict(user=user.dict(), profile=profile.dict() if profile else {})
+    profile_dict = profile.dict() if profile else {}
+
+    subscription = await subscriptions_controller.get_subscription_by_uid(user_id=user.user_id)
+    subscription_dict = subscription.dict() if subscription else {}
+    subscription_plans = [plan.dict() for plan in subscriptions_controller.plans]
+    context = dict(user=user.dict(),
+                   profile=profile_dict,
+                   subscription=subscription_dict,
+                   plan_list=subscription_plans)
+
     return render_template('profile/profile.html', **context)
 
 
