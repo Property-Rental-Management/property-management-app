@@ -95,7 +95,12 @@ async def monthly_cashflow_context(company_id: str, user: User):
     cashflow = CashFlowModel(company_id=company_id)
     cashflows = await cashflow.monthly_cashflow()
     # report_logger.info(f"cashflow : {cashflows}")
-    return await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user, flow_type="monthly")
+    try:
+        bar_graph = await create_bar_graph(cashflows=cashflows, company_id=company_id, user=user, flow_type="monthly")
+    except Exception as e:
+        report_logger.info(f"Monthly Cashflow Error : {str(e)}")
+        return {}
+    return bar_graph
 
 
 async def property_cashflow_context(company_id: str, user: User):
