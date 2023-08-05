@@ -103,10 +103,13 @@
                        <div class="row">
                            <div class="col-sm-12 col-lg-12 col-md-12">
                                <div class="card">
-<div class="card-header">
-    <img alt="property and rental manager" src="{{ url_for('static', filename='images/custom/logo.png') }}" style="display: inline-block; max-width: 100%; height: auto; max-height: 80px;">
-    <h2 class="font-weight-bold" style="display: inline-block; margin-left: 10px;">PROPERTY &amp; RENTAL MANAGER</h2>
-</div>
+                                   <div class="card-header">
+                                       <img alt="property and rental manager"
+                                            src="{{ url_for('static', filename='images/custom/logo.png') }}"
+                                            style="display: inline-block; max-width: 100%; height: auto; max-height: 80px;">
+                                       <h2 class="font-weight-bold" style="display: inline-block; margin-left: 10px;">
+                                           PROPERTY &amp; RENTAL MANAGER</h2>
+                                   </div>
                                    <div class="card-body">
                                         <h3 class="card-title text text-info font-weight-bold font-italic">WHAT WE DO ! </h3>
                                        <span class="card-text font-weight-bold">
@@ -137,6 +140,7 @@
                                </div>
                            </div>
                        </div>
+                        {% include "profile/tabs/subscription_plans.html" %}
                     </div>
 
 </section>

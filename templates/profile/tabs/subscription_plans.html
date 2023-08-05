@@ -1,0 +1,136 @@
+{% block custom_css %}
+    <style>
+        .basic-plan {
+            background-color: #5d6c7b;
+        }
+
+        .premium-plan {
+            background-color: #2e3d62;
+        }
+
+        .ultimate-plan {
+            background-color: #04213b;
+        }
+
+        .trial-plan {
+            background-color: #2e3d62;
+        }
+    </style>
+
+{% endblock %}
+
+
+<div class="card-body">
+    <h1>Property &amp; Rental Manager - Subscription Plans</h1>
+    <div class="row text-white">
+        <div class="col-md-4">
+            <div class="card basic-plan">
+                <div class="card-header">
+                    <h5 class="card-title  font-weight-bold text-success">Basic Plan</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text  font-weight-bold text-white">Our Basic Plan is suitable for small to
+                        medium-sized rental properties.</p>
+                    <ul class="list-group text-dark">
+                        <li class="list-group-item">Can Support up to one Company</li>
+                        <li class="list-group-item">Can Support Up to Two Buildings</li>
+                        <li class="list-group-item">Building Size must not exceed 24 Units / Rooms / Shops</li>
+                        <li class="list-group-item">Email Support for sending Invoices to Tenants</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                {% for plan in plans_list %}
+                    {% if plan.name == "Basic" %}
+                        <button class="btn btn-lg btn-default btn-outline-success">
+                            <span class="font-italic"> R {{ plan.price|currency }}.00</span>
+
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card premium-plan">
+                <div class="card-header">
+                    <h5 class="card-title  font-weight-bold text-info">Premium Plan</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text  font-weight-bold text-white">Our Premium Plan is designed for expanding rental
+                        operations with additional features and dedicated support.</p>
+                    <ul class="list-group text-dark">
+                        <li class="list-group-item">Support for Multiple Companies</li>
+                        <li class="list-group-item">Support for Up to Five Buildings</li>
+                        <li class="list-group-item">Support for Upto 150 Units</li>
+                        <li class="list-group-item">Email and Phone Support for Tenants and Owners</li>
+                        <li class="list-group-item">Advanced Financial Reporting</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                {% for plan in plans_list %}
+                    {% if plan.name == "Premium" %}
+                        <button class="btn btn-lg btn-default btn-outline-success">
+                            <span class="font-italic"> R {{ plan.price|currency }}.00</span>
+
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card ultimate-plan">
+                <div class="card-header">
+                    <h5 class="card-title font-weight-bold text-success">Ultimate Plan</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text  font-weight-bold text-white">The Ultimate Plan offers a comprehensive solution
+                        for large-scale rental management with exclusive benefits.</p>
+                    <ul class="list-group text-dark">
+                        <li class="list-group-item">Unlimited Company Support</li>
+                        <li class="list-group-item">Unlimited Buildings and Units</li>
+                        <li class="list-group-item">Customizable Online Portal for Tenants and Owners</li>
+                        <li class="list-group-item">Priority Email, Phone, and Chat Support</li>
+                        <li class="list-group-item">Access to Beta Features and Early Releases</li>
+                        <li class="list-group-item">Personalized Onboarding and Training</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                {% for plan in plans_list %}
+                    {% if plan.name == "Ultimate" %}
+                        <button class="btn btn-lg btn-default btn-outline-success">
+                            <span class="font-italic"> R {{ plan.price|currency }}.00</span>
+
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="card trial-plan">
+                <div class="card-header">
+                    <h5 class="card-title font-weight-bold text-warning">Trial Plan</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text font-weight-bold text-white">Start your rental management journey with a
+                        one-month trial. Transition seamlessly to the Basic or other plans to continue enjoying the
+                        benefits.</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                {% for plan in plans_list %}
+                    {% if plan.name == "Trial" %}
+                        <button class="btn btn-lg btn-default btn-outline-success">
+                            <span class="font-italic"> R {{ plan.price|currency }}.00</span>
+
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
