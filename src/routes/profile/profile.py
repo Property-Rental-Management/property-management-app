@@ -54,3 +54,15 @@ async def update_profile(user: User):
     _ = await user_controller.update_profile(user=user_update, profile=profile_update)
     flash(message="Successfully updated Profile", category="success")
     return redirect(url_for('profile.get_profile'), code=302)
+
+
+@profile_routes.get('/dashboard/subscribe/<string:plan_id>')
+@login_required
+async def subscribe_link(user: User, plan_id: str):
+    """
+
+    :param user:
+    :param plan_id:
+    :return:
+    """
+    print(f"Plan ID : {plan_id}")

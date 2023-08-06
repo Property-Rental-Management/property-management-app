@@ -81,7 +81,7 @@ def error_handler(view_func):
         except Exception as e:
             message: str = f"{view_func.__name__} : {str(e)}"
             error_logger.error(message)
-            flash(message="Ooh , some things broke, no worries, please continue...", category='danger')
+            # flash(message="Ooh , some things broke, no worries, please continue...", category='danger')
             return None
 
     return wrapped_method
