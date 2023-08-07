@@ -10,10 +10,13 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" method="POST" enctype="application/x-www-form-urlencoded"
-                      action="#">
+                <form class="form-horizontal" method="POST"
+                      enctype="application/x-www-form-urlencoded"
+                      action="{{ url_for('profile.subscribe_link') }}">
+                    <!-- hidden inputs -->
                     <input type="hidden" name="user_id" value="{{ user.user_id }}">
                     <input type="hidden" name="subscription_status" value="{{ user.subscription_status }}">
+
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
                             <div class="card">
@@ -21,8 +24,9 @@
                                     <h3 class="card-title">Subscription Details</h3>
                                 </div>
                                 <div class="card-footer">
+
                                     <div class="form-group">
-                                        <label class="label">Subscription Plan</label>
+                                        <label for="subscription_plan" class="label">Subscription Plan</label>
                                         <select class="form-control" name="subscription_plan" id="subscription_plan">
                                             {% for plan in plan_list %}
                                                 <option value="{{ plan.plan_id }}">{{ plan.name }}-
@@ -31,8 +35,9 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+
                                     <div class="form-group">
-                                        <label class="label">Period in (Months)</label>
+                                        <label for="period" class="label">Period in (Months)</label>
                                         <select name="period" id="period" class="form-control">
                                             <option value="3">3 Months</option>
                                             <option value="6">6 Months</option>
@@ -43,16 +48,19 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <h2 class="label">Total Amount</h2>
+                                <h2 class="font-weight-bold text-info" id="total_amount_display">-</h2>
+                            </div>
                             <div class="card">
                                 <div class="card-header">
                                     <h3 class="card-title">Billing Information</h3>
                                 </div>
                                 <div class="card-footer">
                                     <div class="form-group">
-                                        <label class="label">Payment Method</label>
+                                        <label for="payment_method" class="label">Payment Method</label>
                                         <select class="form-control" name="payment_method" id="payment_method">
-                                            <option value="credit_card">Direct Deposit</option>
-                                            <option value="paypal">Credit Card</option>
+                                            <option value="direct_deposit">Direct Deposit</option>
                                             <option value="paypal">PayPal</option>
                                         </select>
                                     </div>
@@ -61,7 +69,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-sm btn-outline-success btn-primary">
+                        <button id="subscribe_button" class="btn btn-sm btn-outline-success btn-primary">
                             <span class="font-weight-bold"><i class="ti-check"></i> Subscribe</span>
                         </button>
                     </div>
@@ -70,3 +78,73 @@
         </div>
     </div>
 </div>
+
+
+{% block  scripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const subscriptionPlanSelect = document.getElementById("subscription_plan");
+            const periodSelect = document.getElementById("period");
+            const totalAmountDisplay = document.getElementById("total_amount_display");
+            const subscribeButton = document.getElementById("subscribe_button");
+
+            // Function to enable or disable the subscribe button
+            function enableSubscribeButton() {
+                subscribeButton.disabled = false;
+            }
+
+            function disableSubscribeButton() {
+                subscribeButton.disabled = true;
+            }
+
+            // Calculate and update the total amount based on selected values
+            function updateTotalAmount() {
+                const selectedPlanId = subscriptionPlanSelect.value;
+                const selectedPeriod = parseInt(periodSelect.value);
+
+
+                getPlanPrice(selectedPlanId)
+                    .then(planDetails => {
+                        if (planDetails !== undefined) {
+                            const planPrice = planDetails.price;
+                            const totalAmount = planPrice * selectedPeriod;
+                            totalAmountDisplay.textContent = `R ${totalAmount.toFixed(2)}`;
+                            enableSubscribeButton(); // Enable the button when price is set
+                        } else {
+                            totalAmountDisplay.textContent = "-";
+                            disableSubscribeButton(); // Disable the button if no price is set
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching plan details:", error);
+                        totalAmountDisplay.textContent = "-";
+                    });
+            }
+
+            // Event listeners to update total amount when selections change
+            subscriptionPlanSelect.addEventListener("change", updateTotalAmount);
+            periodSelect.addEventListener("change", updateTotalAmount);
+
+            // Function to fetch plan details
+            async function getPlanPrice(plan_id) {
+                const request_url = "/dashboard/plan-data/" + plan_id;
+
+                try {
+                    const response = await fetch(request_url);
+                    if (!response.ok) {
+                        throw new Error("Request failed with status: " + response.status);
+                    }
+                    const planDetails = await response.json();
+                    return planDetails;
+                } catch (error) {
+                    console.error("Error fetching plan details:", error);
+                    return undefined;
+                }
+            }
+
+            disableSubscribeButton();
+        });
+
+    </script>
+
+{% endblock %}

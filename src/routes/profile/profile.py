@@ -1,14 +1,23 @@
+import datetime
+import uuid
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from pydantic import ValidationError
 
 from src.authentication import login_required
 from src.database.models.profile import ProfileUpdate
+from src.database.models.subscriptions import SubscriptionFormInput, Subscriptions, PaymentReceipts
 from src.database.models.users import User, UserUpdate
 from src.logger import init_logger
 from src.main import user_controller, subscriptions_controller
 
 admin_logger = init_logger('admin_logger')
 profile_routes = Blueprint('profile', __name__)
+
+
+async def create_payment_reference():
+    reference = str(uuid.uuid4())[0:8].upper()
+    return reference
 
 
 @profile_routes.get('/dashboard/profile')
@@ -56,13 +65,61 @@ async def update_profile(user: User):
     return redirect(url_for('profile.get_profile'), code=302)
 
 
-@profile_routes.get('/dashboard/subscribe/<string:plan_id>')
+@profile_routes.get('/dashboard/subscribe')
 @login_required
-async def subscribe_link(user: User, plan_id: str):
+async def subscribe_link(user: User):
     """
 
     :param user:
     :param plan_id:
     :return:
     """
-    print(f"Plan ID : {plan_id}")
+    try:
+        subscription_form = SubscriptionFormInput(**request.form)
+    except ValidationError as e:
+        admin_logger.error(f"Error Subscribing : {str(e)}")
+        flash(message="Unable to Subscribe", category="danger")
+        return redirect(url_for('profile.get_profile'))
+    # Create Payment Data  depending on selected payment options
+    # display payment screen depending on selected payment options
+    # return the proper payment form or payment information form
+    # depending on the payment form then display the appropriate response
+    if subscription_form.payment_method == "direct_deposit":
+        # Perform cash payment related tasks such as creating a cash payment receipt with its model and reference
+        # save this model in the database then return the information to the user
+        plan = await subscriptions_controller.get_plan_by_id(plan_id=subscription_form.subscription_plan)
+
+        new_subscription = Subscriptions(user_id=user.user_id,
+                                         subscription_id=str(uuid.uuid4()),
+                                         plan=plan,
+                                         date_subscribed=datetime.datetime.now().date(),
+                                         subscription_period_in_month=subscription_form.period,
+                                         subscription_activated=False)
+
+        reference = await create_payment_reference()
+
+        payment_receipt = PaymentReceipts(reference=reference, subscription_id=new_subscription.subscription_id,
+                                          user_id=user.user_id, payment_amount=new_subscription.payment_amount,
+                                          date_created=datetime.datetime.now().date(),
+                                          payment_method=subscription_form.payment_method)
+
+        context = dict(subscription=new_subscription.dict(), payment=payment_receipt.dict())
+
+        return render_template("profile/payments/direct_deposit.html", **context)
+
+    elif subscription_form.payment_method == "paypal":
+        return render_template("profile/payments/paypal.html")
+
+
+@profile_routes.get('/dashboard/plan-data/<string:plan_id>')
+@login_required
+async def get_plan_details(user: User, plan_id: str):
+    """
+
+    :param user:
+    :param plan_id:
+    :return:
+    """
+    plan = await subscriptions_controller.get_plan_by_id(plan_id=plan_id)
+
+    return plan.dict() if plan else {}

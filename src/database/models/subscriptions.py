@@ -31,6 +31,7 @@ class Subscriptions(BaseModel):
     plan: Plan
     date_subscribed: date
     subscription_period_in_month: int
+    subscription_activated: bool
 
     @property
     def expiry_date(self) -> date:
@@ -54,7 +55,11 @@ class Subscriptions(BaseModel):
         Check if the subscription is currently active.
         :return: True if active, False otherwise
         """
-        return not self.is_expired
+        return not self.is_expired and self.subscription_activated
+
+    @property
+    def payment_amount(self) -> int:
+        return self.plan.price * self.subscription_period_in_month
 
     def renew_subscription(self, months: int):
         """
@@ -62,3 +67,42 @@ class Subscriptions(BaseModel):
         :param months: Number of months to extend the subscription
         """
         self.subscription_period_in_month += months
+
+
+class PaymentReceipts(BaseModel):
+    """
+        Direct Deposit Payments for Client Subscriptions
+    """
+    reference: str
+    subscription_id: str
+    user_id: str
+    payment_amount: int
+    date_created: date
+    payment_method: str = Field(default="direct_deposit")
+    amount_paid: int | None
+    date_paid: date | None
+    is_verified: bool = Field(default=False)
+
+    @property
+    def paid_in_full(self):
+        """
+        Check if the payment has been paid in full.
+        :return: True if payment is fully paid, False otherwise.
+        """
+        return self.amount_paid == self.payment_amount
+
+    @property
+    def balance(self):
+        """
+        Calculate the remaining balance for the payment.
+        :return: Remaining balance.
+        """
+        return self.payment_amount - self.amount_paid
+
+
+class SubscriptionFormInput(BaseModel):
+    user_id: int
+    subscription_status: str
+    subscription_plan: str
+    period: int
+    payment_method: str

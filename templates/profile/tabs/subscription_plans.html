@@ -43,7 +43,7 @@
                 {% for plan in plans_list %}
                     {% if plan.name == "Basic" %}
                         <a href="{{ url_for('profile.subscribe_link', plan_id=plan.plan_id) }}"
-                           class="btn btn-lg btn-default btn-outline-success">
+                           class="btn btn-lg btn-primary">
                             <span class="font-italic"> R {{ plan.price|currency }}.00</span>
                         </a>
                     {% endif %}
@@ -71,7 +71,7 @@
                 {% for plan in plans_list %}
                     {% if plan.name == "Premium" %}
                         <a href="{{ url_for('profile.subscribe_link', plan_id=plan.plan_id) }}"
-                           class="btn btn-lg btn-default btn-outline-success">
+                           class="btn btn-lg btn-primary">
                             <span class="font-italic"> R {{ plan.price|currency }}.00</span>
                         </a>
                     {% endif %}
@@ -100,7 +100,7 @@
                 {% for plan in plans_list %}
                     {% if plan.name == "Ultimate" %}
                         <a href="{{ url_for('profile.subscribe_link', plan_id=plan.plan_id) }}"
-                           class="btn btn-lg btn-default btn-outline-success">
+                           class="btn btn-lg btn-primary">
                             <span class="font-italic"> R {{ plan.price|currency }}.00</span>
                         </a>
                     {% endif %}

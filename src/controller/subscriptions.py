@@ -50,6 +50,20 @@ class SubscriptionController(Controllers):
             return subscription
 
     @error_handler
+    async def get_plan_by_id(self, plan_id: str) -> Plan | None:
+        """
+        """
+        for plan in self.plans:
+            if plan.plan_id == plan_id:
+                return plan
+        with self.get_session() as session:
+            plan_orm = session.query(PlansORM).filter(PlansORM.plan_id == plan_id).first()
+            if not plan_orm:
+                return None
+
+            return Plan(**plan_orm.to_dict())
+
+    @error_handler
     async def get_subscriptions_by_plan_name(self, plan_name: str) -> list[Subscriptions]:
         """
 
