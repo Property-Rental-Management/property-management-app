@@ -140,7 +140,9 @@
                                </div>
                            </div>
                        </div>
+                        {% if not (subscription and subscription.is_active) %}
                         {% include "profile/tabs/subscription_plans.html" %}
+                        {% endif %}
                     </div>
 
 </section>

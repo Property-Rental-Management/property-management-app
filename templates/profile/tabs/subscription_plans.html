@@ -35,14 +35,27 @@
                 </div>
             </div>
             <div class="card-footer">
-                {% for plan in plans_list %}
-                    {% if plan.name == "Basic" %}
-                        <a href="{{ url_for('profile.subscribe_link', plan_id=plan.plan_id) }}"
+                {% if user and user.user_id %}
+                    {% if (subscription and (subscription.plan.name == "Basic")) and  not subscription.is_active %}
+                        <a href="{{ url_for('profile.get_profile') }}"
                            class="btn btn-lg btn-primary">
-                            <span class="font-italic"> R {{ plan.price|currency }}.00</span>
+                            <span class="font-italic"> Activate Subscription </span>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('profile.get_profile') }}"
+                           class="btn btn-lg btn-primary">
+                            <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% endif %}
-                {% endfor %}
+                {% else %}
+                    <a href="{{ url_for('auth.do_login') }}"
+                       class="btn btn-lg btn-primary">
+                        <span class="font-italic">
+                            <i class="ti-user"> </i>
+                            Login to subscribe
+                        </span>
+                    </a>
+                {% endif %}
             </div>
         </div>
         <div class="col-md-4">
@@ -63,14 +76,27 @@
                 </div>
             </div>
             <div class="card-footer">
-                {% for plan in plans_list %}
-                    {% if plan.name == "Premium" %}
-                        <a href="{{ url_for('profile.subscribe_link', plan_id=plan.plan_id) }}"
+                {% if user and user.user_id %}
+                    {% if (subscription and (subscription.plan.name == "Premium")) and  not subscription.is_active %}
+                        <a href="{{ url_for('profile.get_profile') }}"
                            class="btn btn-lg btn-primary">
-                            <span class="font-italic"> R {{ plan.price|currency }}.00</span>
+                            <span class="font-italic"> Activate Subscription </span>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('profile.get_profile') }}"
+                           class="btn btn-lg btn-primary">
+                            <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% endif %}
-                {% endfor %}
+                {% else %}
+                    <a href="{{ url_for('auth.do_login') }}"
+                       class="btn btn-lg btn-primary">
+                        <span class="font-italic">
+                            <i class="ti-user"> </i>
+                            Login to subscribe
+                        </span>
+                    </a>
+                {% endif %}
             </div>
         </div>
         <div class="col-md-4">
@@ -92,14 +118,27 @@
                 </div>
             </div>
             <div class="card-footer">
-                {% for plan in plans_list %}
-                    {% if plan.name == "Ultimate" %}
-                        <a href="{{ url_for('profile.subscribe_link', plan_id=plan.plan_id) }}"
+                {% if user and user.user_id %}
+                    {% if (subscription and (subscription.plan.name == "Ultimate")) and  not subscription.is_active %}
+                        <a href="{{ url_for('profile.get_profile') }}"
                            class="btn btn-lg btn-primary">
-                            <span class="font-italic"> R {{ plan.price|currency }}.00</span>
+                            <span class="font-italic"> Activate Subscription </span>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('profile.get_profile') }}"
+                           class="btn btn-lg btn-primary">
+                            <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% endif %}
-                {% endfor %}
+                {% else %}
+                    <a href="{{ url_for('auth.do_login') }}"
+                       class="btn btn-lg btn-primary">
+                        <span class="font-italic">
+                            <i class="ti-user"> </i>
+                            Login to subscribe
+                        </span>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -116,14 +155,27 @@
                 </div>
             </div>
             <div class="card-footer">
-                {% for plan in plans_list %}
-                    {% if plan.name == "Trial" %}
-                        <a href="{{ url_for('profile.subscribe_link', plan_id=plan.plan_id) }}"
-                           class="btn btn-lg btn-default btn-outline-success">
-                            <span class="font-italic"> R {{ plan.price|currency }}.00</span>
+                {% if user and user.user_id %}
+                    {% if (subscription and (subscription.plan.name == "Trial")) and  not subscription.is_active %}
+                        <a href="{{ url_for('profile.get_profile') }}"
+                           class="btn btn-lg btn-primary">
+                            <span class="font-italic"> Activate Subscription </span>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('profile.get_profile') }}"
+                           class="btn btn-lg btn-primary">
+                            <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% endif %}
-                {% endfor %}
+                {% else %}
+                    <a href="{{ url_for('auth.do_login') }}"
+                       class="btn btn-lg btn-primary">
+                        <span class="font-italic">
+                            <i class="ti-user"> </i>
+                            Login to subscribe
+                        </span>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>

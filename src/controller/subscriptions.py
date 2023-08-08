@@ -151,6 +151,8 @@ class SubscriptionController(Controllers):
                 session.add(PaymentReceiptORM(**payment_receipt.dict()))
                 session.commit()
 
+            self._load_subscriptions()
+
             return dict(subscription=new_subscription.disp_dict(), payment=payment_receipt.dict())
 
         elif subscription_form.payment_method == "paypal":
