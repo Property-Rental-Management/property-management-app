@@ -30,7 +30,6 @@
                 <div class="card-header">
                     <h2 class="card-title">Payment Information</h2>
                 </div>
-
                 <ul class="list-group">
                     <li class="list-group font-weight-bold text-info">Bank Account Details</li>
                     <li class="list-group-item">Bank : Capitec</li>
@@ -39,14 +38,36 @@
                     <li class="list-group-item">Reference: {{ payment.reference }}</li>
                     <li class="list-group-item">Payment Amount: R {{ payment.payment_amount|currency }}.00</li>
                 </ul>
-
             </div>
             <div class="card-footer">
-                <span class="font-weight-bold text-info">If you prefer to pay ONLINE use Scan To PAY</span>
-                <a href="https://pay.capitecbank.co.za/payme/RY9XZZ"><img
-                        src="{{ url_for('static', filename='images/scanpay.JPG') }}"/></a>
-            </div>
+                <div class="card-header">
+                    <img src="{{ url_for('static', filename='images/capitec_pay.JPG') }}">
+                    <div>
+                        <span class="font-weight-bold">
+                            In order to use your Capitec APP please ensure that when you make payment you use your
+                            Reference Code: {{ payment.reference }} you can then email your receipt to:
+                            <span class="font-italic text-info">payments@rental-manager.site</span> once you are done.
+                        </span>
+                    </div>
+                </div>
 
+                <div class="card-content">
+                    <span class="font-weight-bold text-info">Click Scan to Pay in order to generate your QR Code</span>
+
+                    <a href="https://pay.capitecbank.co.za/payme/RY9XZZ">
+                        <img src="{{ url_for('static', filename='images/scanpay.JPG') }}"
+                             alt="Click to pay online with Scan to PAY"/>
+                    </a>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-header">
+                    <h4 class="card-title">IMPORTANT NOTICE</h4>
+                </div>
+                <div class="card-content">
+                    All payment receipts must be sent by email to : <span class="font-italic text-info">payments@rental-manager.site</span>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
