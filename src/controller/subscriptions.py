@@ -42,6 +42,9 @@ class SubscriptionController(Controllers):
 
         :return:
         """
+        self.subscriptions = {}
+        self.plans = []
+        self.payment_receipts = []
         with self.get_session() as session:
             plans_orm_list: list[PlansORM] = session.query(PlansORM).all()
             self.plans = [Plan(**plan_orm.to_dict()) for plan_orm in plans_orm_list]
@@ -171,14 +174,27 @@ class SubscriptionController(Controllers):
             self.logger.info(f"Payment Receipt: {payment_receipt}")
             return dict(subscription=subscription.disp_dict(), payment=payment_receipt.dict())
 
-    def subscription_is_paid(self, subscription_id: str) -> bool:
+    @error_handler
+    async def mark_receipt_as_paid(self, subscription_id: str, amount_paid: int = 0):
+        with self.get_session() as session:
+            payment_receipt_orm: PaymentReceiptORM = session.query(PaymentReceiptORM).filter(
+                PaymentReceiptORM.subscription_id == subscription_id).first()
+            payment_receipt_orm.is_verified = True
+            payment_receipt_orm.amount_paid = amount_paid
+            # session.merge(payment_receipt_orm)
+            session.commit()
+            self.logger.info(f"Receipt Marked as Paid : {payment_receipt_orm.to_dict()}")
+        self._load_subscriptions()
+        return True
+
+    def is_subscription_paid(self, subscription_id: str) -> bool:
         """
         """
         for receipt in self.payment_receipts:
             if receipt.subscription_id == subscription_id:
-                return receipt.paid_in_full
+                return receipt.paid_in_full and receipt.is_verified
         return False
 
     def set_active(self, subscription: Subscriptions) -> Subscriptions:
-        subscription.is_paid = self.subscription_is_paid(subscription_id=subscription.subscription_id)
+        subscription.is_paid = self.is_subscription_paid(subscription_id=subscription.subscription_id)
         return subscription

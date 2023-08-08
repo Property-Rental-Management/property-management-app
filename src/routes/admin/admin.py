@@ -20,17 +20,34 @@ async def get_admin(user: User):
     :param user:
     :return:
     """
-    plans = subscriptions_controller.plans
-    subscribers = subscriptions_controller.subscriptions
-    plans_dict = [plan.dict() for plan in plans]
-    subscription_dicts = [subscription.dict() for subscription in subscribers.values()]
+    payment_receipts_dicts = [receipt.dict() for receipt in subscriptions_controller.payment_receipts]
+    plans_dict = [plan.dict() for plan in subscriptions_controller.plans]
+    subscription_dicts = [subscription.disp_dict() for subscription in subscriptions_controller.subscriptions.values()]
     plan_types = [plan_type.value for plan_type in PlanName]
+
     context = dict(user=user.dict(),
                    plans=plans_dict,
                    subscriptions=subscription_dicts,
+                   payment_receipts=payment_receipts_dicts,
                    plan_types=plan_types)
 
     return render_template('admin/admin.html', **context)
+
+
+@admin_routes.get('/admin/subscription-activation/<string:subscription_id>')
+@admin_login
+async def activate_subscription(user: User, subscription_id: str):
+    """
+
+    :param user:
+    :param subscription_id:
+    :return:
+    """
+    admin_logger.info(f"Subscription Logger : {subscription_id}")
+    is_paid = await subscriptions_controller.mark_receipt_as_paid(subscription_id=subscription_id)
+    message: str = "Successfully activated Subscription" if is_paid else "Subscription not activated"
+    flash(message=message, category="success")
+    return redirect(url_for('admin.get_admin'), code=302)
 
 
 @admin_routes.post('/admin/subscription/create')

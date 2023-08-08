@@ -3,15 +3,36 @@
         <h4 class="card-title">Subscriptions</h4>
     </div>
     <div class="card-body">
-        <ul class="list-group">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Plan</th>
+                <th>Expiry Date</th>
+                <th>Subscription Active</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
             {% for subscription in subscriptions %}
-                <li class="list-group-item">Subscription ID: {{ subscription.subscription_id }}</li>
-                <li class="list-group-item">Plan: {{ subscription.plan.name }}</li>
-                <li class="list-group-item">Expiry Date: {{ subscription.expiry_date }}</li>
+                <tr>
+                    <td>{{ subscription.plan.name }}</td>
+                    <td>{{ subscription.expiry_date }}</td>
+                    <td>{{ subscription.is_active }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.activate_subscription', subscription_id=subscription.subscription_id) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="ti-archive"> </i>
+                            Activate
+                        </a>
+                    </td>
+                </tr>
             {% endfor %}
-        </ul>
+
+            </tbody>
+        </table>
     </div>
 </div>
+
 
 
 
