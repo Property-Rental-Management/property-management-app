@@ -114,5 +114,4 @@ async def get_plan_details(user: User, plan_id: str):
     :return:
     """
     plan = await subscriptions_controller.get_plan_by_id(plan_id=plan_id)
-
     return plan.dict() if plan else {}
