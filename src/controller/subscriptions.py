@@ -200,3 +200,14 @@ class SubscriptionController(Controllers):
     def set_active(self, subscription: Subscriptions) -> Subscriptions:
         subscription.is_paid = self.is_subscription_paid(subscription_id=subscription.subscription_id)
         return subscription
+
+    @error_handler
+    async def generate_price_plans(self, plan: Plan):
+        plan_data_list = []
+        for period in [3, 6, 12]:
+            plan_data_list.append({
+                'period': period,
+                'per_month': plan.price,
+                'total_charged': plan.price * period
+            })
+        return plan_data_list

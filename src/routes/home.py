@@ -15,16 +15,13 @@ async def get_home(user: User):
     :param user:
     :return:
     """
+    plans_list = [plan.dict() for plan in subscriptions_controller.plans]
+    context = dict(plans_list=plans_list)
     if user:
-        user_data = user.dict()
         notifications: NotificationsModel = await notifications_controller.get_user_notifications(user_id=user.user_id)
         notifications_dicts = [notice.dict() for notice in notifications.unread_notification if notice] if notifications else []
-        plans_list = [plan.dict() for plan in subscriptions_controller.plans]
         subscription = await subscriptions_controller.get_subscription_by_uid(user_id=user.user_id)
-        context = dict(user=user_data,
-                       notifications_list=notifications_dicts,
-                       plans_list=plans_list,
-                       subscription=subscription.disp_dict() if subscription else {})
-    else:
-        context = {}
+        context.update(dict(
+            user=user.dict(), notifications_list=notifications_dicts,
+            subscription=subscription.disp_dict() if subscription else {}))
     return render_template('index.html', **context)

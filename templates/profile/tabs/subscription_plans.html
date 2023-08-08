@@ -38,23 +38,31 @@
                 {% if user and user.user_id %}
                     {% if (subscription and (subscription.plan.name == "Basic")) and  not subscription.is_active %}
                         <a href="{{ url_for('profile.get_profile') }}"
-                           class="btn btn-lg btn-primary">
+                           class="btn btn-sm btn-primary">
                             <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% else %}
                         <a href="{{ url_for('profile.get_profile') }}"
-                           class="btn btn-lg btn-primary">
+                           class="btn btn-sm btn-primary">
                             <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% endif %}
                 {% else %}
                     <a href="{{ url_for('auth.do_login') }}"
-                       class="btn btn-lg btn-primary">
+                       class="btn btn-sm btn-primary">
                         <span class="font-italic">
                             <i class="ti-user"> </i>
                             Login to subscribe
                         </span>
                     </a>
+                    {% for plan in plans_list %}
+                        {% if plan.name == "Basic" %}
+                            <a class="btn btn-sm btn-default"
+                               href="{{ url_for('profile.get_plan_details', plan_id=plan.plan_id) }}"
+                            > {{ plan.name }} ...
+                            </a>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>
@@ -79,23 +87,31 @@
                 {% if user and user.user_id %}
                     {% if (subscription and (subscription.plan.name == "Premium")) and  not subscription.is_active %}
                         <a href="{{ url_for('profile.get_profile') }}"
-                           class="btn btn-lg btn-primary">
+                           class="btn btn-sm btn-primary">
                             <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% else %}
                         <a href="{{ url_for('profile.get_profile') }}"
-                           class="btn btn-lg btn-primary">
+                           class="btn btn-sm btn-primary">
                             <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% endif %}
                 {% else %}
                     <a href="{{ url_for('auth.do_login') }}"
-                       class="btn btn-lg btn-primary">
+                       class="btn btn-sm btn-primary">
                         <span class="font-italic">
                             <i class="ti-user"> </i>
                             Login to subscribe
                         </span>
                     </a>
+                    {% for plan in plans_list %}
+                        {% if plan.name == "Premium" %}
+                            <a class="btn btn-sm btn-default"
+                               href="{{ url_for('profile.get_plan_details', plan_id=plan.plan_id) }}"
+                            > {{ plan.name }} ...
+                            </a>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>
@@ -121,23 +137,32 @@
                 {% if user and user.user_id %}
                     {% if (subscription and (subscription.plan.name == "Ultimate")) and  not subscription.is_active %}
                         <a href="{{ url_for('profile.get_profile') }}"
-                           class="btn btn-lg btn-primary">
+                           class="btn btn-sm btn-primary">
                             <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% else %}
                         <a href="{{ url_for('profile.get_profile') }}"
-                           class="btn btn-lg btn-primary">
+                           class="btn btn-sm btn-primary">
                             <span class="font-italic"> Activate Subscription </span>
                         </a>
+
                     {% endif %}
                 {% else %}
                     <a href="{{ url_for('auth.do_login') }}"
-                       class="btn btn-lg btn-primary">
+                       class="btn btn-sm btn-primary">
                         <span class="font-italic">
                             <i class="ti-user"> </i>
                             Login to subscribe
                         </span>
                     </a>
+                    {% for plan in plans_list %}
+                        {% if plan.name == "Ultimate" %}
+                            <a class="btn btn-sm btn-default"
+                               href="{{ url_for('profile.get_plan_details', plan_id=plan.plan_id) }}"
+                            > {{ plan.name }} ...
+                            </a>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>
@@ -158,18 +183,18 @@
                 {% if user and user.user_id %}
                     {% if (subscription and (subscription.plan.name == "Trial")) and  not subscription.is_active %}
                         <a href="{{ url_for('profile.get_profile') }}"
-                           class="btn btn-lg btn-primary">
+                           class="btn btn-sm btn-primary">
                             <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% else %}
                         <a href="{{ url_for('profile.get_profile') }}"
-                           class="btn btn-lg btn-primary">
+                           class="btn btn-sm btn-primary">
                             <span class="font-italic"> Activate Subscription </span>
                         </a>
                     {% endif %}
                 {% else %}
                     <a href="{{ url_for('auth.do_login') }}"
-                       class="btn btn-lg btn-primary">
+                       class="btn btn-sm btn-primary">
                         <span class="font-italic">
                             <i class="ti-user"> </i>
                             Login to subscribe

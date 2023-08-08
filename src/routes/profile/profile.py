@@ -105,8 +105,7 @@ async def reprint_payment_details(user: User, subscription_id: str):
 
 
 @profile_routes.get('/dashboard/plan-data/<string:plan_id>')
-@login_required
-async def get_plan_details(user: User, plan_id: str):
+async def get_plan_details(plan_id: str):
     """
 
     :param user:
@@ -114,4 +113,6 @@ async def get_plan_details(user: User, plan_id: str):
     :return:
     """
     plan = await subscriptions_controller.get_plan_by_id(plan_id=plan_id)
-    return plan.dict() if plan else {}
+    plan_data_list = await subscriptions_controller.generate_price_plans(plan=plan)
+    context = dict(plan=plan.dict(), plan_data_list=plan_data_list)
+    return render_template("profile/home/payment_plans.html", **context)
