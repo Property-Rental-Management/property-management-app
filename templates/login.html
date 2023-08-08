@@ -10,12 +10,12 @@
         <h4>Administrator Login</h4>
         <form action="{{ url_for('auth.do_login') }}" method="POST"  enctype="multipart/form-data">
             <div class="form-group">
-                <label>Email address</label>
-                <input type="email" class="form-control" name="username" placeholder="Email">
+                <label for="username">Email address</label>
+                <input type="email" class="form-control" id="username" name="username" placeholder="Email">
             </div>
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Password">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
             </div>
             <div class="checkbox">
                 <label>
@@ -24,10 +24,9 @@
                 <label class="pull-right">
                     <a href="{{ url_for('auth.get_password_reset') }}">Forgotten Password?</a>
                 </label>
-
             </div>
             <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">Sign in</button>
-            <div class="register-link m-t-15 text-center">
+            <div class="register-link m-t-15 text-center font-weight-bold">
                 <p>Don't have an account? <a href="{{ url_for('auth.get_register') }}">Sign Up Here</a></p>
             </div>
         </form>

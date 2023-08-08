@@ -11,24 +11,24 @@
         <h4>Register to Administration</h4>
         <form action="{{ url_for('auth.do_register') }}" method="POST"  enctype="multipart/form-data">
             <div class="form-group">
-                <label>User Name</label>
-                <input type="email" class="form-control" name="username" placeholder="User Name">
+                <label for="username">User Name</label>
+                <input type="email" class="form-control" id="username" name="username" placeholder="User Name">
             </div>
             <div class="form-group">
-                <label>Email address</label>
-                <input type="email" class="form-control" name="email" placeholder="Email">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email">
             </div>
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Password">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
             </div>
             <div class="checkbox">
-                <label>
+                <label class="font-weight-bold">
                     <input type="checkbox" name="terms"> Agree the terms and policy
                 </label>
             </div>
             <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">Register</button>
-            <div class="register-link m-t-15 text-center">
+            <div class="register-link m-t-15 text-center font-weight-bold">
                 <p>Already have account ? <a href="{{ url_for('auth.get_login') }}"> Sign in</a></p>
             </div>
         </form>
