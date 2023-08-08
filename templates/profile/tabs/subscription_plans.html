@@ -19,21 +19,9 @@
     <h1>Property &amp; Rental Manager - Subscription Plans</h1>
     <div class="row text-white">
         <div class="col-md-4">
-            <div class="card basic-plan">
-                <div class="card-header">
-                    <h5 class="card-title  font-weight-bold text-success">Basic Plan</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text  font-weight-bold text-white">Our Basic Plan is suitable for small to
-                        medium-sized rental properties.</p>
-                    <ul class="list-group text-dark">
-                        <li class="list-group-item">Can Support up to one Company</li>
-                        <li class="list-group-item">Can Support Up to Two Buildings</li>
-                        <li class="list-group-item">Building Size must not exceed 24 Units / Rooms / Shops</li>
-                        <li class="list-group-item">Email Support for sending Invoices to Tenants</li>
-                    </ul>
-                </div>
-            </div>
+            <!-- Basic Plan Details see templates on home -->
+            {% include "profile/home/basic.html" %}
+
             <div class="card-footer">
                 {% if user and user.user_id %}
                     {% if (subscription and (subscription.plan.name == "Basic")) and  not subscription.is_active %}
@@ -67,22 +55,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card premium-plan">
-                <div class="card-header">
-                    <h5 class="card-title  font-weight-bold text-info">Premium Plan</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text  font-weight-bold text-white">Our Premium Plan is designed for expanding rental
-                        operations with additional features and dedicated support.</p>
-                    <ul class="list-group text-dark">
-                        <li class="list-group-item">Support for Multiple Companies</li>
-                        <li class="list-group-item">Support for Up to Five Buildings</li>
-                        <li class="list-group-item">Support for Upto 150 Units</li>
-                        <li class="list-group-item">Email and Phone Support for Tenants and Owners</li>
-                        <li class="list-group-item">Advanced Financial Reporting</li>
-                    </ul>
-                </div>
-            </div>
+            {% include "profile/home/premium.html" %}
             <div class="card-footer">
                 {% if user and user.user_id %}
                     {% if (subscription and (subscription.plan.name == "Premium")) and  not subscription.is_active %}
@@ -116,23 +89,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card ultimate-plan">
-                <div class="card-header">
-                    <h5 class="card-title font-weight-bold text-success">Ultimate Plan</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text  font-weight-bold text-white">The Ultimate Plan offers a comprehensive solution
-                        for large-scale rental management with exclusive benefits.</p>
-                    <ul class="list-group text-dark">
-                        <li class="list-group-item">Unlimited Company Support</li>
-                        <li class="list-group-item">Unlimited Buildings and Units</li>
-                        <li class="list-group-item">Customizable Online Portal for Tenants and Owners</li>
-                        <li class="list-group-item">Priority Email, Phone, and Chat Support</li>
-                        <li class="list-group-item">Access to Beta Features and Early Releases</li>
-                        <li class="list-group-item">Personalized Onboarding and Training</li>
-                    </ul>
-                </div>
-            </div>
+            {% include "profile/home/ultimate.html" %}
             <div class="card-footer">
                 {% if user and user.user_id %}
                     {% if (subscription and (subscription.plan.name == "Ultimate")) and  not subscription.is_active %}
