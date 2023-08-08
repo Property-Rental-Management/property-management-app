@@ -22,15 +22,20 @@ class SubscriptionController(Controllers):
         super().__init__()
         self.subscriptions: dict[str, Subscriptions] = {}
         self.plans: list[Plan] = []
+        self.payment_receipts: list[PaymentReceipts] = []
 
     def create_sub_model(self, sub_orm: SubscriptionsORM):
         _plan = None
         for plan in self.plans:
             if plan.plan_id == sub_orm.plan_id:
                 _plan = plan
-        return Subscriptions(user_id=sub_orm.user_id, subscription_id=sub_orm.subscription_id, plan=_plan,
-                             date_subscribed=sub_orm.date_subscribed,
-                             subscription_period_in_month=sub_orm.subscription_period_in_month)
+
+        self.logger.info(f"Plan : {_plan}")
+
+        return self.set_active(
+            subscription=Subscriptions(user_id=sub_orm.user_id, subscription_id=sub_orm.subscription_id, plan=_plan,
+                                       date_subscribed=sub_orm.date_subscribed,
+                                       subscription_period_in_month=sub_orm.subscription_period_in_month))
 
     def _load_subscriptions(self):
         """
@@ -45,6 +50,9 @@ class SubscriptionController(Controllers):
             subscriptions_orm_list: list[SubscriptionsORM] = session.query(SubscriptionsORM).all()
             self.subscriptions = {sub_orm.user_id: self.create_sub_model(sub_orm=sub_orm)
                                   for sub_orm in subscriptions_orm_list}
+            payments_orm_list: list[PaymentReceiptORM] = session.query(PaymentReceiptORM).all()
+            self.payment_receipts = [PaymentReceipts(**receipt.to_dict()) for receipt in payments_orm_list if
+                                     receipt] if payments_orm_list else []
 
             self.logger.info(f"Subscriptions Logger: {self.subscriptions}")
 
@@ -77,6 +85,7 @@ class SubscriptionController(Controllers):
         for plan in self.plans:
             if plan.plan_id == plan_id:
                 return plan
+
         with self.get_session() as session:
             plan_orm = session.query(PlansORM).filter(PlansORM.plan_id == plan_id).first()
             if not plan_orm:
@@ -115,25 +124,25 @@ class SubscriptionController(Controllers):
         # display payment screen depending on selected payment options
         # return the proper payment form or payment information form
         # depending on the payment form then display the appropriate response
+        plan = await self.get_plan_by_id(plan_id=subscription_form.subscription_plan)
+        new_subscription = Subscriptions(user_id=subscription_form.user_id,
+                                         subscription_id=str(uuid.uuid4()),
+                                         plan=plan,
+                                         date_subscribed=datetime.datetime.now().date(),
+                                         subscription_period_in_month=subscription_form.period,
+                                         subscription_activated=False)
+
         if subscription_form.payment_method == "direct_deposit":
             # Perform cash payment related tasks such as creating a cash payment receipt with its model and reference
             # save this model in the database then return the information to the user
-            plan = await self.get_plan_by_id(plan_id=subscription_form.subscription_plan)
-
-            new_subscription = Subscriptions(user_id=subscription_form.user_id,
-                                             subscription_id=str(uuid.uuid4()),
-                                             plan=plan,
-                                             date_subscribed=datetime.datetime.now().date(),
-                                             subscription_period_in_month=subscription_form.period,
-                                             subscription_activated=False)
 
             reference = await create_payment_reference()
-
             payment_receipt = PaymentReceipts(reference=reference, subscription_id=new_subscription.subscription_id,
                                               user_id=subscription_form.user_id,
                                               payment_amount=new_subscription.payment_amount,
                                               date_created=datetime.datetime.now().date(),
                                               payment_method=subscription_form.payment_method)
+
             with self.get_session() as session:
                 session.add(SubscriptionsORM(**new_subscription.orm_dict()))
                 session.add(PaymentReceiptORM(**payment_receipt.dict()))
@@ -143,3 +152,33 @@ class SubscriptionController(Controllers):
 
         elif subscription_form.payment_method == "paypal":
             pass
+
+    @error_handler
+    async def reprint_payment_details(self, subscription_id: str):
+        """
+
+        :param subscription_id:
+        :return:
+        """
+        with self.get_session() as session:
+            subscription_orm = session.query(SubscriptionsORM).filter(
+                SubscriptionsORM.subscription_id == subscription_id).first()
+            payment_orm = session.query(PaymentReceiptORM).filter(
+                PaymentReceiptORM.subscription_id == subscription_id).first()
+            subscription = self.create_sub_model(subscription_orm)
+            payment_receipt = PaymentReceipts(**payment_orm.to_dict())
+            self.logger.info(f"Subscription : {subscription}")
+            self.logger.info(f"Payment Receipt: {payment_receipt}")
+            return dict(subscription=subscription.disp_dict(), payment=payment_receipt.dict())
+
+    def subscription_is_paid(self, subscription_id: str) -> bool:
+        """
+        """
+        for receipt in self.payment_receipts:
+            if receipt.subscription_id == subscription_id:
+                return receipt.paid_in_full
+        return False
+
+    def set_active(self, subscription: Subscriptions) -> Subscriptions:
+        subscription.is_paid = self.subscription_is_paid(subscription_id=subscription.subscription_id)
+        return subscription

@@ -31,6 +31,7 @@ class Subscriptions(BaseModel):
     plan: Plan
     date_subscribed: date
     subscription_period_in_month: int
+    is_paid: bool = Field(default=False)
 
     def orm_dict(self) -> dict[str, str | int | date]:
         """
@@ -41,11 +42,14 @@ class Subscriptions(BaseModel):
             "user_id": self.user_id,
             "plan_id": self.plan.plan_id,
             "date_subscribed": self.date_subscribed,
-            "subscription_period_in_month": self.subscription_period_in_month}
+            "subscription_period_in_month": self.subscription_period_in_month
+
+        }
 
     def disp_dict(self) -> dict[str, str | int | date]:
         dict_ = self.dict()
-        dict_.update(dict(expiry_date=self.expiry_date, payment_amount=self.payment_amount))
+        dict_.update(dict(expiry_date=self.expiry_date, payment_amount=self.payment_amount,
+                          is_active=self.is_active))
         return dict_
 
     @property
@@ -71,7 +75,7 @@ class Subscriptions(BaseModel):
         :return: True if active, False otherwise
         """
         # TODO - check if all payments are made in full
-        return not self.is_expired
+        return (not self.is_expired) and self.is_paid
 
     @property
     def payment_amount(self) -> int:
@@ -101,19 +105,24 @@ class PaymentReceipts(BaseModel):
     is_verified: bool = Field(default=False)
 
     @property
-    def paid_in_full(self):
+    def paid_in_full(self) -> bool:
         """
         Check if the payment has been paid in full.
         :return: True if payment is fully paid, False otherwise.
         """
-        return self.amount_paid == self.payment_amount
+        if self.amount_paid is None:
+            return False
+        return self.amount_paid >= self.payment_amount
 
     @property
-    def balance(self):
+    def balance(self) -> int:
         """
         Calculate the remaining balance for the payment.
         :return: Remaining balance.
         """
+        if self.amount_paid is None:
+            return self.payment_amount
+
         return self.payment_amount - self.amount_paid
 
 

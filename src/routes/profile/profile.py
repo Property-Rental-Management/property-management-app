@@ -95,6 +95,15 @@ async def subscribe_link(user: User):
         return render_template("profile/payments/paypal.html", **context)
 
 
+@profile_routes.get('/dashboard/subscription-payment/<string:subscription_id>')
+@login_required
+async def reprint_payment_details(user: User, subscription_id: str):
+    admin_logger.info(f"Subscription ID : {subscription_id}")
+    context = await subscriptions_controller.reprint_payment_details(subscription_id=subscription_id)
+    admin_logger.info(f"Admin Logger : {context}")
+    return render_template("profile/payments/direct_deposit.html", **context)
+
+
 @profile_routes.get('/dashboard/plan-data/<string:plan_id>')
 @login_required
 async def get_plan_details(user: User, plan_id: str):

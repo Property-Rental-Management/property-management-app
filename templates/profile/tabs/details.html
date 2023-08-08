@@ -2,11 +2,31 @@
     <ul class="list-group">
         <li class="list-group-item">Subscription Plan: <span
                 class="font-weight-bold text-info">{{ subscription.plan.name }}</span></li>
+
         <li class="list-group-item">Date Subscribed: <span
                 class="font-weight-bold text-info">{{ subscription.date_subscribed }}</span></li>
         <li class="list-group-item">Subscription Expiry Date: <span
                 class="font-weight-bold text-info">{{ subscription.expiry_date }}</span></li>
         <li class="list-group-item">Subscription Amount: <span
                 class="font-weight-bold text-info">R {{ subscription.payment_amount|currency }}.00</span></li>
+
+        <li class="list-group-item">Is Subscription Active:
+            <span class="font-weight-bold text-info">
+                {{ subscription.is_active }}
+            </span>
+        </li>
+
+        {% if not  subscription.is_active %}
+            <li class="list-group-item text-success font-weight-bold"> Note that you need to send your deposit slip to :
+                <span class="text-info">payments@rental-manager.site</span> in order to activate your subscription.
+            </li>
+            <li class="list-group-item">
+                <a class="btn btn-sm btn-primary"
+                   href="{{ url_for('profile.reprint_payment_details', subscription_id=subscription.subscription_id) }}">
+                    <i class="ti-credit-card"> </i>
+                    Make Payment / Show Payment Details
+                </a>
+            </li>
+        {% endif %}
     </ul>
 </div>
