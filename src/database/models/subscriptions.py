@@ -31,7 +31,22 @@ class Subscriptions(BaseModel):
     plan: Plan
     date_subscribed: date
     subscription_period_in_month: int
-    subscription_activated: bool
+
+    def orm_dict(self) -> dict[str, str | int | date]:
+        """
+        :return:
+        """
+        return {
+            "subscription_id": self.subscription_id,
+            "user_id": self.user_id,
+            "plan_id": self.plan.plan_id,
+            "date_subscribed": self.date_subscribed,
+            "subscription_period_in_month": self.subscription_period_in_month}
+
+    def disp_dict(self) -> dict[str, str | int | date]:
+        dict_ = self.dict()
+        dict_.update(dict(expiry_date=self.expiry_date, payment_amount=self.payment_amount))
+        return dict_
 
     @property
     def expiry_date(self) -> date:
@@ -55,7 +70,8 @@ class Subscriptions(BaseModel):
         Check if the subscription is currently active.
         :return: True if active, False otherwise
         """
-        return not self.is_expired and self.subscription_activated
+        # TODO - check if all payments are made in full
+        return not self.is_expired
 
     @property
     def payment_amount(self) -> int:
@@ -73,6 +89,7 @@ class PaymentReceipts(BaseModel):
     """
         Direct Deposit Payments for Client Subscriptions
     """
+    receipt_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     reference: str
     subscription_id: str
     user_id: str
@@ -101,7 +118,7 @@ class PaymentReceipts(BaseModel):
 
 
 class SubscriptionFormInput(BaseModel):
-    user_id: int
+    user_id: str
     subscription_status: str
     subscription_plan: str
     period: int

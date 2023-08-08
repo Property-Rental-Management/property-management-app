@@ -1,8 +1,16 @@
+import datetime
+import uuid
+
 from flask import Flask
 
 from src.controller import Controllers, error_handler
-from src.database.models.subscriptions import Subscriptions, Plan
-from src.database.sql.subscriptions import SubscriptionsORM, PlansORM
+from src.database.models.subscriptions import Subscriptions, Plan, SubscriptionFormInput, PaymentReceipts
+from src.database.sql.subscriptions import SubscriptionsORM, PlansORM, PaymentReceiptORM
+
+
+async def create_payment_reference():
+    reference = str(uuid.uuid4())[0:8].upper()
+    return reference
 
 
 class SubscriptionController(Controllers):
@@ -15,17 +23,30 @@ class SubscriptionController(Controllers):
         self.subscriptions: dict[str, Subscriptions] = {}
         self.plans: list[Plan] = []
 
+    def create_sub_model(self, sub_orm: SubscriptionsORM):
+        _plan = None
+        for plan in self.plans:
+            if plan.plan_id == sub_orm.plan_id:
+                _plan = plan
+        return Subscriptions(user_id=sub_orm.user_id, subscription_id=sub_orm.subscription_id, plan=_plan,
+                             date_subscribed=sub_orm.date_subscribed,
+                             subscription_period_in_month=sub_orm.subscription_period_in_month)
+
     def _load_subscriptions(self):
         """
 
         :return:
         """
         with self.get_session() as session:
-            subscriptions_orm_list: list[SubscriptionsORM] = session.query(SubscriptionsORM).all()
             plans_orm_list: list[PlansORM] = session.query(PlansORM).all()
-            self.subscriptions = {sub_orm.user_id: Subscriptions(**sub_orm.to_dict())
-                                  for sub_orm in subscriptions_orm_list}
             self.plans = [Plan(**plan_orm.to_dict()) for plan_orm in plans_orm_list]
+            self.logger.info(f"Plans logger : {self.plans}")
+
+            subscriptions_orm_list: list[SubscriptionsORM] = session.query(SubscriptionsORM).all()
+            self.subscriptions = {sub_orm.user_id: self.create_sub_model(sub_orm=sub_orm)
+                                  for sub_orm in subscriptions_orm_list}
+
+            self.logger.info(f"Subscriptions Logger: {self.subscriptions}")
 
     def init_app(self, app: Flask):
         self._load_subscriptions()
@@ -87,3 +108,38 @@ class SubscriptionController(Controllers):
             session.commit()
             self.plans.append(plan)
             return plan
+
+    @error_handler
+    async def create_new_subscription(self, subscription_form: SubscriptionFormInput):
+        # Create Payment Data  depending on selected payment options
+        # display payment screen depending on selected payment options
+        # return the proper payment form or payment information form
+        # depending on the payment form then display the appropriate response
+        if subscription_form.payment_method == "direct_deposit":
+            # Perform cash payment related tasks such as creating a cash payment receipt with its model and reference
+            # save this model in the database then return the information to the user
+            plan = await self.get_plan_by_id(plan_id=subscription_form.subscription_plan)
+
+            new_subscription = Subscriptions(user_id=subscription_form.user_id,
+                                             subscription_id=str(uuid.uuid4()),
+                                             plan=plan,
+                                             date_subscribed=datetime.datetime.now().date(),
+                                             subscription_period_in_month=subscription_form.period,
+                                             subscription_activated=False)
+
+            reference = await create_payment_reference()
+
+            payment_receipt = PaymentReceipts(reference=reference, subscription_id=new_subscription.subscription_id,
+                                              user_id=subscription_form.user_id,
+                                              payment_amount=new_subscription.payment_amount,
+                                              date_created=datetime.datetime.now().date(),
+                                              payment_method=subscription_form.payment_method)
+            with self.get_session() as session:
+                session.add(SubscriptionsORM(**new_subscription.orm_dict()))
+                session.add(PaymentReceiptORM(**payment_receipt.dict()))
+                session.commit()
+
+            return dict(subscription=new_subscription.disp_dict(), payment=payment_receipt.dict())
+
+        elif subscription_form.payment_method == "paypal":
+            pass

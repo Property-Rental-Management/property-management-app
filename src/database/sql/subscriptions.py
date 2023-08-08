@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import Column, String, Integer, Date, inspect
+from sqlalchemy import Column, String, Integer, Date, inspect, Boolean
 
 from src.database.constants import ID_LEN
 from src.database.sql import Base, engine
@@ -47,4 +47,37 @@ class SubscriptionsORM(Base):
             "plan_id": self.plan_id,
             "date_subscribed": self.date_subscribed.isoformat(),
             "subscription_period_in_month": self.subscription_period_in_month
+        }
+
+
+class PaymentReceiptORM(Base):
+    __tablename__ = "client_payment_receipt"
+    receipt_id: int = Column(String(ID_LEN), primary_key=True)
+    reference: str = Column(String(8))
+    subscription_id: str = Column(String(ID_LEN))
+    user_id: str = Column(String(ID_LEN))
+    payment_amount: int = Column(Integer)
+    date_created: date = Column(Date)
+    payment_method: str = Column(String(16), default="direct_deposit")
+    amount_paid: int = Column(Integer, nullable=True)
+    date_paid: date = Column(Date, nullable=True)
+    is_verified: bool = Column(Boolean, default=False)
+
+    @classmethod
+    def create_if_not_table(cls):
+        if not inspect(engine).has_table(cls.__tablename__):
+            Base.metadata.create_all(bind=engine)
+
+    def to_dict(self):
+        return {
+            "receipt_id": self.receipt_id,
+            "reference": self.reference,
+            "subscription_id": self.subscription_id,
+            "user_id": self.user_id,
+            "payment_amount": self.payment_amount,
+            "date_created": self.date_created,
+            "payment_method": self.payment_method,
+            "amount_paid": self.amount_paid,
+            "date_paid": self.date_paid,
+            "is_verified": self.is_verified
         }

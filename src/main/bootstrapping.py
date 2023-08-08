@@ -15,31 +15,32 @@ def bootstrapper():
     from src.database.sql.payments import PaymentORM
     from src.database.sql.wallet import WalletTransactionORM
     from src.database.sql.user import ProfileORM
-    from src.database.sql.subscriptions import PlansORM, SubscriptionsORM
+    from src.database.sql.subscriptions import PlansORM, SubscriptionsORM, PaymentReceiptORM
 
-    AddressORM.create_if_not_table()
-    TenantORM.create_if_not_table()
-    UserORM.create_if_not_table()
-    UserCompanyORM.create_if_not_table()
-    CompanyORM.create_if_not_table()
+    classes_to_create = [
+        AddressORM,
+        TenantORM,
+        UserORM,
+        UserCompanyORM,
+        CompanyORM,
+        PropertyORM,
+        UnitORM,
+        BankAccountORM,
+        NotificationORM,
+        LeaseAgreementORM,
+        LeaseAgreementTemplate,
+        TenantCompanyORM,
+        InvoiceORM,
+        ItemsORM,
+        UserChargesORM,
+        TenantAddressORM,
+        PaymentORM,
+        WalletTransactionORM,
+        ProfileORM,
+        PlansORM,
+        SubscriptionsORM,
+        PaymentReceiptORM,
+    ]
 
-    PropertyORM.create_if_not_table()
-    UnitORM.create_if_not_table()
-    BankAccountORM.create_if_not_table()
-    NotificationORM.create_if_not_table()
-    LeaseAgreementORM.create_if_not_table()
-    LeaseAgreementTemplate.create_if_not_table()
-
-    TenantCompanyORM.create_if_not_table()
-
-    InvoiceORM.create_if_not_table()
-    ItemsORM.create_if_not_table()
-    UserChargesORM.create_if_not_table()
-    TenantAddressORM.create_if_not_table()
-    PaymentORM.create_if_not_table()
-
-    WalletTransactionORM.create_if_not_table()
-
-    ProfileORM.create_if_not_table()
-    PlansORM.create_if_not_table()
-    SubscriptionsORM.create_if_not_table()
+    for cls in classes_to_create:
+        cls.create_if_not_table()

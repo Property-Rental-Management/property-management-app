@@ -3,21 +3,24 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title"><i class="ti-package"></i> Subscription Details</h3>
             <div>
-                {% if not subscription %}
                 <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#subscriptionModal">
-                    <i class="ti-plus"></i>
-                    Subscribe
+                    {% if not subscription %}
+                        <i class="ti-plus"></i>
+                        Subscribe
+                    {% else %}
+                        <i class="ti-plus"></i>
+                        Renew
+                    {% endif %}
                 </button>
-                {% endif %}
             </div>
         </div>
         {% if subscription %}
             <!-- display subscriber data -->
+            {% include "profile/tabs/details.html" %}
         {% else %}
             <!-- display subscription plan information -->
             {% include "profile/tabs/subscription_plans.html" %}
         {% endif %}
     </div>
 </div>
-
 {% include "profile/modal/subscription.html" %}

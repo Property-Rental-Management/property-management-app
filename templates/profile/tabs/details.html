@@ -1,0 +1,12 @@
+<div class="card-body">
+    <ul class="list-group">
+        <li class="list-group-item">Subscription Plan: <span
+                class="font-weight-bold text-info">{{ subscription.plan.name }}</span></li>
+        <li class="list-group-item">Date Subscribed: <span
+                class="font-weight-bold text-info">{{ subscription.date_subscribed }}</span></li>
+        <li class="list-group-item">Subscription Expiry Date: <span
+                class="font-weight-bold text-info">{{ subscription.expiry_date }}</span></li>
+        <li class="list-group-item">Subscription Amount: <span
+                class="font-weight-bold text-info">R {{ subscription.payment_amount|currency }}.00</span></li>
+    </ul>
+</div>

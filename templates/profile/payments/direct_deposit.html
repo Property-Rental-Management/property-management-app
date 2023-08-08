@@ -1,8 +1,47 @@
 {% extends "layouts/page.html" %}
 
 {% block content %}
-<div class="container">
+    <div class="container">
+        <div class="card">
+            <div class="card-header  d-flex justify-content-between align-items-center">
+                <h2 class="card-title">Rental Manager</h2>
+                <div>
+                    <button class="btn btn-sm btn-primary" onclick="window.print()">
+                        <i class="ti-printer"> </i>
+                        Print
+                    </button>
+                </div>
+            </div>
 
+            <div class="card-footer">
+                <div class="card-header">
+                    <h2 class="card-title">Subscription Information</h2>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item"> Subscription Plan: {{ subscription.plan.name }}</li>
+                    <li class="list-group-item"> Date Subscribed: {{ subscription.date_subscribed }}</li>
+                    <li class="list-group-item"> Subscription Period (in
+                        months): {{ subscription.subscription_period_in_month }}</li>
+                    <li class="list-group-item"> Subscription Expiry Date: {{ subscription.expiry_date }}</li>
+                    <li class="list-group-item"></li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <div class="card-header">
+                    <h2 class="card-title">Payment Information</h2>
+                </div>
 
-</div>
+                <ul class="list-group">
+                    <li class="list-group font-weight-bold text-info">Bank Account Details</li>
+                    <li class="list-group-item">Bank : Capitec</li>
+                    <li class="list-group-item">Account Number : 1696716363</li>
+                    <li class="list-group-item">Account Type: Savings</li>
+                    <li class="list-group-item">Reference: {{ payment.reference }}</li>
+                    <li class="list-group-item">Payment Amount: R {{ payment.payment_amount|currency }}.00</li>
+                </ul>
 
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
