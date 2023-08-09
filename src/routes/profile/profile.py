@@ -70,7 +70,7 @@ async def update_profile(user: User):
 @login_required
 async def subscribe_link(user: User):
     """
-
+        **subscribe_link**
     :param user:
     :return:
     """
