@@ -520,9 +520,9 @@ async def unit_print_invoice(user: User):
         flash(message="Property not found", category="danger")
         return redirect(url_for('buildings.get_unit', building_id=print_invoice_form.building_id,
                                 unit_id=print_invoice_form.unit_id))
-
+    buildings_logger.info(f"Company Data : {building.company_id}")
     company: Company = await company_controller.get_company_internal(company_id=building.company_id)
-    bank_account = await company_controller.get_bank_accounts(user=user, company_id=building.company_id)
+    bank_account = await company_controller.get_bank_account_internal(company_id=building.company_id)
 
     if company is None:
         flash(message="Company not found", category="danger")

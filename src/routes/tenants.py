@@ -161,6 +161,7 @@ async def create_tenant_address(user: User, tenant_id: str):
         tenants_logger.error(f"Error creating Tenant Address: {str(e)}")
         flash(message="Unable to create Tenant Address please fill in all required fields", category="danger")
         return redirect(url_for('tenants.get_tenant', tenant_id=tenant_id), code=302)
+
     tenant_address_: TenantAddress = await tenant_controller.create_tenant_address(tenant_id=tenant_id,
                                                                                    tenant_address=tenant_address)
     tenant: Tenant = await tenant_controller.get_tenant_by_id(tenant_id=tenant_id)
