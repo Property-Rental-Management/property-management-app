@@ -189,6 +189,9 @@ async def get_unit(user: User, building_id: str, unit_id: str):
             company_data: Company = await company_controller.get_company_internal(company_id=tenant_data.company_id)
             if company_data:
                 context.update({'company': company_data.dict()})
+            bank_account = await company_controller.get_bank_account_internal(company_id=company_data.company_id)
+            if bank_account:
+                context.update({'bank_account': bank_account.dict()})
 
     else:
         tenants_list: list[Tenant] = await tenant_controller.get_un_booked_tenants()
@@ -500,7 +503,7 @@ async def unit_print_invoice(user: User):
     except ValidationError as e:
         building_id = request.form.get('building_id')
         unit_id = request.form.get('unit_id')
-        print(f"ERROR WAS: {str(e)}")
+
         _vars = dict(building_id=building_id, unit_id=unit_id)
         flash(message="Please indicate what you want to print", category="danger")
         return redirect(url_for("buildings.get_unit", **_vars))

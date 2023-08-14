@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, jsonify, flash, redirect,
 from pydantic import ValidationError
 
 from src.authentication import login_required
+from src.database.models.bank_accounts import BusinessBankAccount
 from src.database.models.companies import Company
 from src.database.models.invoices import Invoice, PaymentStatus
 from src.database.models.properties import Property, Unit
@@ -103,6 +104,10 @@ async def get_tenant(user: User, tenant_id: str):
     if tenant_data and tenant_data.company_id:
         company_data = await company_controller.get_company_internal(company_id=tenant_data.company_id)
 
+    bank_account: BusinessBankAccount | None = None
+    if company_data:
+        bank_account = await company_controller.get_bank_account_internal(company_id=company_data.company_id)
+
     tenant_address: TenantAddress | None = None
     if tenant_data and tenant_data.address_id:
         tenant_address = await tenant_controller.get_tenant_address(address_id=tenant_data.address_id)
@@ -112,6 +117,7 @@ async def get_tenant(user: User, tenant_id: str):
     historical_invoices = [invoice.dict() for invoice in invoices if invoice] if invoices else []
     paid_invoices = [invoice.dict() for invoice in invoices
                      if invoice.get_payment_status(payments=tenant_payments) == PaymentStatus.FULLY_PAID]
+
     un_paid_invoices = [invoice.dict() for invoice in invoices
                         if invoice.get_payment_status(payments=tenant_payments) != PaymentStatus.FULLY_PAID]
 
@@ -125,10 +131,12 @@ async def get_tenant(user: User, tenant_id: str):
     statements_list = await lease_agreement_controller.load_tenant_statements(tenant_id=tenant_id)
 
     statements_dicts = [statement.dict() for statement in statements_list if statement] if statements_list else []
+    bank_account_dict = bank_account.dict() if bank_account else {}
 
     context.update({'tenant': tenant_data_dict,
                     'address': tenant_address_dict,
                     'company': company_dict,
+                    'bank_account': bank_account_dict,
                     'paid_invoices': paid_invoices,
                     'unpaid_invoices': un_paid_invoices,
                     'historical_invoices': historical_invoices,
