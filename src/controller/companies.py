@@ -440,6 +440,7 @@ class CompaniesController(Controllers):
         with self.get_session() as session:
             bank_account: BankAccountORM = session.query(BankAccountORM).filter(
                 BankAccountORM.company_id == company_id).first()
+            self.logger.error(f"Bank Account : {bank_account.to_dict()}")
             return BusinessBankAccount(**bank_account.to_dict()) if isinstance(bank_account, BankAccountORM) else None
 
     @error_handler
