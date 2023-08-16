@@ -50,6 +50,7 @@ class EmailSettings(BaseSettings):
 
 class Settings(BaseSettings):
     APP_NAME: str = Field(default='rental and property manager')
+    LOGO_URL: str = Field(default="https://rental-manager.site/static/images/custom/logo.png")
     SECRET_KEY: str = Field(..., env="SECRET_KEY")
     CLIENT_SECRET: str = Field(..., env="CLIENT_SECRET")
     MYSQL_SETTINGS: MySQLSettings = MySQLSettings()
@@ -60,7 +61,8 @@ class Settings(BaseSettings):
     HOST_ADDRESSES: str = Field(..., env='HOST_ADDRESSES')
     PAY_FAST_SECRET_KEY: str = Field(default="ccc")
     FLUTTERWAVE_SECRET_ID: str = Field(..., env="FLUTTERWAVE_SECRET_ID")
-
+    FLUTTERWAVE_FLW_SECRET_KEY: str = Field(..., env="FLUTTERWAVE_SECRET_KEY")
+    FLUTTERWAVE_HASH: str = Field(..., env="FLUTTERWAVE_HASH")
 
     class Config:
         env_file = '.env.development'

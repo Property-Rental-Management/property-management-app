@@ -18,7 +18,7 @@ from src.controller.lease_controller import InvoiceManager
 from src.controller.wallet import WalletController
 from src.controller.subscriptions import SubscriptionController
 from src.firewall import Firewall
-
+from src.flutterwave.payments import Flutterwave
 firewall = Firewall()
 
 tenant_controller = TenantController()
@@ -32,6 +32,7 @@ subscriptions_controller = SubscriptionController()
 cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
 invoice_man = InvoiceManager(cache_path)
 
+flutterwave_payments = Flutterwave()
 
 def _add_blue_prints(app):
     """
@@ -102,6 +103,7 @@ def create_app(config):
         lease_agreement_controller.init_app(app=app)
         wallet_controller.init_app(app=app)
         subscriptions_controller.init_app(app=app)
+        flutterwave_payments.init_app(app=app)
 
         firewall.init_app(app=app)
         send_mail.init_app(app=app)

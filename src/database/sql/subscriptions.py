@@ -62,6 +62,7 @@ class PaymentReceiptORM(Base):
     amount_paid: int = Column(Integer, nullable=True)
     date_paid: date = Column(Date, nullable=True)
     is_verified: bool = Column(Boolean, default=False)
+    status: str = Column(String(36))
 
     @classmethod
     def create_if_not_table(cls):

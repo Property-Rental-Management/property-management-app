@@ -183,11 +183,32 @@ class SubscriptionController(Controllers):
                 PaymentReceiptORM.subscription_id == subscription_id).first()
             payment_receipt_orm.is_verified = True
             payment_receipt_orm.amount_paid = amount_paid
-            # session.merge(payment_receipt_orm)
+            payment_receipt_orm.status = "completed"
+            session.merge(payment_receipt_orm)
             session.commit()
             self.logger.info(f"Receipt Marked as Paid : {payment_receipt_orm.to_dict()}")
         self._load_subscriptions()
         return True
+
+    @error_handler
+    async def set_receipt_status(self, reference: str, status: str):
+        """
+
+        :param reference:
+        :param status:
+        :return:
+        """
+        with self.get_session() as session:
+            payment_receipt_orm: PaymentReceiptORM = session.query(PaymentReceiptORM).filter(
+                PaymentReceiptORM.reference == reference).first()
+            payment_receipt_orm.is_verified = True
+            payment_receipt_orm.status = status
+            session.merge(payment_receipt_orm)
+            session.commit()
+
+        self._load_subscriptions()
+        return True
+
 
     def is_subscription_paid(self, subscription_id: str) -> bool:
         """
