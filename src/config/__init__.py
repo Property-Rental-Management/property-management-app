@@ -59,6 +59,8 @@ class Settings(BaseSettings):
     LOGGING: Logging = Logging()
     HOST_ADDRESSES: str = Field(..., env='HOST_ADDRESSES')
     PAY_FAST_SECRET_KEY: str = Field(default="ccc")
+    FLUTTERWAVE_SECRET_ID: str = Field(..., env="FLUTTERWAVE_SECRET_ID")
+
 
     class Config:
         env_file = '.env.development'
