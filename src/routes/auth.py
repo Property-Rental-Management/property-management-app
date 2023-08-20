@@ -107,7 +107,7 @@ async def do_register():
     _user_data: User | None = await user_controller.post(user=user_data)
     if _user_data:
         flash(message='Account Successfully created please login', category='success')
-        response: Response = await create_response(url_for('home.get_login'))
+        response: Response = await create_response(url_for('auth.get_login'))
         expiration = datetime.utcnow() + timedelta(minutes=30)
         response.set_cookie('auth', value=user_data.user_id, expires=expiration, httponly=True)
         return response
