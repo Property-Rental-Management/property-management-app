@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     totalAmountDisplay.textContent = "-";
                     disableSubscribeButton(); // Disable the button if no price is set
+                    alert("Update your profile before you can subscribe");
                 }
             })
             .catch(error => {
