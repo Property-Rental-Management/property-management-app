@@ -36,7 +36,8 @@ class UserORM(Base):
                  email: str,
                  full_name: str,
                  contact_number: str,
-                 account_verified: bool = False
+                 account_verified: bool = False,
+                 is_system_admin: bool = False
                  ):
         self.user_id = user_id
         self.tenant_id = tenant_id
@@ -47,6 +48,7 @@ class UserORM(Base):
         self.full_name = full_name
         self.contact_number = contact_number
         self.account_verified = account_verified
+        self.is_system_admin = is_system_admin
 
     def __bool__(self) -> bool:
         return bool(self.user_id) and bool(self.username) and bool(self.email)
