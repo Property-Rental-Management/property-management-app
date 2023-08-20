@@ -9,6 +9,7 @@ from src.database.sql import Base, engine
 class PlansORM(Base):
     __tablename__ = "subscription_plans"
     plan_id: str = Column(String(ID_LEN), primary_key=True)
+    paypal_id: str = Column(String(ID_LEN))
     name: str = Column(String(12))
     description: str = Column(String(255))
     price: int = Column(Integer)
@@ -21,6 +22,7 @@ class PlansORM(Base):
     def to_dict(self):
         return {
             "plan_id": self.plan_id,
+            "paypal_id": self.paypal_id,
             "name": self.name,
             "description": self.description,
             "price": self.price

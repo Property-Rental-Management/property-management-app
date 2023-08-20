@@ -128,6 +128,7 @@ class SubscriptionController(Controllers):
         # return the proper payment form or payment information form
         # depending on the payment form then display the appropriate response
         plan = await self.get_plan_by_id(plan_id=subscription_form.subscription_plan)
+
         new_subscription = Subscriptions(user_id=subscription_form.user_id,
                                          subscription_id=str(uuid.uuid4()),
                                          plan=plan,
@@ -156,7 +157,11 @@ class SubscriptionController(Controllers):
             return dict(subscription=new_subscription.disp_dict(), payment=payment_receipt.dict())
 
         elif subscription_form.payment_method == "paypal":
-            pass
+            with self.get_session() as session:
+                session.add(SubscriptionsORM(**new_subscription.orm_dict()))
+                session.commit()
+            self._load_subscriptions()
+            return dict(subscription=new_subscription.disp_dict(), plan=plan.dict())
 
     @error_handler
     async def reprint_payment_details(self, subscription_id: str):

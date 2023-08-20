@@ -48,6 +48,15 @@ class EmailSettings(BaseSettings):
         env_file_encoding = 'utf-8'
 
 
+class PayPalSettings(BaseSettings):
+    CLIENT_ID: str = Field(..., env="PAYPAL_API_CLIENT_ID")
+    SECRET_KEY: str = Field(..., env="PAYPAL_SECRET_KEY")
+
+    class Config:
+        env_file = '.env.development'
+        env_file_encoding = 'utf-8'
+
+
 class Settings(BaseSettings):
     APP_NAME: str = Field(default='rental and property manager')
     LOGO_URL: str = Field(default="https://rental-manager.site/static/images/custom/logo.png")
@@ -59,10 +68,11 @@ class Settings(BaseSettings):
     DEVELOPMENT_SERVER_NAME: str = Field(default="DESKTOP-T9V7F59")
     LOGGING: Logging = Logging()
     HOST_ADDRESSES: str = Field(..., env='HOST_ADDRESSES')
-    PAY_FAST_SECRET_KEY: str = Field(default="ccc")
+    PAY_FAST_SECRET_KEY: str = Field(..., env="PAYFAST_SECRET_KEY")
     FLUTTERWAVE_SECRET_ID: str = Field(..., env="FLUTTERWAVE_SECRET_ID")
     FLUTTERWAVE_FLW_SECRET_KEY: str = Field(..., env="FLUTTERWAVE_SECRET_KEY")
     FLUTTERWAVE_HASH: str = Field(..., env="FLUTTERWAVE_HASH")
+    PAYPAL_SETTINGS: PayPalSettings = PayPalSettings()
 
     class Config:
         env_file = '.env.development'
@@ -71,7 +81,6 @@ class Settings(BaseSettings):
 
 def config_instance() -> Settings:
     """
-
     :return:
     """
     return Settings()

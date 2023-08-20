@@ -15,6 +15,7 @@ class PlanName(str, Enum):
 
 class Plan(BaseModel):
     plan_id: str
+    paypal_id: str
     name: str
     price: int
 
@@ -41,6 +42,7 @@ class Subscriptions(BaseModel):
             "subscription_id": self.subscription_id,
             "user_id": self.user_id,
             "plan_id": self.plan.plan_id,
+            "paypal_id": self.plan.paypal_id,
             "date_subscribed": self.date_subscribed,
             "subscription_period_in_month": self.subscription_period_in_month
 
