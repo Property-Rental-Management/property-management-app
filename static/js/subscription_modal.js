@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to fetch plan details
     async function getPlanPrice(plan_id) {
         const request_url = "/dashboard/plan-data/" + plan_id;
-
         try {
             const response = await fetch(request_url);
             if (!response.ok) {
