@@ -17,6 +17,7 @@ class Plan(BaseModel):
     plan_id: str
     paypal_id: str
     name: str
+    description: str
     price: int
 
 

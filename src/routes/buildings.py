@@ -552,7 +552,7 @@ async def do_send_invoice_email(user: User):
     try:
         invoice_email_form = await process_send_mail_form()
     except ValidationError as e:
-        print(str(e))
+        buildings_logger.error(str(e))
         return redirect(url_for('buildings.get_unit', building_id=invoice_email_form.building_id,
                                 unit_id=invoice_email_form.unit_id), code=302)
 
