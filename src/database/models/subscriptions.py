@@ -105,6 +105,7 @@ class PaymentReceipts(BaseModel):
     amount_paid: int | None
     date_paid: date | None
     is_verified: bool = Field(default=False)
+    status: str | None
 
     @property
     def paid_in_full(self) -> bool:

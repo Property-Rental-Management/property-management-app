@@ -30,8 +30,6 @@ class SubscriptionController(Controllers):
             if plan.plan_id == sub_orm.plan_id:
                 _plan = plan
 
-        self.logger.info(f"Plan : {_plan}")
-
         return self.set_active(
             subscription=Subscriptions(user_id=sub_orm.user_id, subscription_id=sub_orm.subscription_id, plan=_plan,
                                        date_subscribed=sub_orm.date_subscribed,
@@ -174,8 +172,6 @@ class SubscriptionController(Controllers):
                 PaymentReceiptORM.subscription_id == subscription_id).first()
             subscription = self.create_sub_model(subscription_orm)
             payment_receipt = PaymentReceipts(**payment_orm.to_dict())
-            self.logger.info(f"Subscription : {subscription}")
-            self.logger.info(f"Payment Receipt: {payment_receipt}")
             return dict(subscription=subscription.disp_dict(), payment=payment_receipt.dict())
 
     @error_handler
@@ -231,7 +227,7 @@ class SubscriptionController(Controllers):
         """
         for receipt in self.payment_receipts:
             if receipt.subscription_id == subscription_id:
-                return receipt.paid_in_full and receipt.is_verified
+                return receipt.paid_in_full and receipt.is_verified or (receipt.status == "completed")
         return False
 
     def set_active(self, subscription: Subscriptions) -> Subscriptions:
