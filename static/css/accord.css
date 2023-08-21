@@ -1,0 +1,52 @@
+/* Add this CSS to your existing stylesheet or create a new one */
+
+/* Style for accordion items */
+.accordion-item {
+    margin-bottom: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* Style for accordion headers */
+.accordion-header {
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Style for active accordion headers */
+.accordion-button:focus {
+    box-shadow: none;
+}
+
+/* Style for accordion content */
+.accordion-body {
+    padding: 15px;
+}
+
+/* Additional styling for FAQ page */
+#main-content {
+    padding: 20px;
+}
+
+.card {
+    border: none;
+}
+
+.card-title {
+    margin: 10px 0;
+    font-size: 24px;
+}
+
+/* Style for search bar (if applicable) */
+.search-bar {
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Customize these styles further to match your website's design */

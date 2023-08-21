@@ -1,151 +1,148 @@
 
 {% extends "layouts/page.html" %}
-
 {% block content %}
-
 <section id="main-content">
-                    <div class="row">
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="stat-widget-one">
-                                    <div class="stat-icon dib"><i class="ti-money color-success border-success"></i>
-                                    </div>
-                                    <div class="stat-content dib">
-                                        <div class="stat-text">Total Properties</div>
-                                        <div class="stat-digit">1,012</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="stat-widget-one">
-                                    <div class="stat-icon dib"><i class="ti-user color-primary border-primary"></i>
-                                    </div>
-                                    <div class="stat-content dib">
-                                        <div class="stat-text">New Tenants</div>
-                                        <div class="stat-digit">961</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="stat-widget-one">
-                                    <div class="stat-icon dib"><i class="ti-layout-grid2 color-pink border-pink"></i>
-                                    </div>
-                                    <div class="stat-content dib">
-                                        <div class="stat-text">Total Units</div>
-                                        <div class="stat-digit">27,700</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="stat-widget-one">
-                                    <div class="stat-icon dib"><i class="ti-link color-danger border-danger"></i></div>
-                                    <div class="stat-content dib">
-                                        <div class="stat-text">Vacant Units</div>
-                                        <div class="stat-digit">2,781</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="stat-widget-one">
+                    <div class="stat-icon dib"><i class="ti-money color-success border-success"></i>
                     </div>
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-lg-8 col-md-6 col-sm-12">
-                          <div class="card">
-                            <div class="card-header">
-                              <h4 class="card-title">Property Owners</h4>
-                            </div>
-                            <div class="card-body">
-                              <ul class="list-group">
-                                {% if user %}
-                                    <li class="list-group-item">
-                                      <a href="{{ url_for('auth.do_logout') }}" class="btn btn-danger btn-block">
-                                          <i class="ti-power-off"> </i> <strong>Logout</strong>
-                                      </a>
-                                    </li>
-                                {% else %}
-                                    <li class="list-group-item">
-                                      <a href="{{ url_for('auth.get_register') }}" class="btn btn-warning btn-block">
-                                          <i class="ti-save"> </i> <strong>Create Account Today</strong>
-                                      </a>
-                                    </li>
-                                    <li class="list-group-item">
-                                      <a href="{{ url_for('auth.get_login') }}" class="btn btn-primary btn-block">
-                                          <i class="ti-user"> </i> <strong>Login</strong>
-                                      </a>
-                                    </li>
-                              {% endif %}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                          <div class="card">
-                            <div class="card-header">
-                              <h4 class="card-title">Property & Rental Manager</h4>
-                            </div>
-                            <div class="card-body">
-                                <span>
-                                        Are you searching for a comprehensive solution to streamline your property and rental management tasks? Look no further! Welcome to Property & Rental Manager, the ultimate tool designed to make your life easier.
-                                </span>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-
-                       <div class="row">
-                           <div class="col-sm-12 col-lg-12 col-md-12">
-                               <div class="card">
-                                   <div class="card-header">
-                                       <img alt="property and rental manager"
-                                            src="{{ url_for('static', filename='images/custom/logo.png') }}"
-                                            style="display: inline-block; max-width: 100%; height: auto; max-height: 80px;">
-                                       <h2 class="font-weight-bold" style="display: inline-block; margin-left: 10px;">
-                                           PROPERTY &amp; RENTAL MANAGER</h2>
-                                   </div>
-                                   <div class="card-body">
-                                        <h3 class="card-title text text-info font-weight-bold font-italic">WHAT WE DO ! </h3>
-                                       <span class="card-text font-weight-bold">
-                                           <p>
-                                               With Property & Rental Manager, say goodbye to the hassles of manual paperwork,
-                                               disorganized spreadsheets, and endless phone calls.
-                                           </p>
-
-                                           <p>
-                                               Our all-in-one app empowers you to efficiently manage every aspect of your property portfolio with ease.
-                                           </p>
-                                       </span>
-                                   </div>
-                                   <hr />
-                                   <div class="card-body">
-                                       <span class="card-text font-weight-bold">
-                                           <p>
-                                               From tenant screening and lease agreements to rent collection and maintenance requests,
-                                               Property & Rental Manager handles it all seamlessly.
-                                           </p>
-                                       </span>
-                                       <span class="card-text font-weight-bold">
-                                           <p>Our intuitive interface and robust features are designed to simplify your day-to-day
-                                               operations and save you valuable time and resources.
-                                           </p>
-                                       </span>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                        {% if not (subscription and subscription.is_active) %}
-                        {% include "profile/tabs/subscription_plans.html" %}
-                        {% endif %}
+                    <div class="stat-content dib">
+                        <div class="stat-text">Total Properties</div>
+                        <div class="stat-digit">1,012</div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="stat-widget-one">
+                    <div class="stat-icon dib"><i class="ti-user color-primary border-primary"></i>
+                    </div>
+                    <div class="stat-content dib">
+                        <div class="stat-text">New Tenants</div>
+                        <div class="stat-digit">961</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="stat-widget-one">
+                    <div class="stat-icon dib"><i class="ti-layout-grid2 color-pink border-pink"></i>
+                    </div>
+                    <div class="stat-content dib">
+                        <div class="stat-text">Total Units</div>
+                        <div class="stat-digit">27,700</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="stat-widget-one">
+                    <div class="stat-icon dib"><i class="ti-link color-danger border-danger"></i></div>
+                    <div class="stat-content dib">
+                        <div class="stat-text">Vacant Units</div>
+                        <div class="stat-digit">2,781</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Property Owners</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% if user %}
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('auth.do_logout') }}" class="btn btn-danger btn-block">
+                                        <i class="ti-power-off"> </i> <strong>Logout</strong>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('auth.get_register') }}" class="btn btn-warning btn-block">
+                                        <i class="ti-save"> </i> <strong>Create Account Today</strong>
+                                    </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="{{ url_for('auth.get_login') }}" class="btn btn-primary btn-block">
+                                        <i class="ti-user"> </i> <strong>Login</strong>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Property & Rental Manager</h4>
+                    </div>
+                    <div class="card-body">
+                <span>
+                        Are you searching for a comprehensive solution to streamline your property and rental management tasks? Look no further! Welcome to Property & Rental Manager, the ultimate tool designed to make your life easier.
+                </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <img alt="property and rental manager"
+                             src="{{ url_for('static', filename='images/custom/logo.png') }}"
+                             style="display: inline-block; max-width: 100%; height: auto; max-height: 80px;">
+                        <h2 class="font-weight-bold" style="display: inline-block; margin-left: 10px;">
+                            PROPERTY &amp; RENTAL MANAGER</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title text text-info font-weight-bold font-italic">WHAT WE DO ! </h3>
+                        <span class="card-text font-weight-bold">
+                           <p>
+                               With Property & Rental Manager, say goodbye to the hassles of manual paperwork,
+                               disorganized spreadsheets, and endless phone calls.
+                           </p>
+
+                           <p>
+                               Our all-in-one app empowers you to efficiently manage every aspect of your property portfolio with ease.
+                           </p>
+                       </span>
+                    </div>
+                    <hr/>
+                    <div class="card-body">
+                       <span class="card-text font-weight-bold">
+                           <p>
+                               From tenant screening and lease agreements to rent collection and maintenance requests,
+                               Property & Rental Manager handles it all seamlessly.
+                           </p>
+                       </span>
+                        <span class="card-text font-weight-bold">
+                           <p>Our intuitive interface and robust features are designed to simplify your day-to-day
+                               operations and save you valuable time and resources.
+                           </p>
+                       </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if not (subscription and subscription.is_active) %}
+            {% include "profile/tabs/subscription_plans.html" %}
+        {% endif %}
+    </div>
 
 </section>
-
 {% endblock %}
 

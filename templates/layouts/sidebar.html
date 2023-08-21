@@ -21,20 +21,27 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li><a href="{{ url_for('home.get_about') }}"><i class="ti-info"></i> About</a></li>
+                    <li><a href="{{ url_for('home.get_faq') }}"><i class="ti-help-alt"></i> FAQ</a></li>
+
                     {% if  user and user.is_system_admin %}
-                    <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i> Admin<span
-                            class="sidebar-collapse-icon ti-angle-down"></span></a>
-                        <ul>
-                            <li><a href="{{ url_for('admin.get_users') }}"><i class="ti-user"></i> Users</a></li>
-                            <li><a href="{{ url_for('admin.get_tenants') }}"><i class="ti-user"></i> Tenants</a></li>
-                            <li><a href="{{ url_for('admin.admin_get_companies') }}"><i class="ti-user"></i>
-                                Companies</a></li>
-                            <li><a href="{{ url_for('admin.admin_get_buildings') }}"><i class="ti-user"></i>
-                                Buildings</a></li>
-                            <li><a href="{{ url_for('admin.get_admin') }}"><i class="ti-settings"></i> Settings</a></li>
-                        </ul>
-                    </li>
+                        <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i> Admin<span
+                                class="sidebar-collapse-icon ti-angle-down"></span></a>
+                            <ul>
+                                <li><a href="{{ url_for('admin.get_users') }}"><i class="ti-user"></i> Users</a></li>
+                                <li><a href="{{ url_for('admin.get_tenants') }}"><i class="ti-user"></i> Tenants</a>
+                                </li>
+                                <li><a href="{{ url_for('admin.admin_get_companies') }}"><i class="ti-user"></i>
+                                    Companies</a></li>
+                                <li><a href="{{ url_for('admin.admin_get_buildings') }}"><i class="ti-user"></i>
+                                    Buildings</a></li>
+                                <li><a href="{{ url_for('admin.get_admin') }}"><i class="ti-settings"></i> Settings</a>
+                                </li>
+                            </ul>
+                        </li>
                     {% endif %}
+
                     {% if user %}
                         <li><a href="{{ url_for('auth.do_logout') }}"><i class="ti-power-off"></i> Logout</a></li>
                     {% else %}

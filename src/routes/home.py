@@ -25,3 +25,27 @@ async def get_home(user: User):
             user=user.dict(), notifications_list=notifications_dicts,
             subscription=subscription.disp_dict() if subscription else {}))
     return render_template('index.html', **context)
+
+
+@home_route.get('/faq')
+@user_details
+async def get_faq(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    context = {}
+    return render_template('faq.html', **context)
+
+
+@home_route.get('/about')
+@user_details
+async def get_about(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    context = {}
+    return render_template('about.html', **context)

@@ -1,0 +1,116 @@
+{% extends "layouts/page.html" %}
+{% block custom_css %}
+    <link href="{{ url_for('static', filename='css/accord.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <section id="main-content">
+        <div class="row">
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">FAQ</h3>
+                </div>
+                <div class="card-body">
+
+                    <div id="accordion" class="accordion">
+                        <!-- FAQ Item 1 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="btn " type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <h3 class="card-title">How do I create an account?</h3>
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                 data-bs-parent="#accordion">
+                                <div class="accordion-body">
+                                    To create an account, click on the "Sign Up" button on the top-right corner of the
+                                    page. Follow the prompts to provide your information and set up your account
+                                    credentials.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 2 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="btn " type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <h3 class="card-title">How can I add a new property listing?</h3>
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo"
+                                 data-bs-parent="#accordion">
+                                <div class="accordion-body">
+                                    To add a new property listing, log in to your account and navigate to the "My
+                                    Properties" section. Click on the "Add New Property" button and follow the prompts
+                                    to provide property details, images, and pricing information.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FAQ Item 3 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="btn" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseThree" aria-expanded="false"
+                                        aria-controls="collapseThree">
+                                    <h3 class="card-title"> How do I manage my existing property listings?</h3>
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse show"
+                                 aria-labelledby="headingThree" data-bs-parent="#accordion">
+                                <div class="accordion-body">
+                                    After logging in, go to the "My Properties" section. Here, you can edit or delete
+                                    your existing property listings, update property details, images, and pricing, and
+                                    manage availability dates.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 4 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="btn" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseFour" aria-expanded="false"
+                                        aria-controls="collapseFour">
+                                    <h3 class="card-title">How can I search for available rentals?</h3>
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse show"
+                                 aria-labelledby="headingFour" data-bs-parent="#accordion">
+                                <div class="accordion-body">
+                                    Use the search bar on the homepage to specify your desired location, property type,
+                                    rental duration, and other preferences. Click "Search" to view a list of available
+                                    rentals that match your criteria.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 5 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFive">
+                                <button class="btn" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseFive" aria-expanded="false"
+                                        aria-controls="collapseFive">
+                                    <h3 class="card-title">How do I make a booking?</h3>
+                                </button>
+                            </h2>
+                            <div id="collapseFive" class="accordion-collapse collapse show"
+                                 aria-labelledby="headingFive" data-bs-parent="#accordion">
+                                <div class="accordion-body">
+                                    Once you find a suitable rental, click on the listing to view more details. Click
+                                    the "Book Now" button to initiate the booking process. Follow the steps to select
+                                    rental dates, provide your information, and confirm the booking.
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+{% endblock %}
