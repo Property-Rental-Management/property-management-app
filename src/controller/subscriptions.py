@@ -48,7 +48,6 @@ class SubscriptionController(Controllers):
         with self.get_session() as session:
             plans_orm_list: list[PlansORM] = session.query(PlansORM).all()
             self.plans = [Plan(**plan_orm.to_dict()) for plan_orm in plans_orm_list]
-            self.logger.info(f"Plans logger : {self.plans}")
 
             subscriptions_orm_list: list[SubscriptionsORM] = session.query(SubscriptionsORM).all()
             self.subscriptions = {sub_orm.user_id: self.create_sub_model(sub_orm=sub_orm)
@@ -56,8 +55,6 @@ class SubscriptionController(Controllers):
             payments_orm_list: list[PaymentReceiptORM] = session.query(PaymentReceiptORM).all()
             self.payment_receipts = [PaymentReceipts(**receipt.to_dict()) for receipt in payments_orm_list if
                                      receipt] if payments_orm_list else []
-
-            self.logger.info(f"Subscriptions Logger: {self.subscriptions}")
 
     def init_app(self, app: Flask):
         self._load_subscriptions()

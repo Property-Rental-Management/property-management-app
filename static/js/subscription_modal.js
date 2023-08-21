@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(planDetails => {
                 if (planDetails !== undefined) {
                     const planPrice = planDetails.price;
+                    console.log("plan details : " + planDetails);
+                    console.log("plan price : " + planPrice);
                     const totalAmount = planPrice * selectedPeriod;
                     totalAmountDisplay.textContent = `R ${totalAmount.toFixed(2)}`;
                     enableSubscribeButton(); // Enable the button when price is set
@@ -43,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to fetch plan details
     async function getPlanPrice(plan_id) {
-        const request_url = "/dashboard/plan-data/" + plan_id;
+        const request_url = "/dashboard/plan-data/json/" + plan_id;
         try {
             const response = await fetch(request_url);
             if (!response.ok) {

@@ -51,8 +51,6 @@ class UserController(Controllers):
         :return: The Profile instance corresponding to the user ID if found, else None.
         """
         # Check if the profile is available in the cache (profiles dictionary)
-        self.logger.info(f" Profiles : {self.profiles}")
-        self.logger.info(f"User : {self.users}")
         if user_id in self.profiles:
             self.logger.info("Fetching profile from dict {} ")
             return self.profiles.get(user_id)
@@ -91,10 +89,12 @@ class UserController(Controllers):
             o_profile_orm: ProfileORM = session.query(ProfileORM).filter(ProfileORM.user_id == user.user_id).first()
 
             if o_user_orm:
+                self.logger.info(f"Updating Profile User Record : {o_user_orm}")
                 o_user_orm.full_name = user.full_name
                 o_user_orm.username = user.username
                 o_user_orm.email = user.email
                 o_user_orm.contact_number = user.contact_number
+                session.merge(o_user_orm)
                 self.users[user.user_id] = User(**o_user_orm.to_dict())
             # Update profile attributes
 
@@ -102,6 +102,7 @@ class UserController(Controllers):
                 o_profile_orm.deposit_multiplier = profile.deposit_multiplier
                 o_profile_orm.currency = profile.currency
                 o_profile_orm.tax_rate = profile.tax_rate
+                session.merge(o_profile_orm)
                 self.profiles[profile.user_id] = Profile(**o_profile_orm.to_dict())
             else:
                 self.logger.info(f"Adding new profile: {profile}")
