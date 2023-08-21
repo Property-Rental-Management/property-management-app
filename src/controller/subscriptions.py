@@ -214,7 +214,7 @@ class SubscriptionController(Controllers):
         self._load_subscriptions()
         return True
 
-
+    @error_handler
     def is_subscription_paid(self, subscription_id: str) -> bool:
         """
         """
