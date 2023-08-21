@@ -61,7 +61,6 @@ class UserController(Controllers):
 
             # If the profile_orm is not found, return None
             if not profile_orm:
-                self.logger.info(f"Profile not Found")
                 return {}
 
             # Convert ProfileORM to Profile object
@@ -72,8 +71,6 @@ class UserController(Controllers):
 
             # Cache the profile in the dictionary for future use
             self.profiles[user_id] = profile
-            self.logger.info(f"Profile ORM : {profile_orm.to_dict()}")
-            self.logger.info(f"Profile : {self.profiles}")
         return profile
 
     @error_handler
@@ -89,7 +86,6 @@ class UserController(Controllers):
             o_profile_orm: ProfileORM = session.query(ProfileORM).filter(ProfileORM.user_id == user.user_id).first()
 
             if o_user_orm:
-                self.logger.info(f"Updating Profile User Record : {o_user_orm}")
                 o_user_orm.full_name = user.full_name
                 o_user_orm.username = user.username
                 o_user_orm.email = user.email
@@ -105,7 +101,6 @@ class UserController(Controllers):
                 session.merge(o_profile_orm)
                 self.profiles[profile.user_id] = Profile(**o_profile_orm.to_dict())
             else:
-                self.logger.info(f"Adding new profile: {profile}")
                 session.add(ProfileORM(**profile.dict()))
                 self.profiles[profile.user_id] = Profile(**profile.dict())
 
@@ -255,7 +250,6 @@ class UserController(Controllers):
                     return None
             except ValidationError as e:
                 raise UnauthorizedError(description="Cannot Login User please check your login details")
-
             return user if user.is_login(password=password) else None
 
     @error_handler
@@ -265,7 +259,6 @@ class UserController(Controllers):
 
         :param user: The user to send the verification email to.
         """
-        print(f"user passed on : {user}")
         token = str(uuid.uuid4())  # Assuming you have a function to generate a verification token
         verification_link = f"https://rental-manager.site/admin/verify-email?token={token}&email={user.email}"
         self._verification_tokens[token] = dict(email=user.email, timestamp=int(time.time()))

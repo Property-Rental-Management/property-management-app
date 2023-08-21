@@ -180,16 +180,31 @@ class SubscriptionController(Controllers):
 
     @error_handler
     async def mark_receipt_as_paid(self, subscription_id: str, amount_paid: int = 0):
+        """
+            **mark_receipt_as_paid**
+
+        :param subscription_id:
+        :param amount_paid:
+        :return:
+        """
         with self.get_session() as session:
             payment_receipt_orm: PaymentReceiptORM = session.query(PaymentReceiptORM).filter(
                 PaymentReceiptORM.subscription_id == subscription_id).first()
+
             payment_receipt_orm.is_verified = True
+
+            if amount_paid == 0:
+                amount_paid = payment_receipt_orm.payment_amount
+
             payment_receipt_orm.amount_paid = amount_paid
+            payment_receipt_orm.date_paid = datetime.datetime.now().date()
             payment_receipt_orm.status = "completed"
             session.merge(payment_receipt_orm)
             session.commit()
             self.logger.info(f"Receipt Marked as Paid : {payment_receipt_orm.to_dict()}")
+
         self._load_subscriptions()
+
         return True
 
     @error_handler
