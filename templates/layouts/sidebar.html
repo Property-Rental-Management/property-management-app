@@ -2,12 +2,13 @@
         <div class="nano">
             <div class="nano-content">
                 <ul>
-<div class="logo">
-    <a href="{{ url_for('home.get_home') }}">
-        <img src="{{ url_for('static', filename='images/custom/logo.png') }}" alt="logo" width="45" height="45">
-        <span> PRM</span>
-    </a>
-</div>
+                    <div class="logo">
+                        <a href="{{ url_for('home.get_home') }}">
+                            <img src="{{ url_for('static', filename='images/custom/logo.png') }}" alt="logo" width="45"
+                                 height="45">
+                            <span> PRM</span>
+                        </a>
+                    </div>
                     <li class="label">Main</li>
                     <li><a href="{{ url_for('home.get_home') }}"><i class="ti-home"></i> Home</a></li>
                     <li><a class="sidebar-sub-toggle"><i class="ti-dashboard"></i> Dashboard <span
@@ -24,6 +25,7 @@
 
                     <li><a href="{{ url_for('home.get_about') }}"><i class="ti-info"></i> About</a></li>
                     <li><a href="{{ url_for('home.get_faq') }}"><i class="ti-help-alt"></i> FAQ</a></li>
+                    <li><a href="{{ url_for('home.get_sites') }}"><i class="ti-link"></i> Sister Sites</a></li>
 
                     {% if  user and user.is_system_admin %}
                         <li><a class="sidebar-sub-toggle"><i class="ti-briefcase"></i> Admin<span

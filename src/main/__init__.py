@@ -19,6 +19,7 @@ from src.controller.wallet import WalletController
 from src.controller.subscriptions import SubscriptionController
 from src.firewall import Firewall
 from src.flutterwave.payments import Flutterwave
+
 firewall = Firewall()
 
 tenant_controller = TenantController()
@@ -33,6 +34,7 @@ cache_path = os.path.join(os.getcwd(), "cache", "invoices_cache.pkl")
 invoice_man = InvoiceManager(cache_path)
 
 flutterwave_payments = Flutterwave()
+
 
 def _add_blue_prints(app):
     """

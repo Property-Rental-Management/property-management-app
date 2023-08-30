@@ -53,6 +53,18 @@ async def get_about(user: User):
     return render_template('about.html', **context)
 
 
+@home_route.get('/sister-sites')
+@user_details
+async def get_sites(user: User):
+    """
+
+    :param user:
+    :return:
+    """
+    context = {}
+    return render_template('sites.html', **context)
+
+
 @home_route.get('/robots.txt')
 def robots_txt():
     return send_from_directory(static_folder(), 'robots.txt')
