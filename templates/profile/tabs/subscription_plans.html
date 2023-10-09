@@ -46,7 +46,7 @@
                     {% for plan in plans_list %}
                         {% if plan.name == "Basic" %}
                             <a class="btn btn-sm btn-default"
-                               href="{{ url_for('profile.get_plan_details', plan_id=plan.plan_id) }}"
+                               href="{{ url_for('profile.get_plan_by_name', plan_name=plan.name|lower) }}"
                             > {{ plan.name }} ...
                             </a>
                         {% endif %}
@@ -80,7 +80,7 @@
                     {% for plan in plans_list %}
                         {% if plan.name == "Premium" %}
                             <a class="btn btn-sm btn-default"
-                               href="{{ url_for('profile.get_plan_details', plan_id=plan.plan_id) }}"
+                               href="{{ url_for('profile.get_plan_by_name', plan_name=plan.name|lower) }}"
                             > {{ plan.name }} ...
                             </a>
                         {% endif %}
@@ -115,7 +115,7 @@
                     {% for plan in plans_list %}
                         {% if plan.name == "Ultimate" %}
                             <a class="btn btn-sm btn-default"
-                               href="{{ url_for('profile.get_plan_details', plan_id=plan.plan_id) }}"
+                               href="{{ url_for('profile.get_plan_by_name', plan_name=plan.name|lower) }}"
                             > {{ plan.name }} ...
                             </a>
                         {% endif %}

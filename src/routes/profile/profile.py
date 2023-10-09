@@ -119,7 +119,7 @@ async def get_plan_details(plan_id: str):
     return render_template("profile/home/payment_plans.html", **context)
 
 
-@profile_routes.get('/dashboard/plan/<string:plan_name>')
+@profile_routes.get('/subscription-plans/<string:plan_name>')
 async def get_plan_by_name(plan_name: str):
     """
 
