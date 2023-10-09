@@ -119,6 +119,21 @@ async def get_plan_details(plan_id: str):
     return render_template("profile/home/payment_plans.html", **context)
 
 
+@profile_routes.get('/dashboard/plan/<string:plan_name>')
+async def get_plan_by_name(plan_name: str):
+    """
+
+    :param user:
+    :param plan_name:
+    :return:
+    """
+    plan = await subscriptions_controller.get_plan_by_name(plan_name=plan_name)
+    plan_data_list = await subscriptions_controller.generate_price_plans(plan=plan)
+    admin_logger.info(f"Plan data list : {plan_data_list}")
+    context = dict(plan=plan.dict(), plan_data_list=plan_data_list)
+    return render_template("profile/home/payment_plans.html", **context)
+
+
 @profile_routes.get('/dashboard/plan-data/json/<string:plan_id>')
 async def get_plan_data_json(plan_id: str):
     """

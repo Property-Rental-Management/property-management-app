@@ -92,6 +92,22 @@ class SubscriptionController(Controllers):
             return Plan(**plan_orm.to_dict())
 
     @error_handler
+    async def get_plan_by_name(self, plan_name: str) -> Plan | None:
+        """
+        """
+        for plan in self.plans:
+            if plan.name.casefold() == plan_name.casefold():
+                return plan
+
+        with self.get_session() as session:
+            plan_orm = session.query(PlansORM).filter(PlansORM.name == plan_name.casefold()).first()
+            if not plan_orm:
+                return None
+
+            return Plan(**plan_orm.to_dict())
+
+
+    @error_handler
     async def get_subscriptions_by_plan_name(self, plan_name: str) -> list[Subscriptions]:
         """
 
